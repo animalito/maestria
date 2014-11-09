@@ -9,15 +9,58 @@ output:
     self_contained: false
 ---
 
-# Introducción
+## Introducción {.flexbox .vcenter}
+- Nos interesa modelar la violencia y el delito en el territorio mexicano enfocándonos en las zonas definidas como *prioritarias* y teniendo como base los factores de *riesgo identificados* como precursores de la violencia y el delito. 
 
 ## Planteamiento del problema {.flexbox .vcenter}
 
-## Fuentes de datos
+- A partir de la creación del Programa Nacional para la Prevención Social de la Violencia y la Delincuencia 2014-2018, se ha creado la necesidad de tener un conjunto ordenado de indicadores que permita dar seguimiento, evaluar y generar las recomendaciones necesarias para que año a año se cumpla el objeto de atender los factores de riesgo y de protección vinculados a la violencia y a la delincuencia.
 
-# Análisis exploratorio
+## Planteamiento del problema {.flexbox .vcenter}
 
-# Problemas con los datos
 
-# Opciones de modelo
+- Evaluación de las variables asociadas a los factores de riesgo.
 
+- Modelo explicativo con reporte.
+  - Posible propuesta de indicadores futuros.
+
+
+## Fuentes de datos {.flexbox .vcenter}
+
+- CONEVAL: Resago social (censo 2010).
+- INEGI: Censo
+  - ENDIREH
+  - ENVIPE (2013)
+  - DENUE
+- SEP (2013).
+- ENCUP (Gob e INEGI).
+- SINAIS.
+- ENLACE (2013).
+- SESNSP (Variable dependiente).
+
+## Problemas con los datos y modelado. {.flexbox .vcenter}
+
+- Años.
+  - De cada fuente de los datos se toma el último año.
+- Medición de los factores de riesgo.
+- Encuestas
+  - Son estatales.
+    a) A todos los municipios.
+    b) Considerar el muestreso de los municipios (No es trivial).
+- Espacios públicos.
+- NA's.
+  - Registros admin: 0's.
+  - Encuestas: muestreo en todos los mun.
+- Enlace:
+  - Hay menos registros públicos que los se reportan.
+
+## Modelo {.flexbox .vcenter}
+
+- La idea es modelar algún agregado de los deltios por municipio. 
+  - Controlar por el tipo de delito.
+    - Violencia, no violencia.
+    - Bancos, empresa, otros.
+    - Robo común, homicidios, delitos patrimoniales.
+    - Transportistas, Sindicatos, particulares, negocios.
+  - Utilizar como variables explicativas los factores de riesgo.
+    - Individuales, familiares, comunitarios, escolares, sociales.

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Anteproyecto GLM</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+  <meta name="date" content="2014-09-11" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <link rel="stylesheet" media="all" href="presentacion_anteproyecto_files/ioslides-13.5.1/fonts/fonts.css">
+
+  <link rel="stylesheet" media="all" href="presentacion_anteproyecto_files/ioslides-13.5.1/theme/css/default.css">
+  <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="presentacion_anteproyecto_files/ioslides-13.5.1/theme/css/phone.css">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Anteproyecto GLM',
+                        useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+              },
+
+      // Author information
+      presenters: [
+            {
+        name: 'Carlos Petricioli, Andrea Fernandez, Andrea Garcia'
+      },
+            ]
+    };
+  </script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+
+  </style>
+
+  <link rel="stylesheet" href="../css/itam.css" type="text/css" />
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides>
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">09/11/2014</p>
+          </hgroup>
+  </slide>
+
+<slide class=''><hgroup><h2>Introducción</h2></hgroup><article  id="introduccion" class="flexbox vcenter">
+
+<ul>
+<li>Nos interesa modelar la violencia y el delito en el territorio mexicano enfocándonos en las zonas definidas como <em>prioritarias</em> y teniendo como base los factores de <em>riesgo identificados</em> como precursores de la violencia y el delito.</li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>Planteamiento del problema</h2></hgroup><article  id="planteamiento-del-problema" class="flexbox vcenter">
+
+<ul>
+<li>A partir de la creación del Programa Nacional para la Prevención Social de la Violencia y la Delincuencia 2014-2018, se ha creado la necesidad de tener un conjunto ordenado de indicadores que permita dar seguimiento, evaluar y generar las recomendaciones necesarias para que año a año se cumpla el objeto de atender los factores de riesgo y de protección vinculados a la violencia y a la delincuencia.</li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>Planteamiento del problema</h2></hgroup><article  id="planteamiento-del-problema-1" class="flexbox vcenter">
+
+<ul>
+<li><p>Evaluación de las variables asociadas a los factores de riesgo.</p></li>
+<li>Modelo explicativo con reporte.</li>
+<li><p>Posible propuesta de indicadores futuros.</p></li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>Fuentes de datos</h2></hgroup><article  id="fuentes-de-datos" class="flexbox vcenter">
+
+<ul>
+<li>CONEVAL: Resago social (censo 2010).</li>
+<li>INEGI: Censo</li>
+<li>ENDIREH</li>
+<li>ENVIPE (2013)</li>
+<li>DENUE</li>
+<li>SEP (2013).</li>
+<li>ENCUP (Gob e INEGI).</li>
+<li>SINAIS.</li>
+<li>ENLACE (2013).</li>
+<li>SESNSP (Variable dependiente).</li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>Problemas con los datos y modelado.</h2></hgroup><article  id="problemas-con-los-datos-y-modelado." class="flexbox vcenter">
+
+<ul>
+<li>Años.</li>
+<li>De cada fuente de los datos se toma el último año.</li>
+<li>Medición de los factores de riesgo.</li>
+<li>Encuestas</li>
+<li>Son estatales.
+
+<ol>
+<li>A todos los municipios.</li>
+<li>Considerar el muestreso de los municipios (No es trivial).</li>
+</ol></li>
+<li>Espacios públicos.</li>
+<li>NA&#39;s.</li>
+<li>Registros admin: 0&#39;s.</li>
+<li>Encuestas: muestreo en todos los mun.</li>
+<li>Enlace:</li>
+<li>Hay menos registros públicos que los se reportan.</li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>Modelo</h2></hgroup><article  id="modelo" class="flexbox vcenter">
+
+<ul>
+<li>La idea es modelar algún agregado de los deltios por municipio.</li>
+<li>Controlar por el tipo de delito.
+
+<ul>
+<li>Violencia, no violencia.</li>
+<li>Bancos, empresa, otros.</li>
+<li>Robo común, homicidios, delitos patrimoniales.</li>
+<li>Transportistas, Sindicatos, particulares, negocios.</li>
+</ul></li>
+<li>Utilizar como variables explicativas los factores de riesgo.
+
+<ul>
+<li>Individuales, familiares, comunitarios, escolares, sociales.</li>
+</ul></li>
+</ul></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<script src="presentacion_anteproyecto_files/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+<script src="presentacion_anteproyecto_files/ioslides-13.5.1/js/prettify/prettify.js"></script>
+<script src="presentacion_anteproyecto_files/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+<script src="presentacion_anteproyecto_files/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+<script src="presentacion_anteproyecto_files/ioslides-13.5.1/js/hammer.js"></script>
+<script src="presentacion_anteproyecto_files/ioslides-13.5.1/js/slide-controller.js"></script>
+<script src="presentacion_anteproyecto_files/ioslides-13.5.1/js/slide-deck.js"></script>
+
+<!-- dynamically load mathjax for compatibility with --self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "presentacion_anteproyecto_files/mathjax-2.3.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>
