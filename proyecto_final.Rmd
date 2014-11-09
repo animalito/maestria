@@ -1,0 +1,45 @@
+---
+title: "Proyecto final GLM"
+author: "Andrea Fernandez y Andrea Garcia"
+date: "01/11/2014"
+output: html_document
+---
+
+# Abstract
+
+# Introducción
+
+Dada la situación de inseguridad que ha experimentado el país en los últimos años la Secretaría de Gobernación  (SEGOB) desarrolla el Programa para la Prevención Social de la Violencia y la Delincuencia (PRONAPRED) con el objetivo de atender los factores de riesgo y protección vinculados a la violencia y la delincuencia.
+
+El objetivo de este estudio es caracterizar los municipios del país entorno a los diferentes factores de riesgo que el programa busca atender. Además, se busca generar recomendaciones para identificar las buenas prácticas y poder hacer una gestión más eficiente de los recursos del presupuesto federal.
+
+# Planteamiento del problema
+## Marco normativo (animal)
+## Revisión de literatura (andy) 
+## Opiniones de expertos
+### México Evalúa (andy)
+### Colmex (Arturo Alvarado) (andy)
+### Itam (Vidal Romero) (animal)
+
+
+# Descripción de las bases de datos (animal)
+
+# Análisis exploratorio (martes seleccionamos)
+
+# Planteamiento técnico (animal)
+## Opción a
+## Opción b
+## Opción c
+
+
+## Problemas con los datos y rutas que se pueden tomar 
+
+
+# Resultados
+
+# Conclusiones
+
+## Conclusiones generales del modelo
+## Recomendaciones
+
+# Referencias
