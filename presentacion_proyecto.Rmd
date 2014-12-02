@@ -98,7 +98,9 @@ factores <- list(embarazo_temprano = "Embarazo temprano",
 ## Correcciones  {.flexbox .vcenter}
 ![ ](img/municipios_incluidos.png)
 
-    
+## Correcciones  {.flexbox .vcenter}
+![ ](img/mapa_municipios_urbanos.png)
+
 # Estadística Descriptiva Inicial
 
 ```{r, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE, background="black"}
