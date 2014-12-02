@@ -168,8 +168,8 @@ vars <- setdiff(names(results),c('id','admin2','longitude','latitude'))
 respuesta_plot_todas$y <- respuesta_plot_todas$todos_r
 
 dat_mod <- left_join(results[,vars],respuesta_plot_todas[c('cvegeo','y')])
-names(dat_mod)
-unique(dat_mod$kmeans_ambientes_familiares_deteriorados_problematicos)
+#names(dat_mod)
+#unique(dat_mod$kmeans_ambientes_familiares_deteriorados_problematicos)
 
 
 dat_mod <- as.data.frame(dat_mod )
@@ -182,14 +182,16 @@ for(k in grep(names(dat_mod),pattern='kmeans') ){
                          labels = lev)
 }
 
-summary(dat_mod)
-l_ply( vars[11:length(vars)],function(var){
-  print(var)
+#summary(dat_mod)
+#par(mfrow=c(4,4))
+y_indep <- llply( vars[11:length(vars)],function(var){
+  #print(var)
   p <- ggplot(dat_mod, aes_string(x=var , y='y'))+geom_point() +
      geom_smooth(method = "lm", size = 1.5, colour='#8B0000') + theme_bw()
-  #print(p)
-  ggsave(paste0('img/y_indep',match(var,vars),'.png'),p,width=10, height=6)
+  p
+  #ggsave(paste0('img/y_indep',match(var,vars),'.png'),p,width=10, height=6)
 })
+
 
 y_density <- ggplot(dat_mod, aes_string( x='y'))+geom_density( colour="#8B0000",fill= "#8B0000") +theme_bw()
 #print(p)
@@ -200,12 +202,13 @@ y_log_density <- ggplot(dat_mod, aes( x=y+1))+geom_density( colour="#8B0000",fil
 #print(p)
 ggsave('img/y_log_density.png', y_density,width=10, height=6)
 
+par(mfrow=c(2,2))
 l_ply( vars[11:length(vars)],function(var){
   print(var)
   p <- ggplot(dat_mod, aes_string( x=var))+
     geom_density( colour="#8B0000",fill= "#8B0000") +theme_bw()
   #print(p)
-  ggsave(paste0('img/x_density',match(var,vars),'.png'),p,width=10, height=6)
+  #ggsave(paste0('img/x_density',match(var,vars),'.png'),p,width=10, height=6)
 })
 
 ####modelos

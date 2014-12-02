@@ -2,14 +2,61 @@
 title: "Proyecto final GLM"
 author: "Andrea Fernandez,  Andrea García y Carlos Petricoli"
 date: "01/11/2014"
-output: pdf_document
+output: html_document
 ---
+
 ```{r, warning=FALSE, echo=FALSE, message=FALSE, error=FALSE}
 library (knitr)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
-source('src/utils.r')
+
+# Multiple plot function
+#
+# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+# - cols:   Number of columns in layout
+# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+#
+# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+# then plot 1 will go in the upper left, 2 will go in the upper right, and
+# 3 will go all the way across the bottom.
+#
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  require(grid)
+
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+
+  numPlots = length(plots)
+
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                    ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+
+ if (numPlots==1) {
+    print(plots[[1]])
+
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
 
 
 # Leemos los datos mas recientes
@@ -142,11 +189,29 @@ for (f in names(factores)){
 ## Estadística descriptiva de las variables a modelar
 
 ### Delitos
-```{r, echo=F, message=F, warning=F, error=FALSE}
-map_homicidios_r
-map_robos_r
-map_y_total_r
+
+Primero, presentamos unos mapas de la variable a explicar.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+source('load.r')
+multiplot(map_homicidios_r,map_robos_r,map_y_total_r)
 ```
+
+Presentamos la densidad de $y$ y de $log(y)$
+
+### Delitos y covariables
+
+Utilizamos $y$ y graficamos contra todas las covariables. De esta manera, seremos capaces de distinguir relaciones entre las variables antes de modelar. 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+source('load.r')
+multiplot(y_indep[[1]],y_indep[[2]],y_indep[[3]],y_indep[[4]],
+          y_indep[[5]],y_indep[[6]],y_indep[[7]],y_indep[[8]],
+          y_indep[[9]],y_indep[[10]],y_indep[[11]],y_indep[[12]],
+          y_indep[[13]],y_indep[[14]],y_indep[[15]],y_indep[[16]], cols=4)
+```
+
+Con estos gráficos podemos notar que la primer componente de ambientes familiares deteriorados parece estar muy relacionada con la variable de delitos. Observamos un buen comportamiento también de la primera y la segunda componente de oportunidades laborales.
 
 #Modelo 
 
