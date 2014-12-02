@@ -240,18 +240,58 @@ Siguiendo las recomendaciones del Dr. Vilalta se decidió utilizar tres variable
 
 Para las covariables se eligieron los componentes principales 1 y 2 para los 8 grupos de factores de riesgo descritos anteriormente.  Los PCA de los factores consumo y abuso de drogas, embarazo temprano y espacios públicos deteriorados fueron retirados del modelo debido a la baja calidad de los datos reflejada en el nivel de outliers que contenían. En su lugar se utilizaron los Kmeans obtenidos en el análisis de componentes principales. 
 
-
+$\pagebreak$
 
 #Resultados 
+
+### Modelo Gaussiano, tasa de delito por cien mil habitantes
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
 #print(apsrtable(mod, mod_log, mod_poiss, mod_q_poiss, mod_poiss_log, mod_q_poiss_log), comment=F, include.rownames=F, size="small")
+#print("Modelo Gaussiano, tasa de delito por cien mil habitantes")
 print(xtable(summary(mod)), comment=F, include.rownames=F, size="small")
+```
+
+$\pagebreak$
+
+###Modelo Gaussiano, logaritmo de tasa de delito por cien mil habitantes
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+#print("Modelo Gaussiano, logaritmo de tasa de delito por cien mil habitantes")
 print(xtable(summary(mod_log)), comment=F, include.rownames=F, size="small")
+```
+
+$\pagebreak$
+
+###Modelo Poisson, tasa de delito por cien mil habitantes
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+#print("Modelo Poisson, tasa de delito por cien mil habitantes")
 print(xtable(summary(mod_poiss)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_q_poiss)), comment=F, include.rownames=F, size="small")
+```
+
+$\pagebreak$
+
+###Modelo Poisson, logaritmo de tasa de delito por cien mil habitantes
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+#print("Modelo Poisson, logaritmo de tasa de delito por cien mil habitantes")
 print(xtable(summary(mod_poiss_log)), comment=F, include.rownames=F, size="small")
+```
+
+$\pagebreak$
+
+###Modelo Quasipoisson, tasa de delito por cien mil habitantes
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+#print("Modelo Quasipoisson, tasa de delito por cien mil habitantes")
+print(xtable(summary(mod_q_poiss)), comment=F, include.rownames=F, size="small")
+```
+
+$\pagebreak$
+
+###Modelo Quasipoisson, logaritmo de tasa de delito por cien mil habitantes
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+#print("Modelo Quasipoisson, logaritmo de tasa de delito por cien mil habitantes")
 print(xtable(summary(mod_q_poiss_log)), comment=F, include.rownames=F, size="small")
 ```
+
+$\pagebreak$
 
 #Conclusiones 
 
