@@ -312,18 +312,13 @@ se quitaron as siguientes variables
          PC1_pca_consumo_abuso_drogas_ilegales -
          PC2_pca_embarazo_temprano,
 
-## Devianza {.flexbox .vcenter}
-![ ](img/devianza.png)
-
-<<<<<<< HEAD
-=======
 
 ## Conclusiones {.flexbox .vcenter}
 El modelo poisson con la variable sin transformar obtiene peor devianza que el modelo gaussiano con la
 variable y transformada. Sin embargo, los supuestos del modelo se sostienen mejor en el modelo Poisson.
 Tanto el modelo poisson como el quasipoisson son iguales en devianza y los supuestos se cumplen de
 manera aceptable.
->>>>>>> 4d4393a3b9d0394084b08ce60960958fbc14e837
+
 
 
 ## Recomendaciones {.flexbox .vcenter}
