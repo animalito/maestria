@@ -249,14 +249,14 @@ glm familia quasi- poisson
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
 library(xtable)
 load('mod')
-print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="tiny")
 ```
 
 
 ## Modelo Gaussiano, logaritmo de tasa de delito por cien mil habitantes {.flexbox .vcenter}
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
 load('mod_log')
-print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="tiny")
 ```
 
 
@@ -264,7 +264,7 @@ print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
 ## Modelo Poisson, tasa de delito por cien mil habitantes {.flexbox .vcenter}
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
 load('mod_poiss')
-print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="tiny")
 ```
 
 
@@ -272,7 +272,7 @@ print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
 ## Modelo Poisson, logaritmo de tasa de delito por cien mil habitantes {.flexbox .vcenter}
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
 load('mod_poiss_log')
-print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="tiny")
 ```
 
 
@@ -280,7 +280,7 @@ print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
 ## Modelo Quasipoisson, tasa de delito por cien mil habitantes {.flexbox .vcenter}
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
 load('mod_q_poiss')
-print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="tiny")
 ```
 
 
@@ -288,7 +288,7 @@ print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
 ## Modelo Quasipoisson, logaritmo de tasa de delito por cien mil habitantes {.flexbox .vcenter}
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
 load('mod_q_poiss_log')
-print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="tiny")
 ```
 
 ## Comparación de Modelos {.flexbox .vcenter}
