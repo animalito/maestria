@@ -4,15 +4,10 @@ author: "Carlos Petricioli, Andrea Fernández, Andrea García"
 date: "02/12/2014"
 output:
   beamer_presentation:
-<<<<<<< Updated upstream
     colortheme: fly
     fonttheme: serif
     theme: Warsaw
-=======
-    colortheme: beetle
     keep_tex: yes
-    theme: Berkeley
->>>>>>> Stashed changes
   ioslides_presentation:
     css: ../css/itam.css
     mathjax: local
@@ -107,6 +102,7 @@ for (f in names(factores)){
     out <- c(out, knit_child('auxiliares_presentaciones/child_doc_final_mapas.Rmd', quiet = TRUE))
 }
 ```
+`r paste(out, collapse='\n')`
 
 ## Modelo {.flexbox .vcenter}
 
@@ -129,4 +125,3 @@ Para las covariables se eligieron los componentes principales 1 y 2 para los 8 g
 ## Gasto {.flexbox .vcenter}
 
 
-`r paste(out, collapse='\n')`
