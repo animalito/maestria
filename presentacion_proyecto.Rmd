@@ -6,8 +6,8 @@ output:
   beamer_presentation:
     colortheme: fly
     fonttheme: serif
-    theme: Warsaw
     keep_tex: yes
+    theme: Warsaw
   ioslides_presentation:
     css: ../css/itam.css
     mathjax: local
@@ -104,15 +104,85 @@ for (f in names(factores)){
 ```
 `r paste(out, collapse='\n')`
 
+## Densidad dependiente {.flexbox .vcenter}
+![ ](img/y_log_density.png)
+
+## Outliers {.flexbox .vcenter}
+![ ](img/y_indep13.png)
+
+## Outliers {.flexbox .vcenter}
+![ ](img/y_indep21.png)
+
+## Outliers {.flexbox .vcenter}
+![ ](img/y_indep15.png)
+
+## Outliers {.flexbox .vcenter}
+![ ](img/y_indep23.png)
+
+## Outliers {.flexbox .vcenter}
+![ ](img/y_indep16.png)
+
+## Outliers {.flexbox .vcenter}
+![ ](img/y_indep24.png)
+
+## Outliers {.flexbox .vcenter}
+![ ](img/y_indep20.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/y_indep11.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/y_indep12.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/y_indep14.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/y_indep17.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/y_indep18.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/y_indep19.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/y_indep22.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/y_indep25.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/y_indep26.png)
+
+
 ## Modelo {.flexbox .vcenter}
 
-Siguiendo las recomendaciones del Dr. Vilalta se decidió utilizar tres variables dependientes 
-  1.  Delitos = sumatoria de todos los delitos ajustada  por 100mil habitantes
-  2.	Robo vehicular  ajustado por 100 mil habitantes
-  3.	Homicidios ajustados por 100 mil habitantes
+Siguiendo las recomendaciones del Dr. Vilalta se decidió utilizar de variables dependiente los delitos sumatoria de todos los delitos ajustada  por 100mil habitantes explicadas por los PCA 1 y 2 de los factores de riesgo 
 
-Para las covariables se eligieron los componentes principales 1 y 2 para los 8 grupos de factores de riesgo descritos anteriormente.  Los PCA de los factores consumo y abuso de drogas, embarazo temprano y espacios públicos deteriorados fueron retirados del modelo debido a la baja calidad de los datos reflejada en el nivel de outliers que contenían. En su lugar se utilizaron los Kmeans obtenidos en el análisis de componentes principales.
 
+
+### Modelo 1 {.flexbox .vcenter}
+
+
+
+### Modelo 2 {.flexbox .vcenter}
+
+
+### Modelo 3 {.flexbox .vcenter}
+
+
+### Modelo 4 {.flexbox .vcenter}
+
+
+### Modelo 5 {.flexbox .vcenter}
+
+
+### Modelo 6 {.flexbox .vcenter}
+
+
+
+### Selección de Variables {.flexbox .vcenter}
 
 
 
