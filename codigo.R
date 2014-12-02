@@ -12,6 +12,9 @@ library(pscl)
 
 # Leemos los datos mas recientes
 
+width <- 10
+height <- 6
+
 rm(list=ls())
 ls()
 gc()
@@ -37,7 +40,7 @@ factores <- list(embarazo_temprano = "Embarazo temprano",
 #tabla de número de municipios por estado
 
 numero_municipios <- datos %>% dplyr::select(cvegeo, admin1,  admin2 ) %>%
-  group_by(admin1) %>% dplyr::summarise(num_mun=n())  
+  group_by(admin1) %>% dplyr::summarise(num_mun=n())
 
 numero_municipios$id <- 1:nrow(numero_municipios)
 
@@ -65,16 +68,22 @@ p <- theme(axis.line=element_blank(),
            panel.grid.minor=element_blank(),
            plot.background=element_blank())
 
+<<<<<<< HEAD
 print(ggplot(data = edo_df, aes(long, lat, group = group)) + 
   geom_polygon(colour='black', aes(fill=num_mun)) + coord_fixed() + p +
   ggtitle('Número de municipios urbanos') + labs(fill='Número') )
+=======
+municipios_urbanos <- ggplot(data = edo_df, aes(long, lat, group = group)) +
+  geom_polygon(colour='black', aes(fill=num_mun)) + coord_fixed() + p +
+  ggtitle('Número de municipios urbanos') + labs(fill='Número')
+>>>>>>> e23bc67238be460bc2f93421043270a64a5aafab
 
 ##############
 
 claves_mun <-  datos %>% dplyr::select(cvegeo, admin1,  admin2  ,latitude ,longitude)
-results <- left_join(results, claves_mun) 
+results <- left_join(results, claves_mun)
 results <- left_join(results, numero_municipios[,c('admin1','id')])
-results <- results[,sort(names(results))] 
+results <- results[,sort(names(results))]
 
 ids <- c("admin1","admin2" , "cvegeo", "latitude" ,  "longitude", 'id'  )
 vars <- setdiff(names(results), ids)
@@ -85,14 +94,14 @@ head(datos)
 
 head(cat)
 
-vars_violencias <- cat[grep(cat$descripcion_variable, 
+vars_violencias <- cat[grep(cat$descripcion_variable,
                       pattern = 'violencia|homicidios|delitos'),'nombre_variable_modelo']
 write.csv(vars_violencias, 'variables_agregacion.csv')
 
 vars_violencia <- names(datos) %in% vars_violencias$nombre_variable_modelo
 vars_violencia[1]  <- T
 
-datos_violencia <- datos[,c(vars_violencia)] 
+datos_violencia <- datos[,c(vars_violencia)]
 datos_violencia[,'inegi_cpv_pob1' ] <- datos[,'inegi_cpv_pob1']
 
 
@@ -127,17 +136,18 @@ respuesta_plot <- left_join(respuesta, claves_mun)
 respuesta_plot_todas <- left_join(respuesta_plot, dep)
 
 respuesta_edo <- respuesta_plot_todas %>% group_by(admin1) %>%
-  dplyr::summarise(y= mean( todos_r , na.rm=T) , 
-                   y_homicidios= mean( homicidios_r , na.rm=T) , 
-                   y_robos= mean( robos_r , na.rm=T) 
+  dplyr::summarise(y= mean( todos_r , na.rm=T) ,
+                   y_homicidios= mean( homicidios_r , na.rm=T) ,
+                   y_robos= mean( robos_r , na.rm=T)
                    )
 
-respuesta_edo
+#respuesta_edo
 ####
 
 
 res_edos <- left_join(edo_df,respuesta_edo)
 
+<<<<<<< HEAD
 print(ggplot(data = res_edos , aes(long, lat, group = group)) + 
   geom_polygon(colour='black', 
                aes(fill= factor(cut2(y, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) ))  + coord_fixed() + p +
@@ -154,6 +164,24 @@ print(ggplot(data = res_edos , aes(long, lat, group = group)) +
                aes(fill= factor(cut2(y_robos, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) )) + coord_fixed() + p +
   ggtitle('Promedio estatal de robos por cien mil habitantes') + 
   labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd'))
+=======
+map_y_total_r <- ggplot(data = res_edos , aes(long, lat, group = group)) +
+  geom_polygon(colour='black',
+               aes(fill= factor(cut2(y, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) ))  + coord_fixed() + p +
+  ggtitle('Promedio estatal del \n agregado por cien mil habitantes') +
+  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd')
+
+map_homicidios_r <- ggplot(data = res_edos , aes(long, lat, group = group)) +
+  geom_polygon(colour='black',
+               aes(fill= factor(cut2(y_homicidios, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) ))  + coord_fixed() + p + ggtitle('Promedio estatal de homicidios \n por cien mil habitantes') +
+  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd')
+
+map_robos_r <- ggplot(data = res_edos , aes(long, lat, group = group)) +
+  geom_polygon(colour='black',
+               aes(fill= factor(cut2(y_robos, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) )) + coord_fixed() + p +
+  ggtitle('Promedio estatal de robos \n por cien mil habitantes') +
+  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd')
+>>>>>>> e23bc67238be460bc2f93421043270a64a5aafab
 
 ###### Modelado
 vars <- setdiff(names(results),c('id','admin2','longitude','latitude'))
@@ -167,33 +195,38 @@ unique(dat_mod$kmeans_ambientes_familiares_deteriorados_problematicos)
 
 dat_mod <- as.data.frame(dat_mod )
 
-for(k in grep(names(dat_mod),pattern='kmeans') ){ 
-  lev <-  unique(dat_mod[,k] , na.rm=T) 
+for(k in grep(names(dat_mod),pattern='kmeans') ){
+  lev <-  unique(dat_mod[,k] , na.rm=T)
   lev <- lev[!is.na(lev)]
   lev <- paste0('clase',lev)
   dat_mod[,k]  <- factor(as.character(dat_mod[,k] ),
                          labels = lev)
-} 
+}
 
 summary(dat_mod)
 l_ply( vars[11:length(vars)],function(var){
   print(var)
   p <- ggplot(dat_mod, aes_string(x=var , y='y'))+geom_point() +
      geom_smooth(method = "lm", size = 1.5, colour='#8B0000') + theme_bw()
-  print(p)
+  #print(p)
+  ggsave(paste0('img/y_indep',match(var,vars),'.png'),p,width=width, height=height)
 })
 
-p <- ggplot(dat_mod, aes_string( x='y'))+geom_density( colour="#8B0000",fill= "#8B0000") +theme_bw()
-print(p)
+y_density <- ggplot(dat_mod, aes_string( x='y'))+geom_density( colour="#8B0000",fill= "#8B0000") +theme_bw()
+#print(p)
 
-p <- ggplot(dat_mod, aes( x=y+1))+geom_density( colour="#8B0000",fill= "#8B0000") +theme_bw() + scale_x_log10() + xlab('y+1 | log')
-print(p)
+ggsave('img/y_density.png', y_density,width=width, height=height)
+
+y_log_density <- ggplot(dat_mod, aes( x=y+1))+geom_density( colour="#8B0000",fill= "#8B0000") +theme_bw() + scale_x_log10() + xlab('y+1 | log')
+#print(p)
+ggsave('img/y_log_density.png', y_density,width=width, height=height)
 
 l_ply( vars[11:length(vars)],function(var){
   print(var)
   p <- ggplot(dat_mod, aes_string( x=var))+
     geom_density( colour="#8B0000",fill= "#8B0000") +theme_bw()
-  print(p)
+  #print(p)
+  ggsave(paste0('img/x_density',match(var,vars),'.png'),p,width=width, height=height)
 })
 
 ####modelos
@@ -218,10 +251,10 @@ summary(mod_poiss_log <- glm( log(y+1) ~. - admin1-cvegeo ,dat_mod[, -grep(names
 summary(mod_q_poiss_log <- glm( log(y+1) ~. - admin1-cvegeo ,dat_mod[, -grep(names(dat_mod),pattern = 'kme')], family='quasipoisson'))
 
 dat_mod_zero <- dat_mod
-dat_mod_zero$y <- as.integer(floor(dat_mod_zero$y)) 
+dat_mod_zero$y <- as.integer(floor(dat_mod_zero$y))
 min(dat_mod_zero$y)
 mod_zero <- zeroinfl(
-  y ~. - admin1-cvegeo , 
+  y ~. - admin1-cvegeo ,
   data=dat_mod_zero[, -grep(names(dat_mod),pattern = 'kme')] , dist = "poisson"
   )
 summary(mod_zero)
@@ -237,7 +270,7 @@ names(modelos) <- c('mod','mod_log',
 
 (comp_mods <- ldply(modelos, function(m){
   mm <- get(names(modelos)[m] )
-  data.frame(AIC=AIC(mm), Dev=deviance(mm), BIC=BIC(mm)) 
+  data.frame(AIC=AIC(mm), Dev=deviance(mm), BIC=BIC(mm))
 }))
 
 
@@ -253,6 +286,20 @@ print(plot( mod_q_poiss ))
 
 ####Seleccion de variables
 
+<<<<<<< HEAD
+=======
+names(dat_mod)
+- PC2_pca_ambientes_familiares_deteriorados_problematicos
+- PC2_pca_marginacion_exclusion_social
+- PC1_pca_falta_oportunidades_laborales_informalidad_desocupacion
+- PC1_pca_espacios_publicos_insuficiente_deteriorado
+- PC1_pca_embarazp_temprano
+- PC1_pca_consumo_abuso_drogas_ilegales
+
+predict(Ajuste1, type = "response")
+
+
+>>>>>>> e23bc67238be460bc2f93421043270a64a5aafab
 bosq <- randomForest(y ~. - admin1-cvegeo ,na.omit(dat_mod[, -grep(names(dat_mod),pattern = 'kme')]), importance=T)
 print(bosq)
 
