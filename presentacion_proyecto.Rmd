@@ -95,6 +95,9 @@ factores <- list(embarazo_temprano = "Embarazo temprano",
 - A los registros administrativos censales se les imputo ceros
 - Se ajustaron las variables por densidad poblacional
 
+## Correcciones  {.flexbox .vcenter}
+![ ](img/municipios_incluidos.png)
+
     
 # Estadística Descriptiva Inicial
 
@@ -206,7 +209,6 @@ for (f in names(factores)){
 
 ## Factores de riesgo {.flexbox .vcenter}
 ![ ](img/x_density26.png)
-
 
 
 
