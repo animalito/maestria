@@ -9,6 +9,7 @@ library(Hmisc)
 library(RColorBrewer)
 library(randomForest)
 library(pscl)
+
 # Leemos los datos mas recientes
 
 rm(list=ls())
@@ -64,9 +65,9 @@ p <- theme(axis.line=element_blank(),
            panel.grid.minor=element_blank(),
            plot.background=element_blank())
 
-ggplot(data = edo_df, aes(long, lat, group = group)) + 
+print(ggplot(data = edo_df, aes(long, lat, group = group)) + 
   geom_polygon(colour='black', aes(fill=num_mun)) + coord_fixed() + p +
-  ggtitle('Número de municipios urbanos') + labs(fill='Número') 
+  ggtitle('Número de municipios urbanos') + labs(fill='Número') )
 
 ##############
 
@@ -137,22 +138,22 @@ respuesta_edo
 
 res_edos <- left_join(edo_df,respuesta_edo)
 
-ggplot(data = res_edos , aes(long, lat, group = group)) + 
+print(ggplot(data = res_edos , aes(long, lat, group = group)) + 
   geom_polygon(colour='black', 
                aes(fill= factor(cut2(y, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) ))  + coord_fixed() + p +
   ggtitle('Promedio estatal del agregado por cien mil habitantes') + 
-  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd')
+  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd'))
 
-ggplot(data = res_edos , aes(long, lat, group = group)) + 
+print(ggplot(data = res_edos , aes(long, lat, group = group)) + 
   geom_polygon(colour='black', 
                aes(fill= factor(cut2(y_homicidios, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) ))  + coord_fixed() + p + ggtitle('Promedio estatal de homicidios por cien mil habitantes') + 
-  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd')
+  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd'))
 
-ggplot(data = res_edos , aes(long, lat, group = group)) + 
+print(ggplot(data = res_edos , aes(long, lat, group = group)) + 
   geom_polygon(colour='black', 
                aes(fill= factor(cut2(y_robos, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) )) + coord_fixed() + p +
   ggtitle('Promedio estatal de robos por cien mil habitantes') + 
-  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd')
+  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd'))
 
 ###### Modelado
 vars <- setdiff(names(results),c('id','admin2','longitude','latitude'))
@@ -206,7 +207,12 @@ summary(
                  family='gaussian')
   )
 
-summary(mod_poiss <- glm( y ~. - admin1-cvegeo ,dat_mod[, -grep(names(dat_mod),pattern = 'kme')], family='poisson'))
+summary(mod_poiss <-
+          glm( y ~. - admin1-cvegeo ,
+               dat_mod[, -grep(names(dat_mod),pattern = 'kme')],
+               family='poisson') 
+        )
+
 summary(mod_q_poiss <- glm( y ~. - admin1-cvegeo ,dat_mod[, -grep(names(dat_mod),pattern = 'kme')], family='quasipoisson'))
 summary(mod_poiss_log <- glm( log(y+1) ~. - admin1-cvegeo ,dat_mod[, -grep(names(dat_mod),pattern = 'kme')], family='poisson'))
 summary(mod_q_poiss_log <- glm( log(y+1) ~. - admin1-cvegeo ,dat_mod[, -grep(names(dat_mod),pattern = 'kme')], family='quasipoisson'))
@@ -235,42 +241,111 @@ names(modelos) <- c('mod','mod_log',
 }))
 
 
-plot(mod)
+print(plot( mod_log ))
 
-plot( mod_log )
+print(plot( mod_poiss ))
 
-plot( mod_poiss )
+print(plot( mod_q_poiss ))
 
-plot( mod_poiss_log )
+#en nigun log se cumplen los supuestos
+#en los dos Poiss se portan bien en AIC y cumplen razonablemente
 
-plot( mod_q_poiss )
-
-plot( mod_q_poiss_log )
 
 ####Seleccion de variables
-
-names(dat_mod)
-- PC2_pca_ambientes_familiares_deteriorados_problematicos
-- PC2_pca_marginacion_exclusion_social                            
-- PC1_pca_falta_oportunidades_laborales_informalidad_desocupacion  
-- PC1_pca_espacios_publicos_insuficiente_deteriorado  
-- PC1_pca_embarazp_temprano       
-- PC1_pca_consumo_abuso_drogas_ilegales
-
-predict(Ajuste1, type = "response")
-
 
 bosq <- randomForest(y ~. - admin1-cvegeo ,na.omit(dat_mod[, -grep(names(dat_mod),pattern = 'kme')]), importance=T)
 print(bosq)
 
 varImpPlot(bosq,type = 1)
 
+imp <- data.frame(bosq$importance)
+imp$var <- rownames(imp) 
+imp <- imp%>%dplyr::arrange( IncNodePurity)
+head(imp,7)$var
+
+
+varImpPlot(bosq,type = 2)
+
+
+mod_upd <- 
+  glm( y ~. - admin1-cvegeo  - 
+         PC1_pca_desercion_escolar -
+         PC2_pca_espacios_publicos_insuficiente_deteriorado -
+         PC2_pca_consumo_abuso_drogas_ilegales -
+         PC1_pca_espacios_publicos_insuficiente_deteriorado -
+         PC1_pca_embarazo_temprano -
+         PC1_pca_consumo_abuso_drogas_ilegales -
+         PC2_pca_embarazo_temprano,
+       dat_mod[, -grep(names(dat_mod),pattern = 'kme')],
+       family='gaussian') 
+deviance(mod) < deviance(mod_upd)
+deviance(mod) 
+deviance(mod_upd)
+
+summary(mod_upd)
 
 
 
+mod_poiss_upd <- 
+  glm( y ~. - admin1-cvegeo  - 
+         PC1_pca_desercion_escolar -
+         PC2_pca_espacios_publicos_insuficiente_deteriorado -
+         PC2_pca_consumo_abuso_drogas_ilegales -
+         PC1_pca_espacios_publicos_insuficiente_deteriorado -
+         PC1_pca_embarazo_temprano -
+         PC1_pca_consumo_abuso_drogas_ilegales -
+         PC2_pca_embarazo_temprano,
+       dat_mod[, -grep(names(dat_mod),pattern = 'kme')],
+       family='poisson') 
+
+deviance(mod_poiss) < deviance(mod_poiss_upd)
+deviance(mod_poiss) 
+deviance(mod_poiss_upd)
+plot(mod_poiss_upd)
+
+summary(mod_poiss_upd)
+
+mod_q_poiss_upd <- 
+  glm( y ~. - admin1-cvegeo  - 
+         PC1_pca_desercion_escolar -
+         PC2_pca_espacios_publicos_insuficiente_deteriorado -
+         PC2_pca_consumo_abuso_drogas_ilegales -
+         PC1_pca_espacios_publicos_insuficiente_deteriorado -
+         PC1_pca_embarazo_temprano -
+         PC1_pca_consumo_abuso_drogas_ilegales -
+         PC2_pca_embarazo_temprano,
+       dat_mod[, -grep(names(dat_mod),pattern = 'kme')],
+       family='quasipoisson') 
+
+deviance(mod_q_poiss) < deviance(mod_q_poiss_upd)
+deviance(mod_q_poiss) 
+deviance(mod_q_poiss_upd)
+
+plot(mod_poiss_upd)
+
+deviance(mod_q_poiss_upd)
+deviance(mod_poiss_upd)
 
 
 
+##Finalmente
+
+modelos <-1:6
+names(modelos) <- c('mod','mod_upd',
+                    'mod_poiss','mod_poiss_upd',
+                    'mod_q_poiss','mod_q_poiss_upd'
+                    )
+(comp_mods <- ldply(modelos, function(m){
+  mm <- get(names(modelos)[m] )
+  data.frame(AIC=AIC(mm), Dev=deviance(mm), BIC=BIC(mm)) 
+}))
+
+summary(mod_poiss_upd)
+qplot( predict(mod_poiss_upd),mod_poiss_upd$y)
+qplot( predict(mod_poiss),mod_poiss$y)
+
+qplot( predict(mod_upd),mod_upd$y) + geom_abline(slope=1) 
+qplot( predict(mod),mod$y)
 
 
 
