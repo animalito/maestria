@@ -68,15 +68,11 @@ p <- theme(axis.line=element_blank(),
            panel.grid.minor=element_blank(),
            plot.background=element_blank())
 
-<<<<<<< HEAD
-print(ggplot(data = edo_df, aes(long, lat, group = group)) + 
-  geom_polygon(colour='black', aes(fill=num_mun)) + coord_fixed() + p +
-  ggtitle('Número de municipios urbanos') + labs(fill='Número') )
-=======
+
 municipios_urbanos <- ggplot(data = edo_df, aes(long, lat, group = group)) +
   geom_polygon(colour='black', aes(fill=num_mun)) + coord_fixed() + p +
   ggtitle('Número de municipios urbanos') + labs(fill='Número')
->>>>>>> e23bc67238be460bc2f93421043270a64a5aafab
+
 
 ##############
 
@@ -147,24 +143,7 @@ respuesta_edo <- respuesta_plot_todas %>% group_by(admin1) %>%
 
 res_edos <- left_join(edo_df,respuesta_edo)
 
-<<<<<<< HEAD
-print(ggplot(data = res_edos , aes(long, lat, group = group)) + 
-  geom_polygon(colour='black', 
-               aes(fill= factor(cut2(y, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) ))  + coord_fixed() + p +
-  ggtitle('Promedio estatal del agregado por cien mil habitantes') + 
-  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd'))
 
-print(ggplot(data = res_edos , aes(long, lat, group = group)) + 
-  geom_polygon(colour='black', 
-               aes(fill= factor(cut2(y_homicidios, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) ))  + coord_fixed() + p + ggtitle('Promedio estatal de homicidios por cien mil habitantes') + 
-  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd'))
-
-print(ggplot(data = res_edos , aes(long, lat, group = group)) + 
-  geom_polygon(colour='black', 
-               aes(fill= factor(cut2(y_robos, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) )) + coord_fixed() + p +
-  ggtitle('Promedio estatal de robos por cien mil habitantes') + 
-  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd'))
-=======
 map_y_total_r <- ggplot(data = res_edos , aes(long, lat, group = group)) +
   geom_polygon(colour='black',
                aes(fill= factor(cut2(y, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) ))  + coord_fixed() + p +
@@ -181,7 +160,7 @@ map_robos_r <- ggplot(data = res_edos , aes(long, lat, group = group)) +
                aes(fill= factor(cut2(y_robos, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) )) + coord_fixed() + p +
   ggtitle('Promedio estatal de robos \n por cien mil habitantes') +
   labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd')
->>>>>>> e23bc67238be460bc2f93421043270a64a5aafab
+
 
 ###### Modelado
 vars <- setdiff(names(results),c('id','admin2','longitude','latitude'))
@@ -286,8 +265,7 @@ print(plot( mod_q_poiss ))
 
 ####Seleccion de variables
 
-<<<<<<< HEAD
-=======
+
 names(dat_mod)
 - PC2_pca_ambientes_familiares_deteriorados_problematicos
 - PC2_pca_marginacion_exclusion_social
@@ -299,7 +277,7 @@ names(dat_mod)
 predict(Ajuste1, type = "response")
 
 
->>>>>>> e23bc67238be460bc2f93421043270a64a5aafab
+
 bosq <- randomForest(y ~. - admin1-cvegeo ,na.omit(dat_mod[, -grep(names(dat_mod),pattern = 'kme')]), importance=T)
 print(bosq)
 
