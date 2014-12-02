@@ -2,7 +2,7 @@
 title: "Proyecto final GLM"
 author: "Andrea Fernandez,  Andrea García y Carlos Petricoli"
 date: "01/11/2014"
-output: html_document
+output: pdf_document
 ---
 
 ```{r, warning=FALSE, echo=FALSE, message=FALSE, error=FALSE}
@@ -10,6 +10,8 @@ library (knitr)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
+library(apsrtable)
+library(xtable)
 
 # Multiple plot function
 #
@@ -197,7 +199,11 @@ source('load.r')
 multiplot(map_homicidios_r,map_robos_r,map_y_total_r)
 ```
 
-Presentamos la densidad de $y$ y de $log(y)$
+Presentamos la densidad de $y$ y de $log(y)$.
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+source('load.r')
+multiplot(y_density,y_log_density, cols=2)
+```
 
 ### Delitos y covariables
 
@@ -213,6 +219,18 @@ multiplot(y_indep[[1]],y_indep[[2]],y_indep[[3]],y_indep[[4]],
 
 Con estos gráficos podemos notar que la primer componente de ambientes familiares deteriorados parece estar muy relacionada con la variable de delitos. Observamos un buen comportamiento también de la primera y la segunda componente de oportunidades laborales.
 
+## Estadistica descriptiva de las covariables
+
+Presentamos los histogramas de las covariables.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+source('load.r')
+multiplot(x_density[[1]],x_density[[2]],x_density[[3]],x_density[[4]],
+          x_density[[5]],x_density[[6]],x_density[[7]],x_density[[8]],
+          x_density[[9]],x_density[[10]],x_density[[11]],x_density[[12]],
+          x_density[[13]],x_density[[14]],x_density[[15]],x_density[[16]], cols=4)
+```
+
 #Modelo 
 
 Siguiendo las recomendaciones del Dr. Vilalta se decidió utilizar tres variables dependientes 
@@ -225,8 +243,15 @@ Para las covariables se eligieron los componentes principales 1 y 2 para los 8 g
 
 
 #Resultados 
-
-
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+#print(apsrtable(mod, mod_log, mod_poiss, mod_q_poiss, mod_poiss_log, mod_q_poiss_log), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_log)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_poiss)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_q_poiss)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_poiss_log)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_q_poiss_log)), comment=F, include.rownames=F, size="small")
+```
 
 #Conclusiones 
 

@@ -202,35 +202,35 @@ y_log_density <- ggplot(dat_mod, aes( x=y+1))+geom_density( colour="#8B0000",fil
 #print(p)
 ggsave('img/y_log_density.png', y_density,width=10, height=6)
 
-par(mfrow=c(2,2))
-l_ply( vars[11:length(vars)],function(var){
+
+x_density <- llply( vars[11:length(vars)],function(var){
   print(var)
   p <- ggplot(dat_mod, aes_string( x=var))+
     geom_density( colour="#8B0000",fill= "#8B0000") +theme_bw()
-  #print(p)
+  p#print(p)
   #ggsave(paste0('img/x_density',match(var,vars),'.png'),p,width=10, height=6)
 })
+
+
 
 ####modelos
 
 
-summary(mod <- glm(y ~. - admin1-cvegeo ,dat_mod[, -grep(names(dat_mod),pattern = 'kme')], family='gaussian'))
+mod <- glm(y ~. - admin1-cvegeo ,dat_mod[, -grep(names(dat_mod),pattern = 'kme')], family='gaussian')
 
-summary(
-  mod_log <- glm(log(1+y) ~. - admin1-cvegeo ,
+
+mod_log <- glm(log(1+y) ~. - admin1-cvegeo ,
                  dat_mod[, -grep(names(dat_mod),pattern = 'kme')],
                  family='gaussian')
-  )
 
-summary(mod_poiss <-
+mod_poiss <-
           glm( y ~. - admin1-cvegeo ,
                dat_mod[, -grep(names(dat_mod),pattern = 'kme')],
                family='poisson')
-        )
 
-summary(mod_q_poiss <- glm( y ~. - admin1-cvegeo ,dat_mod[, -grep(names(dat_mod),pattern = 'kme')], family='quasipoisson'))
-summary(mod_poiss_log <- glm( log(y+1) ~. - admin1-cvegeo ,dat_mod[, -grep(names(dat_mod),pattern = 'kme')], family='poisson'))
-summary(mod_q_poiss_log <- glm( log(y+1) ~. - admin1-cvegeo ,dat_mod[, -grep(names(dat_mod),pattern = 'kme')], family='quasipoisson'))
+mod_q_poiss <- glm( y ~. - admin1-cvegeo ,dat_mod[, -grep(names(dat_mod),pattern = 'kme')], family='quasipoisson')
+mod_poiss_log <- glm( log(y+1) ~. - admin1-cvegeo ,dat_mod[, -grep(names(dat_mod),pattern = 'kme')], family='poisson')
+mod_q_poiss_log <- glm( log(y+1) ~. - admin1-cvegeo ,dat_mod[, -grep(names(dat_mod),pattern = 'kme')], family='quasipoisson')
 
 dat_mod_zero <- dat_mod
 dat_mod_zero$y <- as.integer(floor(dat_mod_zero$y))
