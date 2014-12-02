@@ -1,0 +1,10 @@
+```{r, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE}
+map_cluster <- paste0('![](img/mapa_',f,'.png)')
+```
+
+## `r eval(factores[f])`
+
+`r eval(map_cluster)`
+
+
+
