@@ -374,4 +374,12 @@ qplot( predict(mod_upd),mod_upd$y) + geom_abline(slope=1)
 qplot( predict(mod),mod$y)
 
 
+print(xtable(summary(mod)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_log)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_poiss)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_q_poiss)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_poiss_log)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_q_poiss_log)), comment=F, include.rownames=F, size="small")
+
+
 

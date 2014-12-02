@@ -252,24 +252,14 @@ se quitaron as siguientes variables
          PC2_pca_embarazo_temprano,
 
 
-##Resultados
-```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
-#print(apsrtable(mod, mod_log, mod_poiss, mod_q_poiss, mod_poiss_log, mod_q_poiss_log), comment=F, include.rownames=F, size="small")
 
-print(xtable(summary(mod)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_log)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_poiss)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_q_poiss)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_poiss_log)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_q_poiss_log)), comment=F, include.rownames=F, size="small")
-```
 
-## Devianzas 
 
 ## Recomendaciones {.flexbox .vcenter}
 
 -El análisis muestra que existen diferentes clasificaciones por municipio donde se presentan los factores de riesgo y además se agrupan espacialmente. Por lo tanto la intervención para atacar estos factores debe ser diferenciada por municipio y por tipo de factor de riesgo. Por ejemplo, aquellos municipios donde el deterioro de los espacios públicos aparece como un factor de riesgo, deberán priorizar intervenciones para la mejora de espacios públicos.
 
-## Gasto {.flexbox .vcenter}
 
+## Gasto {.flexbox .vcenter}
+![ ](img/gasto.png)
 
