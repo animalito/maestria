@@ -119,7 +119,9 @@ Nota:  de cada fuente de información se tomo el último año  con el que se con
 
 #Análisis Exploratorio de Datos 
 
-Para poder definir los factores de riesgo se agruparon las variables en 8 grupos y se realizó un Análisis de Componentes Principales (PCA) para poder determinar las proxy s para cada grupo de factor de riesgo.  Se tomaron las componentes 1 y 2 de cada grupo. 
+## Estimación de las variables independientes
+
+Para poder definir los factores de riesgo se agruparon las variables en 8 grupos y se realizó un Análisis de Componentes Principales (PCA) para poder determinar las proxys para cada grupo de factor de riesgo.  Se tomaron las componentes 1 y 2 de cada grupo. 
 
 A continuación se describen las variables por grupo 
 
@@ -133,6 +135,10 @@ for (f in names(factores)){
 ```
 
 `r paste(out, collapse='\n')`
+
+## Estadística descriptiva de las variables a modelar
+
+### Delitos
 
 
 #Modelo 
