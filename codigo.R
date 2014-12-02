@@ -252,9 +252,11 @@ names(modelos) <- c('mod','mod_log',
 
 (comp_mods <- ldply(modelos, function(m){
   mm <- get(names(modelos)[m] )
+  save(mm, file = paste0(names(modelos)[m]))
   data.frame(AIC=AIC(mm), Dev=deviance(mm), BIC=BIC(mm))
 }))
-
+library(xtable)
+xtable(comp_mods)
 par(mfrow=c(2,2))
 print(plot( mod_log ))
 
@@ -374,4 +376,20 @@ qplot( predict(mod_upd),mod_upd$y) + geom_abline(slope=1)
 qplot( predict(mod),mod$y)
 
 
+<<<<<<< HEAD
+library(xtable)
+
+=======
+>>>>>>> 4d4393a3b9d0394084b08ce60960958fbc14e837
+print(xtable(summary(mod)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_log)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_poiss)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_q_poiss)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_poiss_log)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_q_poiss_log)), comment=F, include.rownames=F, size="small")
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 4d4393a3b9d0394084b08ce60960958fbc14e837
 

@@ -241,6 +241,67 @@ glm familia quasi-poisson
 glm familia quasi- poisson
 
 
+## Modelo Gaussiano, tasa de delito por cien mil habitantes {.flexbox .vcenter}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+library(xtable)
+load('mod')
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+```
+
+
+## Modelo Gaussiano, logaritmo de tasa de delito por cien mil habitantes {.flexbox .vcenter}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+load('mod_log')
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+```
+
+
+
+## Modelo Poisson, tasa de delito por cien mil habitantes {.flexbox .vcenter}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+load('mod_poiss')
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+```
+
+
+
+## Modelo Poisson, logaritmo de tasa de delito por cien mil habitantes {.flexbox .vcenter}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+load('mod_poiss_log')
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+```
+
+
+
+## Modelo Quasipoisson, tasa de delito por cien mil habitantes {.flexbox .vcenter}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+load('mod_q_poiss')
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+```
+
+
+
+## Modelo Quasipoisson, logaritmo de tasa de delito por cien mil habitantes {.flexbox .vcenter}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+load('mod_q_poiss_log')
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+```
+
+## Comparación de Modelos {.flexbox .vcenter}
+$$ \begin{tabular}{rlrrr}
+  \hline
+ & .id & AIC & Dev & BIC \\ 
+  \hline
+1 & mod & 7695.79 & 193136137.25 & 7771.18 \\ 
+  2 & mod\_log & 1932.16 & 1399.60 & 2007.55 \\ 
+  3 & mod\_poiss & Inf & 196419.01 & Inf \\ 
+  4 & mod\_q\_poiss &  & 196419.01 &  \\ 
+  5 & mod\_poiss\_log & Inf & 405.68 & Inf \\ 
+  6 & mod\_q\_poiss\_log &  & 405.68 &  \\ 
+   \hline
+\end{tabular} $$
+
+
 ## Selección de Variables {.flexbox .vcenter}
 se quitaron as siguientes variables 
         PC1_pca_desercion_escolar -
@@ -251,25 +312,25 @@ se quitaron as siguientes variables
          PC1_pca_consumo_abuso_drogas_ilegales -
          PC2_pca_embarazo_temprano,
 
+## Devianza {.flexbox .vcenter}
+![ ](img/devianza.png)
 
-##Resultados
-```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
-#print(apsrtable(mod, mod_log, mod_poiss, mod_q_poiss, mod_poiss_log, mod_q_poiss_log), comment=F, include.rownames=F, size="small")
+<<<<<<< HEAD
+=======
 
-print(xtable(summary(mod)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_log)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_poiss)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_q_poiss)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_poiss_log)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_q_poiss_log)), comment=F, include.rownames=F, size="small")
-```
+## Conclusiones {.flexbox .vcenter}
+El modelo poisson con la variable sin transformar obtiene peor devianza que el modelo gaussiano con la
+variable y transformada. Sin embargo, los supuestos del modelo se sostienen mejor en el modelo Poisson.
+Tanto el modelo poisson como el quasipoisson son iguales en devianza y los supuestos se cumplen de
+manera aceptable.
+>>>>>>> 4d4393a3b9d0394084b08ce60960958fbc14e837
 
-## Devianzas 
 
 ## Recomendaciones {.flexbox .vcenter}
 
 -El análisis muestra que existen diferentes clasificaciones por municipio donde se presentan los factores de riesgo y además se agrupan espacialmente. Por lo tanto la intervención para atacar estos factores debe ser diferenciada por municipio y por tipo de factor de riesgo. Por ejemplo, aquellos municipios donde el deterioro de los espacios públicos aparece como un factor de riesgo, deberán priorizar intervenciones para la mejora de espacios públicos.
 
-## Gasto {.flexbox .vcenter}
 
+## Gasto {.flexbox .vcenter}
+![ ](img/gasto.png)
 

@@ -293,8 +293,6 @@ print(xtable(summary(mod_q_poiss_log)), comment=F, include.rownames=F, size="sma
 
 $\pagebreak$
 
-### Tabla de devianzas, aic, bic
-
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
 bic <- c(BIC(mod), BIC(mod_log), BIC(mod_poiss), BIC(mod_q_poiss), BIC(mod_poiss_log), BIC(mod_q_poiss_log))
 aic  <- c(AIC(mod), AIC(mod_log), AIC(mod_poiss), AIC(mod_q_poiss), AIC(mod_poiss_log), AIC(mod_q_poiss_log))
@@ -305,36 +303,6 @@ tablita<- as.data.frame(rbind(bic, aic, devianza))
 names(tablita) <- c('mod', 'mod_log', 'mod_poiss', 'mod_q_poiss', 'mod_poiss_log', 'mod_q_poiss_log')
 print(xtable(tablita), comment=F)
 ```
-
-## Analisis de supuestos
-
-Por su devianza, los modelos que tenemos compitiendo son el gaussiano con transformación logarítmica, el poisson y el quasipoisson.
-
-Presentamos los gráficos de el modelo gaussiano logarítmico.
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
-par(mfrow=c(2,2))
-print(plot( mod_log ))
-par(mfrow=c(1,1))
-```
-
-Presentamos los gráficos de el modelo poisson.
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
-par(mfrow=c(2,2))
-print(plot( mod_poiss ))
-par(mfrow=c(1,1))
-```
-
-Presentamos los gráficos de el modelo quasipoisson.
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
-par(mfrow=c(2,2))
-print(plot( mod_q_poiss ))
-par(mfrow=c(1,1))
-```
-
-Los modelos con la transformación logarítmica en general no cumplieron adecuadamente con los supuestos del modelo. Al final, los 2 modelos que tenemos compitiendo por esta razón es el modelo poisson y el quasipoisson.
 
 #Conclusiones 
 
