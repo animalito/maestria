@@ -1,7 +1,7 @@
 library(knitr)
 library(dplyr)
 library(plyr)
-library(rMaps)
+#library(rMaps)
 library(maptools)
 library(rgdal)
 library(ggplot2)
@@ -188,24 +188,24 @@ l_ply( vars[11:length(vars)],function(var){
   p <- ggplot(dat_mod, aes_string(x=var , y='y'))+geom_point() +
      geom_smooth(method = "lm", size = 1.5, colour='#8B0000') + theme_bw()
   #print(p)
-  ggsave(paste0('img/y_indep',match(var,vars),'.png'),p,width=width, height=height)
+  ggsave(paste0('img/y_indep',match(var,vars),'.png'),p,width=10, height=6)
 })
 
 y_density <- ggplot(dat_mod, aes_string( x='y'))+geom_density( colour="#8B0000",fill= "#8B0000") +theme_bw()
 #print(p)
 
-ggsave('img/y_density.png', y_density,width=width, height=height)
+ggsave('img/y_density.png', y_density,width=10, height=6)
 
 y_log_density <- ggplot(dat_mod, aes( x=y+1))+geom_density( colour="#8B0000",fill= "#8B0000") +theme_bw() + scale_x_log10() + xlab('y+1 | log')
 #print(p)
-ggsave('img/y_log_density.png', y_density,width=width, height=height)
+ggsave('img/y_log_density.png', y_density,width=10, height=6)
 
 l_ply( vars[11:length(vars)],function(var){
   print(var)
   p <- ggplot(dat_mod, aes_string( x=var))+
     geom_density( colour="#8B0000",fill= "#8B0000") +theme_bw()
   #print(p)
-  ggsave(paste0('img/x_density',match(var,vars),'.png'),p,width=width, height=height)
+  ggsave(paste0('img/x_density',match(var,vars),'.png'),p,width=10, height=6)
 })
 
 ####modelos
@@ -222,7 +222,7 @@ summary(
 summary(mod_poiss <-
           glm( y ~. - admin1-cvegeo ,
                dat_mod[, -grep(names(dat_mod),pattern = 'kme')],
-               family='poisson') 
+               family='poisson')
         )
 
 summary(mod_q_poiss <- glm( y ~. - admin1-cvegeo ,dat_mod[, -grep(names(dat_mod),pattern = 'kme')], family='quasipoisson'))
@@ -252,13 +252,13 @@ names(modelos) <- c('mod','mod_log',
   data.frame(AIC=AIC(mm), Dev=deviance(mm), BIC=BIC(mm))
 }))
 
-
+par(mfrow=c(2,2))
 print(plot( mod_log ))
 
 print(plot( mod_poiss ))
 
 print(plot( mod_q_poiss ))
-
+par(mfrow=c(1,1))
 #en nigun log se cumplen los supuestos
 #en los dos Poiss se portan bien en AIC y cumplen razonablemente
 
@@ -266,15 +266,13 @@ print(plot( mod_q_poiss ))
 ####Seleccion de variables
 
 
-names(dat_mod)
-- PC2_pca_ambientes_familiares_deteriorados_problematicos
-- PC2_pca_marginacion_exclusion_social
-- PC1_pca_falta_oportunidades_laborales_informalidad_desocupacion
-- PC1_pca_espacios_publicos_insuficiente_deteriorado
-- PC1_pca_embarazp_temprano
-- PC1_pca_consumo_abuso_drogas_ilegales
-
-predict(Ajuste1, type = "response")
+# names(dat_mod)
+# - PC2_pca_ambientes_familiares_deteriorados_problematicos
+# - PC2_pca_marginacion_exclusion_social
+# - PC1_pca_falta_oportunidades_laborales_informalidad_desocupacion
+# - PC1_pca_espacios_publicos_insuficiente_deteriorado
+# - PC1_pca_embarazp_temprano
+# - PC1_pca_consumo_abuso_drogas_ilegales
 
 
 
@@ -284,7 +282,7 @@ print(bosq)
 varImpPlot(bosq,type = 1)
 
 imp <- data.frame(bosq$importance)
-imp$var <- rownames(imp) 
+imp$var <- rownames(imp)
 imp <- imp%>%dplyr::arrange( IncNodePurity)
 head(imp,7)$var
 
@@ -292,8 +290,8 @@ head(imp,7)$var
 varImpPlot(bosq,type = 2)
 
 
-mod_upd <- 
-  glm( y ~. - admin1-cvegeo  - 
+mod_upd <-
+  glm( y ~. - admin1-cvegeo  -
          PC1_pca_desercion_escolar -
          PC2_pca_espacios_publicos_insuficiente_deteriorado -
          PC2_pca_consumo_abuso_drogas_ilegales -
@@ -302,17 +300,17 @@ mod_upd <-
          PC1_pca_consumo_abuso_drogas_ilegales -
          PC2_pca_embarazo_temprano,
        dat_mod[, -grep(names(dat_mod),pattern = 'kme')],
-       family='gaussian') 
+       family='gaussian')
 deviance(mod) < deviance(mod_upd)
-deviance(mod) 
+deviance(mod)
 deviance(mod_upd)
 
 summary(mod_upd)
 
 
 
-mod_poiss_upd <- 
-  glm( y ~. - admin1-cvegeo  - 
+mod_poiss_upd <-
+  glm( y ~. - admin1-cvegeo  -
          PC1_pca_desercion_escolar -
          PC2_pca_espacios_publicos_insuficiente_deteriorado -
          PC2_pca_consumo_abuso_drogas_ilegales -
@@ -321,17 +319,17 @@ mod_poiss_upd <-
          PC1_pca_consumo_abuso_drogas_ilegales -
          PC2_pca_embarazo_temprano,
        dat_mod[, -grep(names(dat_mod),pattern = 'kme')],
-       family='poisson') 
+       family='poisson')
 
 deviance(mod_poiss) < deviance(mod_poiss_upd)
-deviance(mod_poiss) 
+deviance(mod_poiss)
 deviance(mod_poiss_upd)
 plot(mod_poiss_upd)
 
 summary(mod_poiss_upd)
 
-mod_q_poiss_upd <- 
-  glm( y ~. - admin1-cvegeo  - 
+mod_q_poiss_upd <-
+  glm( y ~. - admin1-cvegeo  -
          PC1_pca_desercion_escolar -
          PC2_pca_espacios_publicos_insuficiente_deteriorado -
          PC2_pca_consumo_abuso_drogas_ilegales -
@@ -340,10 +338,10 @@ mod_q_poiss_upd <-
          PC1_pca_consumo_abuso_drogas_ilegales -
          PC2_pca_embarazo_temprano,
        dat_mod[, -grep(names(dat_mod),pattern = 'kme')],
-       family='quasipoisson') 
+       family='quasipoisson')
 
 deviance(mod_q_poiss) < deviance(mod_q_poiss_upd)
-deviance(mod_q_poiss) 
+deviance(mod_q_poiss)
 deviance(mod_q_poiss_upd)
 
 plot(mod_poiss_upd)
@@ -362,14 +360,14 @@ names(modelos) <- c('mod','mod_upd',
                     )
 (comp_mods <- ldply(modelos, function(m){
   mm <- get(names(modelos)[m] )
-  data.frame(AIC=AIC(mm), Dev=deviance(mm), BIC=BIC(mm)) 
+  data.frame(AIC=AIC(mm), Dev=deviance(mm), BIC=BIC(mm))
 }))
 
 summary(mod_poiss_upd)
 qplot( predict(mod_poiss_upd),mod_poiss_upd$y)
 qplot( predict(mod_poiss),mod_poiss$y)
 
-qplot( predict(mod_upd),mod_upd$y) + geom_abline(slope=1) 
+qplot( predict(mod_upd),mod_upd$y) + geom_abline(slope=1)
 qplot( predict(mod),mod$y)
 
 

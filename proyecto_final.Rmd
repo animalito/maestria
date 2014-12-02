@@ -9,6 +9,9 @@ library (knitr)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
+source('src/utils.r')
+
+
 # Leemos los datos mas recientes
 cat <- read.csv('data/catalogo.csv')
 
@@ -23,7 +26,7 @@ factores <- list(embarazo_temprano = "Embarazo temprano",
                  desercion_escolar = "Deserción escolar",
                  consumo_abuso_drogas_ilegales = "Consumo y abuso de drogas legales e ilegales",
                  ambientes_familiares_deteriorados_problematicos = "Ambientes familiares deteriorados y problemáticos")
-
+source('codigo.R')
 ```
 
 
@@ -139,7 +142,11 @@ for (f in names(factores)){
 ## Estadística descriptiva de las variables a modelar
 
 ### Delitos
-
+```{r, echo=F, message=F, warning=F, error=FALSE}
+map_homicidios_r
+map_robos_r
+map_y_total_r
+```
 
 #Modelo 
 
