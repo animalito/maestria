@@ -149,19 +149,19 @@ res_edos <- left_join(edo_df,respuesta_edo)
 map_y_total_r <- ggplot(data = res_edos , aes(long, lat, group = group)) +
   geom_polygon(colour='black',
                aes(fill= factor(cut2(y, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) ))  + coord_fixed() + p +
-  ggtitle('Promedio estatal del \n agregado por cien mil habitantes') +
-  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd')
+  ggtitle('Total delito') +
+  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd') + theme(legend.position="none")
 
 map_homicidios_r <- ggplot(data = res_edos , aes(long, lat, group = group)) +
   geom_polygon(colour='black',
-               aes(fill= factor(cut2(y_homicidios, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) ))  + coord_fixed() + p + ggtitle('Promedio estatal de homicidios \n por cien mil habitantes') +
-  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd')
+               aes(fill= factor(cut2(y_homicidios, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) ))  + coord_fixed() + p + ggtitle('Homicidio') +
+  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd') + theme(legend.position="none")
 
 map_robos_r <- ggplot(data = res_edos , aes(long, lat, group = group)) +
   geom_polygon(colour='black',
                aes(fill= factor(cut2(y_robos, g=5), labels =                                      c('Muy bajo','Bajo','Medio','Alto', 'Muy alto')) )) + coord_fixed() + p +
-  ggtitle('Promedio estatal de robos \n por cien mil habitantes') +
-  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd')
+  ggtitle('Robo vehicular') +
+  labs(fill='') + scale_fill_brewer(  palette = 'YlOrRd') + theme(legend.position="none")
 
 
 ###### Modelado
@@ -189,7 +189,7 @@ for(k in grep(names(dat_mod),pattern='kmeans') ){
 y_indep <- llply( vars[11:length(vars)],function(var){
   #print(var)
   p <- ggplot(dat_mod, aes_string(x=var , y='y'))+geom_point() +
-     geom_smooth(method = "lm", size = 1.5, colour='#8B0000') + theme_bw()
+     geom_smooth(method = "lm", size = 1.5, colour='#8B0000') + theme_bw() + ylab("") + theme(text = element_text(size=4))
   p
   #ggsave(paste0('img/y_indep',match(var,vars),'.png'),p,width=10, height=6)
 })
@@ -208,7 +208,7 @@ ggsave('img/y_log_density.png', y_density,width=10, height=6)
 x_density <- llply( vars[11:length(vars)],function(var){
   print(var)
   p <- ggplot(dat_mod, aes_string( x=var))+
-    geom_density( colour="#8B0000",fill= "#8B0000") +theme_bw()
+    geom_density( colour="#8B0000",fill= "#8B0000") +theme_bw() + ylab("") + theme(text = element_text(size=4))
   p#print(p)
   #ggsave(paste0('img/x_density',match(var,vars),'.png'),p,width=10, height=6)
 })
@@ -241,7 +241,7 @@ mod_zero <- zeroinfl(
   y ~. - admin1-cvegeo ,
   data=dat_mod_zero[, -grep(names(dat_mod),pattern = 'kme')] , dist = "poisson"
   )
-summary(mod_zero)
+#summary(mod_zero)
 
 # Y aqui, para obtener a pie la devianza y comparemos...
 2*(logLik(mod_zero) - logLik(update(mod_zero, . ~ 1)))
@@ -259,13 +259,13 @@ names(modelos) <- c('mod','mod_log',
 }))
 library(xtable)
 xtable(comp_mods)
-par(mfrow=c(2,2))
-print(plot( mod_log ))
-
-print(plot( mod_poiss ))
-
-print(plot( mod_q_poiss ))
-par(mfrow=c(1,1))
+# par(mfrow=c(2,2))
+# print(plot( mod_log ))
+#
+# print(plot( mod_poiss ))
+#
+# print(plot( mod_q_poiss ))
+# par(mfrow=c(1,1))
 #en nigun log se cumplen los supuestos
 #en los dos Poiss se portan bien en AIC y cumplen razonablemente
 
@@ -284,17 +284,17 @@ par(mfrow=c(1,1))
 
 
 bosq <- randomForest(y ~. - admin1-cvegeo ,na.omit(dat_mod[, -grep(names(dat_mod),pattern = 'kme')]), importance=T)
-print(bosq)
+# print(bosq)
 
-varImpPlot(bosq,type = 1)
+# varImpPlot(bosq,type = 1)
 
 imp <- data.frame(bosq$importance)
 imp$var <- rownames(imp)
 imp <- imp%>%dplyr::arrange( IncNodePurity)
-head(imp,7)$var
+#head(imp,7)$var
 
 
-varImpPlot(bosq,type = 2)
+#varImpPlot(bosq,type = 2)
 
 
 mod_upd <-
@@ -308,11 +308,11 @@ mod_upd <-
          PC2_pca_embarazo_temprano,
        dat_mod[, -grep(names(dat_mod),pattern = 'kme')],
        family='gaussian')
-deviance(mod) < deviance(mod_upd)
-deviance(mod)
-deviance(mod_upd)
+# deviance(mod) < deviance(mod_upd)
+# deviance(mod)
+# deviance(mod_upd)
 
-summary(mod_upd)
+#summary(mod_upd)
 
 
 
@@ -328,12 +328,12 @@ mod_poiss_upd <-
        dat_mod[, -grep(names(dat_mod),pattern = 'kme')],
        family='poisson')
 
-deviance(mod_poiss) < deviance(mod_poiss_upd)
-deviance(mod_poiss)
-deviance(mod_poiss_upd)
-plot(mod_poiss_upd)
-
-summary(mod_poiss_upd)
+# deviance(mod_poiss) < deviance(mod_poiss_upd)
+# deviance(mod_poiss)
+# deviance(mod_poiss_upd)
+# plot(mod_poiss_upd)
+#
+# summary(mod_poiss_upd)
 
 mod_q_poiss_upd <-
   glm( y ~. - admin1-cvegeo  -
@@ -347,14 +347,14 @@ mod_q_poiss_upd <-
        dat_mod[, -grep(names(dat_mod),pattern = 'kme')],
        family='quasipoisson')
 
-deviance(mod_q_poiss) < deviance(mod_q_poiss_upd)
-deviance(mod_q_poiss)
-deviance(mod_q_poiss_upd)
-
-plot(mod_poiss_upd)
-
-deviance(mod_q_poiss_upd)
-deviance(mod_poiss_upd)
+# deviance(mod_q_poiss) < deviance(mod_q_poiss_upd)
+# deviance(mod_q_poiss)
+# deviance(mod_q_poiss_upd)
+#
+# plot(mod_poiss_upd)
+#
+# deviance(mod_q_poiss_upd)
+# deviance(mod_poiss_upd)
 
 
 
@@ -370,22 +370,22 @@ names(modelos) <- c('mod','mod_upd',
   data.frame(AIC=AIC(mm), Dev=deviance(mm), BIC=BIC(mm))
 }))
 
-summary(mod_poiss_upd)
-qplot( predict(mod_poiss_upd),mod_poiss_upd$y)
-qplot( predict(mod_poiss),mod_poiss$y)
-
-qplot( predict(mod_upd),mod_upd$y) + geom_abline(slope=1)
-qplot( predict(mod),mod$y)
+# summary(mod_poiss_upd)
+# qplot( predict(mod_poiss_upd),mod_poiss_upd$y)
+# qplot( predict(mod_poiss),mod_poiss$y)
+#
+# qplot( predict(mod_upd),mod_upd$y) + geom_abline(slope=1)
+# qplot( predict(mod),mod$y)
 
 
 
 library(xtable)
 
 
-print(xtable(summary(mod)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_log)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_poiss)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_q_poiss)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_poiss_log)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_q_poiss_log)), comment=F, include.rownames=F, size="small")
+# print(xtable(summary(mod)), comment=F, include.rownames=F, size="small")
+# print(xtable(summary(mod_log)), comment=F, include.rownames=F, size="small")
+# print(xtable(summary(mod_poiss)), comment=F, include.rownames=F, size="small")
+# print(xtable(summary(mod_q_poiss)), comment=F, include.rownames=F, size="small")
+# print(xtable(summary(mod_poiss_log)), comment=F, include.rownames=F, size="small")
+# print(xtable(summary(mod_q_poiss_log)), comment=F, include.rownames=F, size="small")
 

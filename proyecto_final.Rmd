@@ -5,7 +5,7 @@ date: "01/11/2014"
 output: pdf_document
 ---
 
-```{r, warning=FALSE, echo=FALSE, message=FALSE, error=FALSE}
+```{r, warning=FALSE, echo=FALSE, message=FALSE, error=FALSE, results='hide'}
 library (knitr)
 library(ggplot2)
 library(dplyr)
@@ -202,10 +202,11 @@ Primero, presentamos unos mapas de la variable a explicar.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
 source('load.r')
-multiplot(map_homicidios_r,map_robos_r,map_y_total_r)
+multiplot(map_homicidios_r,map_robos_r,map_y_total_r, cols=2)
 ```
 
 Presentamos la densidad de $y$ y de $log(y)$.
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
 source('load.r')
 multiplot(y_density,y_log_density, cols=2)
@@ -322,9 +323,6 @@ Tanto el modelo **poisson** como el **quasipoisson** son iguales en devianza y l
 El análisis muestra que existen diferentes clasificaciones por municipio donde se presentan los factores de riesgo y además se agrupan espacialmente. Por lo tanto la intervención para atacar estos factores debe ser diferenciada por municipio y por tipo de factor de riesgo. Por ejemplo, aquellos municipios donde el deterioro de los espacios públicos aparece como un factor de riesgo, deberán priorizar intervenciones para la mejora de espacios públicos.
 
  Analizando el gasto del programa destinado a atender los factores de riesgo nos hemos percatado que la mayoría del presupuesto se destina a obras de infraestructura pública (espacios públicos). Dado que este es un programa complementario con SEDATU y SEDESOL entre otras dependencias,  y que el factor de espacios públicos deteriorados es el factor que menos explica los delitos y violencia, es alarmante la proporción del gasto destinada para la atención de este factor. Son necesarios lineamientos claros y un mayor estudio  de los factores de riesgo para poder asignar el presupuesto eficientemente. 
-
-
-++++Meter tabla de gasto por factor de riesgo 
 
 
 #Referencias 
