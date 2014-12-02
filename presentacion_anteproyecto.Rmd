@@ -48,8 +48,8 @@ factores <- list(embarazo_temprano = "Embarazo temprano",
 - CONEVAL: Resago social (censo 2010).
 - INEGI: 
     + Censo
-    + ENDIREH
-    + ENVIPE (2013)
+    + Encuesta Nacional sobre la Dinaámica de las Relaciones de los Hogares (ENDIREH)
+    + Encuesta ENVIPE (2013)
     + DENUE
 - SEP 
     + Censo educativo (2013).
