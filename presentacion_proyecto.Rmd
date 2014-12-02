@@ -241,6 +241,67 @@ glm familia quasi-poisson
 glm familia quasi- poisson
 
 
+## Modelo Gaussiano, tasa de delito por cien mil habitantes {.flexbox .vcenter}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+library(xtable)
+load('mod')
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+```
+
+
+## Modelo Gaussiano, logaritmo de tasa de delito por cien mil habitantes {.flexbox .vcenter}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+load('mod_log')
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+```
+
+
+
+## Modelo Poisson, tasa de delito por cien mil habitantes {.flexbox .vcenter}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+load('mod_poiss')
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+```
+
+
+
+## Modelo Poisson, logaritmo de tasa de delito por cien mil habitantes {.flexbox .vcenter}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+load('mod_poiss_log')
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+```
+
+
+
+## Modelo Quasipoisson, tasa de delito por cien mil habitantes {.flexbox .vcenter}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+load('mod_q_poiss')
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+```
+
+
+
+## Modelo Quasipoisson, logaritmo de tasa de delito por cien mil habitantes {.flexbox .vcenter}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+load('mod_q_poiss_log')
+print(xtable(summary(mm)), comment=F, include.rownames=F, size="small")
+```
+
+## Comparación de Modelos {.flexbox .vcenter}
+$$ \begin{tabular}{rlrrr}
+  \hline
+ & .id & AIC & Dev & BIC \\ 
+  \hline
+1 & mod & 7695.79 & 193136137.25 & 7771.18 \\ 
+  2 & mod\_log & 1932.16 & 1399.60 & 2007.55 \\ 
+  3 & mod\_poiss & Inf & 196419.01 & Inf \\ 
+  4 & mod\_q\_poiss &  & 196419.01 &  \\ 
+  5 & mod\_poiss\_log & Inf & 405.68 & Inf \\ 
+  6 & mod\_q\_poiss\_log &  & 405.68 &  \\ 
+   \hline
+\end{tabular} $$
+
+
 ## Selección de Variables {.flexbox .vcenter}
 se quitaron as siguientes variables 
         PC1_pca_desercion_escolar -
@@ -252,19 +313,7 @@ se quitaron as siguientes variables
          PC2_pca_embarazo_temprano,
 
 
-##Resultados
-```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
-#print(apsrtable(mod, mod_log, mod_poiss, mod_q_poiss, mod_poiss_log, mod_q_poiss_log), comment=F, include.rownames=F, size="small")
 
-print(xtable(summary(mod)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_log)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_poiss)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_q_poiss)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_poiss_log)), comment=F, include.rownames=F, size="small")
-print(xtable(summary(mod_q_poiss_log)), comment=F, include.rownames=F, size="small")
-```
-
-## Devianzas 
 
 ## Recomendaciones {.flexbox .vcenter}
 
