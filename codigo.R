@@ -73,6 +73,8 @@ municipios_urbanos <- ggplot(data = edo_df, aes(long, lat, group = group)) +
   geom_polygon(colour='black', aes(fill=num_mun)) + coord_fixed() + p +
   ggtitle('Número de municipios urbanos') + labs(fill='Número')
 
+ggsave('img/mapa_municipios_urbanos.png', municipios_urbanos, width=10, height=6)
+
 
 ##############
 
@@ -376,20 +378,14 @@ qplot( predict(mod_upd),mod_upd$y) + geom_abline(slope=1)
 qplot( predict(mod),mod$y)
 
 
-<<<<<<< HEAD
+
 library(xtable)
 
-=======
->>>>>>> 4d4393a3b9d0394084b08ce60960958fbc14e837
+
 print(xtable(summary(mod)), comment=F, include.rownames=F, size="small")
 print(xtable(summary(mod_log)), comment=F, include.rownames=F, size="small")
 print(xtable(summary(mod_poiss)), comment=F, include.rownames=F, size="small")
 print(xtable(summary(mod_q_poiss)), comment=F, include.rownames=F, size="small")
 print(xtable(summary(mod_poiss_log)), comment=F, include.rownames=F, size="small")
 print(xtable(summary(mod_q_poiss_log)), comment=F, include.rownames=F, size="small")
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 4d4393a3b9d0394084b08ce60960958fbc14e837
 
