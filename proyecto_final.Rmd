@@ -293,8 +293,22 @@ print(xtable(summary(mod_q_poiss_log)), comment=F, include.rownames=F, size="sma
 
 $\pagebreak$
 
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+bic <- c(BIC(mod), BIC(mod_log), BIC(mod_poiss), BIC(mod_q_poiss), BIC(mod_poiss_log), BIC(mod_q_poiss_log))
+aic  <- c(AIC(mod), AIC(mod_log), AIC(mod_poiss), AIC(mod_q_poiss), AIC(mod_poiss_log), AIC(mod_q_poiss_log))
+devianza <- c(mod$deviance, mod_log$deviance, mod_poiss$deviance, mod_q_poiss$deviance, mod_poiss_log$deviance, mod_q_poiss_log$deviance)
+
+tablita<- as.data.frame(rbind(bic, aic, devianza))
+
+names(tablita) <- c('mod', 'mod_log', 'mod_poiss', 'mod_q_poiss', 'mod_poiss_log', 'mod_q_poiss_log')
+print(xtable(tablita), comment=F)
+```
+
 #Conclusiones 
 
+El modelo **poisson** con la variable sin transformar obtiene peor devianza que el modelo **gaussiano** con la variable $y$ transformada. Sin embargo, los supuestos del modelo se sostienen mejor en el modelo **Poisson**.
+
+Tanto el modelo **poisson** como el **quasipoisson** son iguales en devianza y los supuestos se cumplen de manera aceptable.
 
 
 #Recomendaciones 
