@@ -73,6 +73,8 @@ municipios_urbanos <- ggplot(data = edo_df, aes(long, lat, group = group)) +
   geom_polygon(colour='black', aes(fill=num_mun)) + coord_fixed() + p +
   ggtitle('Número de municipios urbanos') + labs(fill='Número')
 
+ggsave('img/mapa_municipios_urbanos.png', municipios_urbanos, width=10, height=6)
+
 
 ##############
 
