@@ -2,14 +2,27 @@
 title: "Proyecto final GLM"
 author: "Andrea Fernandez,  Andrea García y Carlos Petricoli"
 date: "01/11/2014"
-output: html_document
+output: pdf_document
 ---
-```{r, warning=FALSE, echo=FALSE, message=FALSE}
+```{r, warning=FALSE, echo=FALSE, message=FALSE, error=FALSE}
 library (knitr)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
+# Leemos los datos mas recientes
+cat <- read.csv('data/catalogo.csv')
 
+# Defino los factores de riesgo en bonito para titulos
+fr <- unique(cat$factor_de_riesgo[!is.na(cat$factor_de_riesgo)])
+fr <- fr[which(fr!='violencia')]
+factores <- list(embarazo_temprano = "Embarazo temprano",
+                 marginacion_exclusion_social = "Marginación y exclusión social",
+                 falta_oportunidades_laborales_informalidad_desocupacion = "Falta de oportunidades laborales, informalidad y desocupación",
+                 espacios_publicos_insuficiente_deteriorado = "Espacios públicos insuficientes y deteriorados",
+                 capital_social_participacion_incipiente = "Capital social y participación incipiente",
+                 desercion_escolar = "Deserción escolar",
+                 consumo_abuso_drogas_ilegales = "Consumo y abuso de drogas legales e ilegales",
+                 ambientes_familiares_deteriorados_problematicos = "Ambientes familiares deteriorados y problemáticos")
 
 ```
 
@@ -25,13 +38,13 @@ La prevención del delito se refiere, en términos generales, a las acciones enf
 3)	Prevención por orientación de la estrategia (Hawkins y Weis, 1985; Waller y Weiler, 1985; Newman, 1972; Kaplan et al, 1978; Kushmuk y Wittermore, 1981):  Este último se clasifica en dos, de acuerdo a la orientación de la estrategia (a través del desarrollo social) y a través del diseño del entorno.  Para una mejor política pública es altamente recomendable combinar el diseño del entorno y los programas de desarrollo social.
 
 
-Para efectos del Programa (PNPSV), se entiende por factores de riesgo aquellas situaciones de tipo individual, familiar, escolar o social que incrementan las probabilidades de que las personas desarrollen conductas violentas o delictivas $\footnote{ PROGRAMA Nacional para la Prevención Social de la Violencia y la Delincuencia 2014-2018, DOF abril 2014}$. La existencia de estos factores aumenta la probabilidad de que el individuo se vea inmerso en actos de violencia o delincuencia. Es por ello que el PNPSV se concentra en la prevención del delito por estrategia operacional (segunda corriente) enfocándose en las condiciones socioeconómicas que parecen estar asociadas al desarrollo del delito (primaria $\footnote{ Prevención primaria: acción directa para evitar o revertir condiciones socioeconómicas que parecen estar asociadas al desarrollo del delito, tales como la pobreza, la desigualdad, el crecimiento urbano descontrolado, etcétera. Además, busca modificar las características del espacio físico y las relaciones sociales y comunitarias que podrían generar condiciones criminógenas en el largo plazo.}$$) y a los grupos en situación de riesgo delictivo (secundaria $$\footnote{ Prevención secundaria: identificación e intervención temprana en los individuos o grupos en situación de riesgo delictivo. Ésta busca identificar el desarrollo potencial de actividades delictivas de individuos o grupos vulnerables en las zonas de alto riesgo e intervenir en su dinámica y calidad de vida de tal forma que no cometan delitos.}$).
+Para efectos del Programa (PNPSV), se entiende por factores de riesgo aquellas situaciones de tipo individual, familiar, escolar o social que incrementan las probabilidades de que las personas desarrollen conductas violentas o delictivas $\footnote{ PROGRAMA Nacional para la Prevención Social de la Violencia y la Delincuencia 2014-2018, DOF abril 2014}$. La existencia de estos factores aumenta la probabilidad de que el individuo se vea inmerso en actos de violencia o delincuencia. Es por ello que el PNPSV se concentra en la prevención del delito por estrategia operacional (segunda corriente) enfocándose en las condiciones socioeconómicas que parecen estar asociadas al desarrollo del delito (primaria $\footnote{ Prevención primaria: acción directa para evitar o revertir condiciones socioeconómicas que parecen estar asociadas al desarrollo del delito, tales como la pobreza, la desigualdad, el crecimiento urbano descontrolado, etcétera. Además, busca modificar las características del espacio físico y las relaciones sociales y comunitarias que podrían generar condiciones criminógenas en el largo plazo.}$) y a los grupos en situación de riesgo delictivo (secundaria $\footnote{ Prevención secundaria: identificación e intervención temprana en los individuos o grupos en situación de riesgo delictivo. Ésta busca identificar el desarrollo potencial de actividades delictivas de individuos o grupos vulnerables en las zonas de alto riesgo e intervenir en su dinámica y calidad de vida de tal forma que no cometan delitos.}$).
 
 Para la primera fase del Programa se eligieron 57 demarcaciones de intervención prioritaria y 43 demarcaciones para un segundo ámbito de intervención. Para la elección de las demarcaciones se presume se utilizaron los factores de riesgo asociados a la violencia y a la delincuencia explicados  a continuación. 
 
 Pirámide de la Violencia, Factores de riesgo asociados a la violencia y delincuencia
 
-###![ ](img/piramide.png)
+![ ](img/piramide.png)
 
 
 El objetivo de este estudio es caracterizar los municipios del país entorno a los diferentes factores de riesgo que el programa busca atender. Además, se busca generar recomendaciones para identificar las buenas prácticas y poder hacer una gestión más eficiente de los recursos del presupuesto federal.
@@ -86,20 +99,20 @@ Para este estudio se utilizaron  diferentes bases de datos para generar una base
 
  Las fuentes de información primaria son: 
 
-•	CONEVAL: Rezago social (censo 2010).
-•	INEGI: 
--	Censo de Población y Vivienda 2010 
--	Encuesta Nacional sobre la Dinámica de las Relaciones de los Hogares (ENDIREH)
--	Encuesta  Nacional de Victimización y Percepción sobre Seguridad Pública ENVIPE (2013)
--	 Directorio Estadístico Nacional de Unidades Económicas DENUE 2010
-•	SEP 
--	Censo educativo (2013).
--	ENLACE (2013).
-•	Encuesta Nacional de Cultura  Política y Prácticas Ciudadanas (ENCUP, 2012)
-•	 Sistema Nacional de Información de Salud (SINAIS, 2010)
--	Egresos hospitalarios
--	Recursos de salud
-•	Secretariado Ejecutivo Sistema Nacional de Seguridad Pública (SESNSP )(Variable dependiente).
++ CONEVAL: Rezago social (censo 2010).
++ INEGI: 
+    + Censo de Población y Vivienda 2010 
+    + Encuesta Nacional sobre la Dinámica de las Relaciones de los Hogares (ENDIREH)
+    + Encuesta  Nacional de Victimización y Percepción sobre Seguridad Pública ENVIPE (2013)
+    + Directorio Estadístico Nacional de Unidades Económicas DENUE 2010
++ SEP 
+    + Censo educativo (2013).
+    + ENLACE (2013).
++ Encuesta Nacional de Cultura  Política y Prácticas Ciudadanas (ENCUP, 2012)
+    + Sistema Nacional de Información de Salud (SINAIS, 2010)
+    + Egresos hospitalarios
+    + Recursos de salud
++ Secretariado Ejecutivo Sistema Nacional de Seguridad Pública (SESNSP )(Variable dependiente).
  
 Nota:  de cada fuente de información se tomo el último año  con el que se contaba. Esto debido a la falta de información anual para calcular los factores de riesgo. En el caso de las encuestas  estamos consientes en el muestreo a los municipios . También cabe mencionar que en la prueba ENALCE hay menos registros de los que se reportan.  La base se limpió y siguiendo las recomendaciones de la presentación ajustamos las variables por densidad poblacional, corregimos las NA´s y tomamos  los municipios con población mayor a 40 mil habitantes para quedarnos con las zonas urbanas.  Al final nos quedamos con 505 municipios de los 2459 originales. 
 
@@ -112,33 +125,14 @@ A continuación se describen las variables por grupo
 
 ![ ](img/factores_riesgo.png)
 
+```{r, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE}
+out <- NULL
+for (f in names(factores)){
+    out <- c(out, knit_child('auxiliares_presentaciones/child_doc_final_mapas.Rmd', quiet = TRUE))
+}
+```
 
-
-
-
-
-
---→ Meter MAPAS 
-
-####Embarazo Temprano 
-
-
-
-####Ambiente Familiar  Deteriorado 
-
-####Capital Social Incipiente 
-
-####Falta de Oportunidades Laborales 
-
-####Deserción Escolar
-
-####Falta de Espacios Públicos 
-
-####Marginación Social 
-
-####Abuso y Consumo de Drogas 
-
-
+`r paste(out, collapse='\n')`
 
 
 #Modelo 
@@ -204,11 +198,10 @@ El análisis muestra que existen diferentes clasificaciones por municipio donde 
 -	Vilalta, C. & Muggah., R. Violent disorder in Ciudad Juarez: A spatial analysis of homicide. Trends in Organized Crime. 
 -	Vilalta, C. (2009) Un modelo descriptivo de la geografía del robo en la Zona Metropolitana del Valle de México. Journal of Latin American Geography, 8(1), 55-80.
 
+$\pagebreak$
 
-Anexo 
-```{r, results='asis'}
-#
-
+# Anexo 
+```{r, warning=F,error=FALSE,message=FALSE,results='asis'}
 
 ```
 

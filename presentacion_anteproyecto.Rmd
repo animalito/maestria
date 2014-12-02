@@ -2,11 +2,15 @@
 title: "Anteproyecto GLM"
 author: "Carlos Petricioli, Andrea Fernandez, Andrea Garcia"
 date: "09/11/2014"
-output: 
+output:
+  beamer_presentation:
+    colortheme: fly
+    fonttheme: serif
+    theme: Warsaw
   ioslides_presentation:
     css: ../css/itam.css
     mathjax: local
-    self_contained: false
+    self_contained: no
 ---
 
 ```{r, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE}
@@ -92,7 +96,7 @@ factores <- list(embarazo_temprano = "Embarazo temprano",
 ```{r, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE}
 out <- NULL
 for (f in names(factores)){
-    out <- c(out, knit_child('auxiliares_presentaciones/child_anteproyecto_descriptivos.Rmd', quiet = TRUE))
+    out <- c(out, knit_child('auxiliares_presentaciones/child_doc_final_mapas.Rmd', quiet = TRUE))
 }
 ```
 
