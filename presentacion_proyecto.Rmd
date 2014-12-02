@@ -39,9 +39,11 @@ factores <- list(embarazo_temprano = "Embarazo temprano",
 
 - A partir de la creación del Programa Nacional para la Prevención Social de la Violencia y la Delincuencia 2014-2018, se ha creado la necesidad de tener un conjunto ordenado de indicadores que permita dar seguimiento, evaluar y generar las recomendaciones necesarias para que año a año se cumpla el objeto de atender los factores de riesgo y de protección vinculados a la violencia y a la delincuencia.
 
-## Factores de Riesgo {.flexbox .vcenter}
-
+## Factores de Riesgo  {.flexbox .vcenter}
 ![ ](img/piramide.png)
+
+## Factores de Riesgo {.flexbox .vcenter}
+![ ](img/factores_riesgo.png)
 
 
 ## Objetivo {.flexbox .vcenter}
@@ -155,38 +157,114 @@ for (f in names(factores)){
 ## Factores de riesgo {.flexbox .vcenter}
 ![ ](img/y_indep26.png)
 
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/x_density11.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/x_density12.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/x_density13.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/x_density14.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/x_density15.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/x_density16.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/x_density17.png)
+
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/x_density18.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/x_density19.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/x_density20.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/x_density21.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/x_density22.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/x_density23.png)
+
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/x_density24.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/x_density25.png)
+
+## Factores de riesgo {.flexbox .vcenter}
+![ ](img/x_density26.png)
+
+
+
 
 ## Modelo {.flexbox .vcenter}
 
 Siguiendo las recomendaciones del Dr. Vilalta se decidió utilizar de variables dependiente los delitos sumatoria de todos los delitos ajustada  por 100mil habitantes explicadas por los PCA 1 y 2 de los factores de riesgo 
 
 
+### Modelo 1 
+Delitos =  factores de riesgo 
+glm familia gaussiana
 
-### Modelo 1 {.flexbox .vcenter}
+### Modelo 2 
+log 1+Delitos =  factores de riesgo 
+glm familia gaussiana
+
+##Modelos{.flexbox .vcenter}
+### Modelo 3 
+Delitos =  factores de riesgo 
+glm familia poisson
+
+### Modelo 4
+ log 1+Delitos =  factores de riesgo 
+glm familia poisson
+
+### Modelo 5 
+ Delitos =  factores de riesgo 
+glm familia quasi-poisson
+
+### Modelo 6 
+ log 1+Delitos =  factores de riesgo 
+glm familia quasi- poisson
 
 
-
-### Modelo 2 {.flexbox .vcenter}
-
-
-### Modelo 3 {.flexbox .vcenter}
-
-
-### Modelo 4 {.flexbox .vcenter}
-
-
-### Modelo 5 {.flexbox .vcenter}
+## Selección de Variables {.flexbox .vcenter}
+se quitaron as siguientes variables 
+        PC1_pca_desercion_escolar -
+         PC2_pca_espacios_publicos_insuficiente_deteriorado -
+         PC2_pca_consumo_abuso_drogas_ilegales -
+         PC1_pca_espacios_publicos_insuficiente_deteriorado -
+         PC1_pca_embarazo_temprano -
+         PC1_pca_consumo_abuso_drogas_ilegales -
+         PC2_pca_embarazo_temprano,
 
 
-### Modelo 6 {.flexbox .vcenter}
+##Resultados
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+#print(apsrtable(mod, mod_log, mod_poiss, mod_q_poiss, mod_poiss_log, mod_q_poiss_log), comment=F, include.rownames=F, size="small")
 
+print(xtable(summary(mod)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_log)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_poiss)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_q_poiss)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_poiss_log)), comment=F, include.rownames=F, size="small")
+print(xtable(summary(mod_q_poiss_log)), comment=F, include.rownames=F, size="small")
+```
 
-
-### Selección de Variables {.flexbox .vcenter}
-
-
-
-
+## Devianzas 
 
 ## Recomendaciones {.flexbox .vcenter}
 
