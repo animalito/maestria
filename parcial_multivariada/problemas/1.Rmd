@@ -62,6 +62,8 @@ mkt_test <- anti_join(mkt, mkt_train)
 
 Ahora, entrenamos la red utilizando el algoritmo de __hill climbing__. Elegimos como criterio el __bic__ pues suele ser un poco mas restrictivo y queremos primero explorar una red mas parsimoniosa
 
+
 ```{r}
 fit <- hc(mkt_train, blacklist=b.list, score='bic')
+graphviz.plot(fit,shape="ellipse",main="Modelo con restricciones")
 ```
