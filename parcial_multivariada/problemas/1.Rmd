@@ -5,6 +5,7 @@ Discretizamos las variables:
 - Edad:  hacemos grupos de 7 años
 - Balance: hacemos grupos por los que tienen adeudos y los que no.
 - Duration: dividimos las duraciones de las llamadas en cuartiles
+- Previous: dividimos en los que han sido contactados en otras campanas y quienes no.
 - Month: no reagrupamos el mes porque es muy dificil a priori saber si una agrupacion nos eliminaria efectos. Mejor la dejamos como esta para ver si hay efectos estacionales.
 
 Excluimos:
@@ -14,9 +15,11 @@ Excluimos:
 
 ```{r}
 load("../datos//mkt.Rdata")
-mkt$age.bin <- cut(mkt$age, breaks=seq(from=17, to=95, by=7))
-mkt$balance.bin <- ifelse(mkt$balance < 0, "deudor", "ahorrador")
-mkt$duration.bin <- cut(mkt$duration, breaks=quantile(mkt$duration))
+mkt$age.bin <- cut2(mkt$age, cuts=seq(from=17, to=96, by=7))
+mkt$balance.bin <- as.factor(ifelse(mkt$balance < 0, "deudor", "ahorrador"))
+mkt$duration.bin <- cut2(mkt$duration, cuts=quantile(mkt$duration))
+mkt$previous <- as.factor(ifelse(mkt$previous==0, "no", "yes"))
+mkt$campaign <- as.factor(mkt$campaign)
 
 mkt <- mkt %>% select(-age, -balance, -duration, -id, -contact)
 ```
