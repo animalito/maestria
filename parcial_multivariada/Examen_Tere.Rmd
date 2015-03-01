@@ -2,7 +2,7 @@
 title: 'Examen Parcial: Redes Bayesianas'
 author: "Andrea Fernández Conde (cu 104499) y Andrea García Tapia (cu 104050)"
 date: "7 de marzo de 2015"
-output: pdf_document
+output: html_document
 ---
 
 Instrucciones: Se trabajará en equipos de 2, entregando un reporte por equipo y
@@ -20,11 +20,7 @@ registraban 16 atributos que incluyen la respuesta del cliente, esto es si el
 cliente contrató el producto.
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
-setwd("~/Documents/maestria animalito/parcial_multivariada")
-library(dplyr)
-library (ggplot2)
-library(Hmisc)
-
+source('src/load_libraries.r', chdir=T)
 ```
 
 
@@ -35,15 +31,15 @@ La institución bancaria quisiera conocer como están relacionadas estas variabl
 en particular, quisieran entender la relación con la variable respuesta y.
 
 Utiliza el siguiente código para separar los datos en prueba y entrenamiento:
-```{r}
+```{r, eval=F}
 load("datos/mkt.Rdata")
 set.seed(18937)
 mkt_train <- sample_n(mkt, 30000)
 mkt_test <- anti_join(mkt, mkt_train)
 ```
 
-##Preguntas
-###1
+#Preguntas
+##1
 Aprender estructura (3). Utiliza la muestra de entrenamiento para crear una red 
 bayesiana, si es necesario discretiza o transforma las variables. Si consideras 
 que algunas variables no son relevantes puedes excluirlas del análisis siempre y 
@@ -55,33 +51,13 @@ lo más natural sería que no tenga hijos.
 *Explica tu razonamiento para agregar una whitelist o blacklist.
 *Que score elegiste para aprender estructura y por que.
 
-```{r}
-datos <- mkt_train
-datos$age <- cut2(datos$age,g=3)
-
-datos$balance <- cut2(datos$balance, cuts=c(0,1500) )
-
-datos$month <- car::recode(datos$month,
-              recodes=paste0("'",levels(datos$month),"'=",c(4,8,12,2,1,7,6,3,5,11,10,9),collapse=';') )  
-
-datos$month <- cut2(as.numeric(as.character(datos$month)), cuts=c(4,7,10))
-
-levels(datos$month) <- c('Trim-1','Trim-2','Trim-3','Trim-4')
-
-datos$duration <- cut2(datos$duration,g=3)
-levels(datos$duration) <- c('baja duracion','media duracion' , 'alta duracion')
-
-datos$campaign <- cut2(datos$campaign,g=3)
-levels(datos$campaign) <- c('uno','dos a tres','cuatro o mas')
-
-datos$previous <- cut2(datos$previous,g=2)
-levels(datos$previous) <- c('no','yes')
-
-sapply(datos,levels)
+```{r, echo=F, error=F, message=F, warning=F}
+out <- NULL
+out <- c(out, knit_child('problemas/1.Rmd', quiet = TRUE))
 ```
+`r paste(out, collapse='\n')`
 
-
-###2
+##2
 Aprender estructura (3). Con el objetico de crear una red más robusta. Genera
 muestras bootstrap (a partir de los datos de entrenamienti), y calcula una red
 promedio. Recuerda incluir tu conocimiento experto (whitelists/blacklists).
@@ -94,7 +70,7 @@ fuerza la correspondiente a la función boot.strength).
 ```{r}
 
 ```
-###3
+##3
 Modelos locales (2). Una vez que elegiste la estructura final ajusta los modelos 
 locales. Asegurate de que estén bien definidos para todas las variables, es 
 decir, si la estimación de máxima verosimilitud no esta definida para alguna
@@ -122,7 +98,7 @@ interés).
 *Del conjunto de personas con resultado positivo (y = yes) ¿Qué porcentaje 
 clasificas correcto usando cada uno de los dos modelos locales?
 
-###4
+##4
 Queries de probabilidad condicional (1). Para estos incisos puedes usar gRain o
 samiam:
 
@@ -131,7 +107,7 @@ samiam:
 *$p(JOB=admin.|MARITAL=married, EDUCATION=primary, BALANCE=1000) =$
 
 
-###5
+##5
 
 MAP-Maximum a Posteriori (1). Supón que observas evidencia E=e:
 $e={AGE=20,MARITAL=married,EDUCATION=secondary,DEFAULT=no,BALANCE=1000,MONTH=may,$

@@ -1,0 +1,63 @@
+### Transformaciones a las variables
+
+Discretizamos las variables:
+
+- Edad:  hacemos grupos de 7 años
+- Balance: hacemos grupos por los que tienen adeudos y los que no.
+- Duration: dividimos las duraciones de las llamadas en cuartiles
+- Month: no reagrupamos el mes porque es muy dificil a priori saber si una agrupacion nos eliminaria efectos. Mejor la dejamos como esta para ver si hay efectos estacionales.
+
+Excluimos:
+- id: no queremos incormporar el id de las llamadas
+- contact: los tipos de comunicacion en la base son telefonicos al fin y al cabo. Realmente, no hay diferencias en canales y son el mismo medio. Dado que el otro es desconocido, no es como si pudieran hacer un cambio por eficiencia de canales.
+
+
+```{r}
+load("../datos//mkt.Rdata")
+mkt$age.bin <- cut(mkt$age, breaks=seq(from=17, to=95, by=7))
+mkt$balance.bin <- ifelse(mkt$balance < 0, "deudor", "ahorrador")
+mkt$duration.bin <- cut(mkt$duration, breaks=quantile(mkt$duration))
+
+mkt <- mkt %>% select(-age, -balance, -duration, -id, -contact)
+```
+
+Definimos relaciones a excluir (__blacklist__)
+
+- __y__ debe ser un nodo terminal
+- No tiene sentido la relacion que va del __default__ a housing o loan.
+- Las variables de campaña no deben de ser padres de las demográficas.
+- Las variables financieras no deben de ser padres de las demográficas.
+- Las variables de campaña no deben ser padres de las financieras.
+
+```{r}
+demograficas <- c('age.bin', 'job', 'marital', 'education')
+financieras <- c('default', 'balance.bin', 'housing', 'loan')
+campaign <- c('month', 'duration.bin', 'campaign', 'previous', 'poutcome')
+
+#
+b.list <- rbind(expand.grid('y', names(mkt)[which(names(mkt)!="y")]),
+                expand.grid('default', c('housing','loan')),
+                expand.grid(campaign, demograficas),
+                expand.grid(financieras, demograficas),
+                expand.grid(campaign, financieras)
+                )
+names(b.list) <- c('from','to')
+kable(b.list)
+
+```
+
+No se incluye un __whitelist__ pues las relaciones que deberían de ser incluidas no son tan claras y mejor permitimos que el algoritmo sugiera las relaciones.
+
+### Prueba y entrenamiento
+
+Separamos los datos en prueba y entrenamiento:
+```{r}
+set.seed(18937)
+mkt_train <- sample_n(mkt, 30000)
+mkt_test <- anti_join(mkt, mkt_train)
+```
+
+Ahora, entrenamos la red utilizando el algoritmo de __hill climbing__. Elegimos como criterio el __bic__ pues suele ser un poco mas restrictivo y queremos primero explorar una red mas parsimoniosa
+
+```{r}
+fit <- hc(mkt_train, blacklist=b.list, score='bic')
