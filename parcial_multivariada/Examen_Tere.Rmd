@@ -67,9 +67,13 @@ la red promedio.
 *¿Cuáles on los arcos con mayor fuerza?
 *Refleja la fuerza de los arcos en una gráfica de tu red (usando como medida de
 fuerza la correspondiente a la función boot.strength).
-```{r}
 
+```{r, echo=F, error=F, message=F, warning=F}
+out <- NULL
+out <- c(out, knit_child('problemas/2.Rmd', quiet = TRUE))
 ```
+`r paste(out, collapse='\n')`
+
 ##3
 Modelos locales (2). Una vez que elegiste la estructura final ajusta los modelos 
 locales. Asegurate de que estén bien definidos para todas las variables, es 
