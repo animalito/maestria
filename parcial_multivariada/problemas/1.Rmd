@@ -61,3 +61,4 @@ Ahora, entrenamos la red utilizando el algoritmo de __hill climbing__. Elegimos 
 
 ```{r}
 fit <- hc(mkt_train, blacklist=b.list, score='bic')
+```
