@@ -1,7 +1,0 @@
-```{r, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE}
-map_cluster <- paste0('<p align="center" ><img src="img/mapa_',f,'.png" align="middle" height="600" width="650" margin="0 auto" /> </p>')
-```
-
-## `r eval(factores[f])`
-
-`r eval(map_cluster)`

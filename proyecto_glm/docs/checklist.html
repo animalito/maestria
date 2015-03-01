@@ -1,0 +1,1321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Checklist data science</title>
+<!-- 2014-11-09 dom 13:43 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Andrea Fernandez Conde / Juan Pablo Oberhauser / Carlos Pérez" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Checklist data science</h1>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Glosario</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li>DOF: Diario Oficial de la Federación
+</li>
+<li>PRONAPRED:
+</li>
+<li>FR: Factores de riesgo
+</li>
+<li>OSLAA: Composición jerárquica de las actividades del PRONAPRED en Objetivos, Estrategias, Líneas de acción, Acciones y Actividades
+</li>
+<li>DWH: data ware house de OPI
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Modelo actual de PRONAPRED</h2>
+<div class="outline-text-2" id="text-2">
+<ul class="org-ul">
+<li>Objetivo: Fortalecer los factores de protección para la prevención social de la violencia y la delincuencia
+</li>
+
+<li>Operación: Demarcaciones seleccionadas reciben recursos federales para proyectos de prevención diseñados localmente
+</li>
+
+<li>Intervención:  En 100 demarcaciones con acciones de la Comisión Intersecretarial, En 57 demarcaciones prioritarias con el Fondo Nacional de Prevención
+</li>
+</ul>
+
+<p>
+Grupos Prioritarios en el PNPSVD
+</p>
+
+<ul class="org-ul">
+<li>Niños:    Población  00-09 años
+</li>
+<li>Juventud: Población de 10-29 años
+</li>
+<li>Mujeres
+</li>
+<li>Población Penitenciaria
+</li>
+<li>Migrantes
+</li>
+</ul>
+</div>
+
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> Modelo especificado en el DOF</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Su fundamento descansa en el enfoque de seguridad ciudadana, el cual privilegia la participación ciudadana en la construcción de ambientes seguros a través de la prevención, además de entender la seguridad como un derecho humano que debe ser garantizado por el Estado pero que a su vez, debe ser coproducido por todos los actores sociales. El enfoque preventivo asumido por el presente Programa plantea tres niveles de intervención: primario, secundario y terciario; y, cinco tipos de prevención, social, situacional, comunitaria, psicosocial y prevención policial orientada a la comunidad. <br  />
+</p>
+
+<p>
+Se sustenta en tres teorías que explican las distintas aristas de la violencia y la delincuencia. La teoría ecológica del delito (modelo sistémico que orienta la atención de problemas delictivos en todos sus ámbitos de desarrollo), la teoría epidemiológica del delito (centra la atención en los factores de riesgo y factores protectores) y la teoría de la eficacia colectiva (entiende el problema de la criminalidad como algo colectivo en lo que influye el contexto de desarrollo de las personas por lo que busca propiciar comunidades más organizadas, con mayor nivel de solidaridad y confianza, más cohesionadas y por tanto, comunidades más seguras)
+</p>
+
+<p>
+Ver más: <a href="checklist_docs/PRONAPRED_DOF.pdf">Documento DOF</a> <br  />
+Ver más: <a href="checklist_docs/doc_teorico_PNPSVD.pdf">Documento "Teorico" SEGOB</a> <br  />
+</p>
+
+<p>
+Las bases explicitas se pueden consultar en el documento oficial <a href="checklist_docs/BASES_prevencion_delito.pdf">Documento Bases PNPSVD</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> Anexos Técnicos de OPI</h3>
+<div class="outline-text-3" id="text-2-2">
+</div><div id="outline-container-sec-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> Anexo Contrato</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+Objetivo General <b>OPI</b><br  />
+</p>
+
+<p>
+Coadyuvar en conjunto con la Subsecretaría de Prevención y Participación Ciudadana (SPPC), a la Dirección General de Coordinación para la Operación Territorial (DGCOT) en el diseño de un sistema integral de planeación, gestión y evaluación de las acciones encaminadas a garantizar la prevención social de la violencia y el delito en el territorio mexicano enfocándose en las zonas definidas como prioritarias y teniendo como base los factores de riesgo identificados como precursores de la violencia y el delito, todo esto en el marco del Programa Nacional para la Prevención Social de la Violencia y la Delincuencia.
+A partir de la creación del Programa Nacional para la Prevención Social de la Violencia y la Delincuencia 2014-2018 por parte del Gobierno de la República, se ha creado la necesidad de tener un conjunto ordenado de indicadores que permita dar seguimiento, evaluar y generar las recomendaciones necesarias para que año a año se cumpla el objeto de atender los factores de riesgo y de protección vinculados a la violencia y a la delincuencia.<br  />
+</p>
+
+<p>
+Ver más: <a href="checklist_docs/anexo_tecnico_jul2014.docx">Documento Anexo Técnico</a> <br  />
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> Anexo Cotización</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+Los entregables para el 15 de DIC a los que se compromete OPI son
+</p>
+
+<ul class="org-ul">
+<li>Evaluación de las variables asociadas a los factores de riesgo
+</li>
+<li>Propuesta de indicadores futuros que complementen cada objetivo
+</li>
+<li>Propuesta para la actualización de diagnósticos e integración de datos a la plataforma
+</li>
+<li>Visualizaciones y Reporte Escrito de los resultados del modelo explicativo
+</li>
+<li>Georreferencia de factores de riesgo
+</li>
+<li>Georreferencua de las variables que comprenden los factores
+</li>
+<li>Bases de datos utilizadas en la realización del modelo
+</li>
+<li>Código de algoritmos para la transformación y evaluación de variables dentro del modelo
+</li>
+</ul>
+
+<p>
+Ver más: <a href="checkllist_docs/3er_entregable.html">Documento Entregables</a> <br  />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> México Evalúa</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+México Evalúa analizó el programa a través de los siguientes puntos
+</p>
+
+<ul class="org-ul">
+<li>Criterio para definir 57 demarcaciones prioritarias
+</li>
+<li>Mecanismo de asignación y distribución de recursos
+</li>
+<li>Diágnosticos, metas e indicadores de una muestra representativa de 15 / 57 demarcaciones
+</li>
+</ul>
+
+<p>
+Las principales conclusiones del análisis
+</p>
+
+<ul class="org-ul">
+<li>Algunas demarcaciones fueron excluidas sin justificación
+</li>
+<li>La distribución de recursos no está vinculada con los objetivos del programa
+</li>
+<li>Los criterios de asignación no están relacionado con factores de riesgo colectivo
+</li>
+<li>Los proyectos revisados no contaban con diágnostico sólido
+</li>
+<li>No cuenta con indicadores y metas bien definidas que permitan su evaluación
+</li>
+</ul>
+
+<p>
+La propuesta de MéxicoEvalúa se centra en
+</p>
+
+<ul class="org-ul">
+<li>Recopilar información: Responde a preguntas estratégicas que definen el problema a través de evidencia concreta.
+</li>
+<li>Identificar el problema: Caracterización y Contextualización de los agentes y locaciones del delito.
+</li>
+<li>Diseñar la respuesta: Atender a causas estructurales del delito (acciones focalizadas) y reducir oportunidades del delito (prevención situacional y estrategia policial)
+</li>
+<li>Formulación de indicadores referidos no sólo a Gestión si no a resultados (# obras vs % percepción seguridad)
+</li>
+</ul>
+
+<p>
+Fuente: Buvinic, M. Et alt. (1999) La violencia en América Latina y el Caribe: un marco de referencia para la
+acción, Washington: BID. Farrington, D., &amp; Welsh, B.(2007) Saving children from a life of crime. Early risk
+factors and effective interventions, New York: Oxford University Press<br  />
+</p>
+
+<p>
+Ver: <a href="checklist_docs/mexico_evalua1.pdf">Documento Mexico Evalua</a>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Variables del modelo</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> Indicadores del DOF</h3>
+<div class="outline-text-3" id="text-3-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">Objetivo</th>
+<th scope="col" class="left">Indicadores</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">1. Incrementar la</td>
+<td class="left">*1.1 Porcentaje de población de 18 años y más que se</td>
+</tr>
+
+<tr>
+<td class="left">corresponsabilidad de la</td>
+<td class="left">organiza con sus vecinos para resolver problemas de</td>
+</tr>
+
+<tr>
+<td class="left">ciudadanía y actores sociales</td>
+<td class="left">seguridad identificados en su colonia o localidad.</td>
+</tr>
+
+<tr>
+<td class="left">en la prevención social</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">mediante su participación y</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">desarrollo de competencias.</td>
+<td class="left">*1.2 Porcentaje de población que percibe que dispone</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">de un grado de apoyo medio o alto de redes sociales.</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">*1.3 Porcentaje de población que manifiestan ser</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">miembro de una organización de ciudadanos y los que</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">manifiestan ser miembro de una organización vecinal.</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">2. Reducir la</td>
+<td class="left">*2.1 Porcentaje de población joven que refiere vivir</td>
+</tr>
+
+<tr>
+<td class="left">vulnerabilidad ante la</td>
+<td class="left">situaciones de violencia física y psicológica en su noviazgo.</td>
+</tr>
+
+<tr>
+<td class="left">violencia y la delincuencia</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">de las poblaciones de</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">atención prioritaria</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">*2.2 Prevalencia total de la violencia contra mujeres de 15</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">años y más a lo largo de su vida expresada en porcentaje.</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">*2.3 Tasa de ingreso de adolescentes, entre 12 y menos de 18</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">años, al sistema penitenciario estatal por conductas asociadas</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">a delitos del fuero común (por cada 100,000 mil adolescentes).</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">3. Generar entornos</td>
+<td class="left">*3.1 Porcentaje de la población que percibe inseguridad</td>
+</tr>
+
+<tr>
+<td class="left">que favorezcan la</td>
+<td class="left">en los espacios públicos y privados de la comunidad.</td>
+</tr>
+
+<tr>
+<td class="left">convivencia y</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">seguridad ciudadana.</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">*3.2 Porcentaje de población, de 18 años y más, que considera</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">seguro: su municipio o delegación y su colonia o localidad.</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">4. Fortalecer las capacidades</td>
+<td class="left">*4.1 Índice de Fortaleza Institucional para la</td>
+</tr>
+
+<tr>
+<td class="left">institucionales para la seguridad</td>
+<td class="left">Prevención Social de la Violencia y la Delincuencia.</td>
+</tr>
+
+<tr>
+<td class="left">ciudadana en los gobiernos</td>
+<td class="left">*4.2 Porcentaje de población de 18 años o más</td>
+</tr>
+
+<tr>
+<td class="left">municipales/delegacionales,</td>
+<td class="left">que identifican a la policía estatal y municipal</td>
+</tr>
+
+<tr>
+<td class="left">entidades federativas y federación.</td>
+<td class="left">y que manifiesta tener confianza en ella.</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">5. Asegurar una coordinación</td>
+<td class="left">*5.1 Programas, proyectos y acciones estratégicas</td>
+</tr>
+
+<tr>
+<td class="left">efectiva y sostenida entre</td>
+<td class="left">implementadas por las dependencias federales en</td>
+</tr>
+
+<tr>
+<td class="left">dependencias y entidades federales</td>
+<td class="left">las demarcaciones prioritarias del PNPSVD.</td>
+</tr>
+
+<tr>
+<td class="left">para diseñar, implementar y evaluar</td>
+<td class="left">*5.2 Programas, proyectos y acciones estratégicas</td>
+</tr>
+
+<tr>
+<td class="left">procesos de prevención social.</td>
+<td class="left">implementadas por las dependencias federales en</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">los polígonos prioritarios del PNPSVD.</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>
+Los indicadores con los que se medira el alcance de cada objetivo(Segun dice el DOF)
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> Variables del objetivo 1 del DOF:</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Incrementar la corresponsabilidad de la ciudadanía y actores sociales en la prevención social,mediante su participación y desarrollo de competencias.
+</p>
+<ol class="org-ol">
+<li>Percepcion de apoyo en redes sociales/eficacia colectiva/ cohesion social
+</li>
+<li>Organizacion vecinal para la seguridad
+</li>
+<li>Organizacion ciudadana vecinal
+</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3"><span class="section-number-3">3.3</span> Variables del objetivo 2 del DOF:</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+Reducir  la  vulnerabilidad  ante  la  violencia  y  la  delincuencia  de  las  poblaciones  de  atención prioritaria.
+</p>
+<ol class="org-ol">
+<li>Violencia contra mujeres en su relacion /violencia fisica en el noviazgo
+</li>
+<li>Prevalencia de violencia en muejeres de 15 años y mas
+</li>
+<li>Ingreso penitenciario de personas entre 12 y 18 años
+</li>
+<li>Indice de calidad de espacios vivienda
+</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-sec-3-4" class="outline-3">
+<h3 id="sec-3-4"><span class="section-number-3">3.4</span> Variables del objetivo 3 del DOF:</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+Generar entornos que favorezcan la convivencia y seguridad ciudadana.
+</p>
+<ol class="org-ol">
+<li>Percepcion de inseguridad en espacios comunes
+</li>
+<li>Percepcion de inseguridad en municipio/ o localidad
+</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-sec-3-5" class="outline-3">
+<h3 id="sec-3-5"><span class="section-number-3">3.5</span> Variables del objetivo 4 del DOF:</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+Fortalecer  las  capacidades  institucionales  para  la  seguridad  ciudadana  en  los  gobiernos municipales/delegacionales, entidades federativas y federación.
+</p>
+<ol class="org-ol">
+<li>Indice de fortaleza institucional
+</li>
+<li>Confianza institucional en la policia
+</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-sec-3-6" class="outline-3">
+<h3 id="sec-3-6"><span class="section-number-3">3.6</span> Variables del objetivo 5 del DOF:</h3>
+<div class="outline-text-3" id="text-3-6">
+<p>
+Asegurar una coordinación efectiva y sostenida entre dependencias y entidades federales para diseñar, implementar y evaluar procesos de prevención social.
+</p>
+<ol class="org-ol">
+<li>Coordinacion Efectiva
+</li>
+<li>Coordinacion Efectiva
+</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-sec-3-7" class="outline-3">
+<h3 id="sec-3-7"><span class="section-number-3">3.7</span> Variables adicionales a las incluidas en el DOF</h3>
+<div class="outline-text-3" id="text-3-7">
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Factores de riesgo</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+
+<div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> Factores de Riesgo Marco General</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+Se entiende por factores de riesgo aquellas situaciones de tipo individual, familiar, escolar o social que incrementan las probabilidades de que las personas desarrollen conductas violentas o delictivas. La literatura especializada en prevención reconoce la influencia de una combinación de causas estructurales y factores de diversa índole (individuales, familiares, sociales e institucionales) que en su conjunto pueden facilitar la presencia de situaciones de violencia y delincuencia.
+</p>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left"><b>Tipo Factor de Riesgo</b></th>
+<th scope="col" class="left"><b>Conceptualización</b></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">Individuales</td>
+<td class="left">Adicciones, falta de gusto por el estudio, intolerancia,</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">baja capacidad de resolucion de conflictos, actitudes y</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">valores que favorecen la cultura del riesgo,embarazo</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">temprano, violencia en el noviazgo.\\</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">Familiares</td>
+<td class="left">Baja cohesión familiar, estilos parentales coercitivos</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">y agresivos o ambivalentes, bajo nivel educativo de</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">los padres, bajo nivel de ingreso familiar,</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">participación de la familia en actividades ilegales.\\</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">Grupales</td>
+<td class="left">Pertenencia a grupos de pares involucrados en actividades</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">riesgosas(violencia, crimen, drogas, delitos.)\\</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">Educativos</td>
+<td class="left">Deserción Escolar, bajo promedio, reprobación de</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">materias, violencia escolar, bajo apoyo por parte</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">del profesorado, déficits en la calidad educativa.\\</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">Comunitarios</td>
+<td class="left">Individualismo, deterioro de capital social,</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">entornos agresivos y propicios para el desarrollo</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">de actividades delictivas y de pandillaje, fácil</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">acceso a armas, cultura de la ilegalidad.\\</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">Sociales y Culturales</td>
+<td class="left">Carencias esenciales para el desarrollo humano</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">integral, exclusión por razones económicas, culturales,</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">de género, etc., falta de opciones laborales, falta de</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">opciones de estudio, marginación, percepción de que el</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">estudio no es un instrumento para la movilidad social,</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">normas culturales que consideran legítimo el uso de la</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">violencia para controlar a mujeres y a menores de edad.\\</td>
+</tr>
+</tbody>
+</table>
+
+<div class="center">
+<p>
+Tabla1: Factores de Riesgo,
+Fuente:PNPVPS 2007­2012 &amp; Hein 2004 y Hawkins J. David, Herrenkohl, Todd I, Farrington, "Predictors of YouthViolence", Juvenile Justice Bulletin, Office of Juvenile and Delinquency Prevention, 2010.]
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4-2" class="outline-3">
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> Factores de Riesgo PNPSVD</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+Dentro del marco teórico de literatura en prevención social SEGOB identifica los siguientes como factores posibles de medir así como suficientemente relevantes
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left"><b>Factor de Riesgo</b></th>
+<th scope="col" class="left"><b>Tipo de Factor</b></th>
+<th scope="col" class="left"><b>Fuente contexto DOF</b></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">Embarazo Temprano</td>
+<td class="left">Individual</td>
+<td class="left">ENSANUT 2013</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">Instituto Nacional Salud Pública 2012</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">Consumo y abuso de</td>
+<td class="left">Individual</td>
+<td class="left">Secretaría de Salud 2009</td>
+</tr>
+
+<tr>
+<td class="left">drogas legales e ilegales</td>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">Ambiente familiar</td>
+<td class="left">Familiar</td>
+<td class="left">Hein  2004</td>
+</tr>
+
+<tr>
+<td class="left">deteriorado o problemático</td>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">Deserción Escolar</td>
+<td class="left">Escolar</td>
+<td class="left">INEGI 2010a</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">ENDEMS SEP CEE 2012</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">INEE 2010,2011,2012</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">Falta de oportunidades</td>
+<td class="left">&#xa0;</td>
+<td class="left">CONEVAL 2008,2012</td>
+</tr>
+
+<tr>
+<td class="left">laborales, informalidad y</td>
+<td class="left">Socio-Cultural</td>
+<td class="left">OCDE 2012</td>
+</tr>
+
+<tr>
+<td class="left">desocupación</td>
+<td class="left">&#xa0;</td>
+<td class="left">ENOE 2010,2011,2012,2013</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">INEGI 2013</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">Débil capital social</td>
+<td class="left">Comunitario</td>
+<td class="left">PNUD 2010</td>
+</tr>
+
+<tr>
+<td class="left">y participación ciudadana</td>
+<td class="left">&#xa0;</td>
+<td class="left">ENCUP 2012</td>
+</tr>
+
+<tr>
+<td class="left">incipiente</td>
+<td class="left">&#xa0;</td>
+<td class="left">ENVIPE 2013</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">Layton 2011</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">Entornos de Ilegalidad</td>
+<td class="left">Socio-Cultural</td>
+<td class="left">Alvarado 2012</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">Morris 1992</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">PNUD 2013</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">ENVIPE 2013</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">Espacios públicos de</td>
+<td class="left">Comunitario</td>
+<td class="left">INEGI 2010b</td>
+</tr>
+
+<tr>
+<td class="left">convivencia insuficientes</td>
+<td class="left">&#xa0;</td>
+<td class="left">ONU-HABITAT-SEDESOL 2007</td>
+</tr>
+
+<tr>
+<td class="left">o deteriorados</td>
+<td class="left">&#xa0;</td>
+<td class="left">Salazar ?</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">SEDESOL 2010</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">ENVIPE 2011,2012</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">Socio-Cultural</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">Marginación y Exclusión</td>
+<td class="left">&#xa0;</td>
+<td class="left">CONAPO 2012</td>
+</tr>
+
+<tr>
+<td class="left">Social</td>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<div class="center">
+<p>
+Tabla2: Factores de Riesgo en el PNPSVD.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Estructura OSLAA</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+<a href="https://google-developers.appspot.com/chart/interactive/docs/gallery/orgchart">https://google-developers.appspot.com/chart/interactive/docs/gallery/orgchart</a>
+<a href="https://google-developers.appspot.com/chart/interactive/docs/gallery/wordtree">https://google-developers.appspot.com/chart/interactive/docs/gallery/wordtree</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Relación entre FR y OSLAA</h2>
+<div class="outline-text-2" id="text-6">
+</div><div id="outline-container-sec-6-1" class="outline-3">
+<h3 id="sec-6-1"><span class="section-number-3">6.1</span> DOF</h3>
+</div>
+<div id="outline-container-sec-6-2" class="outline-3">
+<h3 id="sec-6-2"><span class="section-number-3">6.2</span> Esquematización (visualización / simplificación)</h3>
+</div>
+</div>
+
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Lista de poligonos</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+La lista de los polígonos en los que se llevará a cabo el programa se encuentra en la base de datos de OPI.<br  />
+Además se puede consultar en <a href="checklist_docs/poligonos_colonias_PNPSVD.pdf">Documento Demarcaciones</a>
+</p>
+</div>
+</div>
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> Realización teórica del modelo en el DWH</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Ver: <a href="https://docs.google.com/a/opi.la/spreadsheets/d/1PjxV_xcK31_RicC-BQXJ2zTJtbs4bdRKJSJuFQEks_8/edit?usp=sharing">Documento de trabajo del Modelo</a>
+</p>
+
+<p>
+En la hoja "modelo<sub>segob</sub>" se especifica el mapeo de los conceptos especificados en el DOF y los conceptos en la ontología de opi (al nivel 3).
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-9" class="outline-2">
+<h2 id="sec-9"><span class="section-number-2">9</span> Ubicación de las tablas necesarias</h2>
+<div class="outline-text-2" id="text-9">
+<pre class="example">
+-- Catalogo de estados
+public.inegi_scince_admin1
+-- Catálogo de municipios
+public.inegi_scince_admin2
+-- Polígonos específicos del PRONAPRED (listado)
+public.opi_segob_poligonos
+-- Base de datos analítica con la realización del modelo
+public.modelo_segob
+</pre>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-sec-10" class="outline-2">
+<h2 id="sec-10"><span class="section-number-2">10</span> Relación teórica entre tópicos (extraidos en el LDA) y OSLAA</h2>
+</div>
+
+<div id="outline-container-sec-11" class="outline-2">
+<h2 id="sec-11"><span class="section-number-2">11</span> Descripción del municipio basado en las variables del modelo</h2>
+<div class="outline-text-2" id="text-11">
+
+<div class="figure">
+<p><img src="./../img/20141023_modelo_conceptual_pronapred.jpg" alt="20141023_modelo_conceptual_pronapred.jpg" />
+</p>
+</div>
+
+<p>
+Lluvia de ideas: especificar qué se haría en cada caso (qué modelo, qué medida, qué posible visualización)
+</p>
+</div>
+
+<div id="outline-container-sec-11-1" class="outline-3">
+<h3 id="sec-11-1"><span class="section-number-3">11.1</span> Ranking</h3>
+</div>
+<div id="outline-container-sec-11-2" class="outline-3">
+<h3 id="sec-11-2"><span class="section-number-3">11.2</span> Scoring</h3>
+</div>
+<div id="outline-container-sec-11-3" class="outline-3">
+<h3 id="sec-11-3"><span class="section-number-3">11.3</span> Clustering</h3>
+</div>
+<div id="outline-container-sec-11-4" class="outline-3">
+<h3 id="sec-11-4"><span class="section-number-3">11.4</span> Outliers</h3>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Andrea Fernandez Conde / Juan Pablo Oberhauser / Carlos Pérez</p>
+<p class="date">Created: 2014-11-09 dom 13:43</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.3.1 (<a href="http://orgmode.org">Org</a> mode 8.2.7c)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

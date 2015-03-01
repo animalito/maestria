@@ -1,0 +1,17 @@
+```{r, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE}
+map_cluster <- paste0('![](img/mapa_',f,'.png)')
+biplot <- paste0('![](img/biplot_',f,'.png)')
+```
+
+## `r eval(factores[f])`
+
+### Variables y municipios en el plano principal
+
+`r eval(biplot)`
+
+### Mapa a nivel municipio utilizando aglomerados
+
+`r eval(map_cluster)`
+
+
+

@@ -1,0 +1,14 @@
+---
+title: "pruebitas"
+author: "Andrea Fernández"
+date: "02/12/2014"
+output: html_document
+---
+
+```{r}
+source('load.r')
+par(mfrow=c(2,2))
+```
+![](img/y_indep11.png)
+![](img/y_indep12.png)
+![](img/y_indep13.png)

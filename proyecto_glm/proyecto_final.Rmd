@@ -1,0 +1,413 @@
+---
+title: "Proyecto final GLM"
+author: "Andrea Fernández,  Andrea García y Carlos Petricoli"
+date: "02/12/2014"
+output: pdf_document
+---
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE, error=FALSE, results='hide'}
+library (knitr)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(apsrtable)
+library(xtable)
+
+# Multiple plot function
+#
+# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+# - cols:   Number of columns in layout
+# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+#
+# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+# then plot 1 will go in the upper left, 2 will go in the upper right, and
+# 3 will go all the way across the bottom.
+#
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  require(grid)
+
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+
+  numPlots = length(plots)
+
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                    ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+
+ if (numPlots==1) {
+    print(plots[[1]])
+
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+
+
+# Leemos los datos mas recientes
+cat <- read.csv('data/catalogo.csv')
+
+# Defino los factores de riesgo en bonito para titulos
+fr <- unique(cat$factor_de_riesgo[!is.na(cat$factor_de_riesgo)])
+fr <- fr[which(fr!='violencia')]
+factores <- list(embarazo_temprano = "Embarazo temprano",
+                 marginacion_exclusion_social = "Marginación y exclusión social",
+                 falta_oportunidades_laborales_informalidad_desocupacion = "Falta de oportunidades laborales, informalidad y desocupación",
+                 espacios_publicos_insuficiente_deteriorado = "Espacios públicos insuficientes y deteriorados",
+                 capital_social_participacion_incipiente = "Capital social y participación incipiente",
+                 desercion_escolar = "Deserción escolar",
+                 consumo_abuso_drogas_ilegales = "Consumo y abuso de drogas legales e ilegales",
+                 ambientes_familiares_deteriorados_problematicos = "Ambientes familiares deteriorados y problemáticos")
+source('codigo.R')
+```
+
+
+#Introducción 
+
+Dada la situación de inseguridad que ha experimentado el país en los últimos años la Secretaría de Gobernación  (SEGOB) desarrolló el Programa Nacional de Prevención Social de la Violencia y la Delincuencia (PNPSVD) en 2013 con el objetivo de atender los factores de riesgo y protección vinculados a la violencia y la delincuencia.
+
+La prevención del delito se refiere, en términos generales, a las acciones enfocadas a disminuir las amenazas, el riesgo y las oportunidades de que el delito ocurra mediante la identificación y eliminación de las causas, elementos de oportunidad y condiciones sociales que permiten que la delincuencia se desarrolle y fortalezca  $\footnote{ Prevención del Delito en México: ¿dónde quedo la evidencia?, México Evalúa 2014}$. En la literatura de prevención del delito existen tres enfoques:
+
+1)  Prevención por etapas de desarrollo del delito (Brantingham y Faust, 1976; Van Dijk & de Waard, 1991): Esta corriente se encuentra organizada acuerdo al grado de desarrollo (primario, secundario o terciario) del fenómeno delictivo. Es importante determinar qué etapa es prioritaria de acuerdo al contexto y a los objetivos definidos e identificar cuáles son las condiciones locales que requieren de un mayor énfasis de acuerdo a las metas establecidas para el corto y el largo plazo.
+2)	Prevención del delito por estrategia operacional (Clarke, 1980, 1983, 1992, 1995; Cornish & Clarke, 1986; Farrington, 1994 y 1996; Mayhew et al, 1976;  Tim Hope, 1995; Skogan, 1990;): Este enfoque considera que la motivación para cometer un delito se encuentra en las circunstancias individuales y se divide en tres estrategias operacionales a) situacional, b) comunitaria, y c) de criminalidad. 
+3)	Prevención por orientación de la estrategia (Hawkins y Weis, 1985; Waller y Weiler, 1985; Newman, 1972; Kaplan et al, 1978; Kushmuk y Wittermore, 1981):  Este último se clasifica en dos, de acuerdo a la orientación de la estrategia (a través del desarrollo social) y a través del diseño del entorno.  Para una mejor política pública es altamente recomendable combinar el diseño del entorno y los programas de desarrollo social.
+
+
+Para efectos del Programa (PNPSV), se entiende por factores de riesgo aquellas situaciones de tipo individual, familiar, escolar o social que incrementan las probabilidades de que las personas desarrollen conductas violentas o delictivas $\footnote{ PROGRAMA Nacional para la Prevención Social de la Violencia y la Delincuencia 2014-2018, DOF abril 2014}$. La existencia de estos factores aumenta la probabilidad de que el individuo se vea inmerso en actos de violencia o delincuencia. Es por ello que el PNPSV se concentra en la prevención del delito por estrategia operacional (segunda corriente) enfocándose en las condiciones socioeconómicas que parecen estar asociadas al desarrollo del delito (primaria $\footnote{ Prevención primaria: acción directa para evitar o revertir condiciones socioeconómicas que parecen estar asociadas al desarrollo del delito, tales como la pobreza, la desigualdad, el crecimiento urbano descontrolado, etcétera. Además, busca modificar las características del espacio físico y las relaciones sociales y comunitarias que podrían generar condiciones criminógenas en el largo plazo.}$) y a los grupos en situación de riesgo delictivo (secundaria $\footnote{ Prevención secundaria: identificación e intervención temprana en los individuos o grupos en situación de riesgo delictivo. Ésta busca identificar el desarrollo potencial de actividades delictivas de individuos o grupos vulnerables en las zonas de alto riesgo e intervenir en su dinámica y calidad de vida de tal forma que no cometan delitos.}$).
+
+Para la primera fase del Programa se eligieron 57 demarcaciones de intervención prioritaria y 43 demarcaciones para un segundo ámbito de intervención. Para la elección de las demarcaciones se presume se utilizaron los factores de riesgo asociados a la violencia y a la delincuencia explicados  a continuación. 
+
+Pirámide de la Violencia, Factores de riesgo asociados a la violencia y delincuencia
+
+![ ](img/piramide.png)
+
+
+El objetivo de este estudio es caracterizar los municipios del país entorno a los diferentes factores de riesgo que el programa busca atender. Además, se busca generar recomendaciones para identificar las buenas prácticas y poder hacer una gestión más eficiente de los recursos del presupuesto federal.
+
+
+#Consulta con Expertos 
+
+Para complementar  el estudio se incluyó la opinión de varios expertos entre los cuales destaca la revisión del PNPSV de México Evalúa y los comentarios de expertos del CIDE y COLMEX. 
+
+
+##México Evalúa 
+La ONG México Evalúa realizó el estudio “Prevención del Delito en México: ¿Dónde quedo la Evidencia?” para analizar cuatro puntos estratégicos del PNPSVD 
+1)	Metodología de selección de las demarcaciones prioritarias;
+2)	La distribución de los recursos del programa por demarcación y por eje rector; 
+3)	Los diagnósticos de los proyectos de prevención; y 
+4)	Los indicadores y metas de los mismos. 
+
+La primera crítica se enfoca a la falta de transparencia que hubo en la selección de las 57 demarcaciones prioritarias y la falta de otorgamiento de recursos a las 43 demarcaciones clasificadas como parte de un segundo ámbito de intervención. Cabe mencionar que la distribución de recursos no está vinculada a los objetivos del programa, al parecer sólo utilizaron la proporción de la población y la de homicidios como indicador para distribuir los recursos en las demarcaciones prioritarias. Además la mayoría de los diagnósticos en los proyectos de prevención presentados por las autoridades locales carecen de evidencia sólida, de indicadores y metas que hagan posible la evaluación de su impacto en materia de prevención social. 
+
+##COLMEX – Dr. Arturo Alvarado 
+El Dr. Arturo Alvarado realizó una  investigación comparativa colectiva sobre la violencia juvenil en diez ciudades de cinco países de América Latina $\footnote{ Las ciudades y países del estudio son Buenos Aires, en Argentina; Sao Paulo, en Brasil; Cali y Medellín, en Colombia; la capital de Guatemala; y las ciudades de Cancún, Xalapa, León, Ciudad Juárez y la Ciudad de México.}$ en el estudio “Violencia y Acceso a la Justicia en América Latina”, ¿Cómo perciben la violencia los jóvenes? donde exploraron las tendencias de la muerte violenta que afectan a la juventud y en entorno urbano para conocer los problemas de violencia personal, interpersonal, colectiva y organizada que afectan a la sociedad. 
+Los factores de riesgo que exploran son los siguientes:
+•	Individuales
+•	Familiares
+•	Comunitarios /Contextuales
+•	Escuela
+•	Laborales 
+•	Políticos
+
+Para fines del estudio definen la violencia la como "el uso intencional de la fuerza física o el poder, amenaza o efectivo, contra uno mismo, otra persona o un grupo o comunidad, que cause o tenga muchas probabilidades de causar lesiones, muerte, daños psicológicos, trastornos del desarrollo o privaciones." $\footnote{ Informe mundial sobre la violencia y la salud,  Organización Mundial de la Salud, 2002}$ El problema de la violencia  es un problema de desarrollo y de salud pública, se necesita dar a los jóvenes oportunidades de ser ciudadanos plenos.
+
+ En el caso de México la multiculturalidad del territorio incluye ciudades de nivel bajo, alto y medio de violencia. Realizaron estudios de campo en Cancún, León, Xalapa, Cd. Juárez entre otras. 
+
+En ciudades de niveles bajos de violencia el problema que encontraron se centra en los contrastes de la sociedad, tal como Cancún entre la población local, la temporal y la turística. Donde dos sociedades conviven sin mezclarse e incluso la ley aplica de manera diferenciada. Mientras que en León la sociedad esta mejor cohesionada pero tienen un gran rezago educativo, problemas de adicciones fuertes y desempleo. 
+
+Para Xalapa el proceso de crecimiento urbano desorganizado  y la alta incidencia de grupos delictivos  ha generado  un nivel de violencia muy alto mientras que en Cd Juárez  el problema radica en la falta de acceso a zonas de recreación  y la necesidad de pertenecer a grupos. Esto genera enfrentamientos entre bandas . Además sufren de agresiones de la policía federal y de los militares. 
+
+En general en las áreas de estudio la vida cotidiana es difícil, la relación con las autoridades es complicada y tienen poco acceso a servicios de salud , educativos, empleo y recreacionales. Además son sociedades poco cohesionadas donde las diferencias entre estratos sociales son muy marcados.  Un factor constante en las áreas de estudio es la poca /mala confianza que se tienen en las autoridades. 
+
+
+
+##CIDE -Dr. Carlos Vilalta
+
+El Dr. Vilalta  investiga los elementos espaciales y temporales del crimen, las políticas públicas de prevención y las poblaciones carcelarias. Ha brindado asesoría a gobiernos y organizaciones de la Sociedad Civil. Durante la entrevista el Dr. Vilalta nos recomendó hacer una prueba por tipo de delitos contra los factores de riesgo, en especial con los delitos con menor cifra negra. Enfatizó no meter la tasa de secuestro por la poca representatividad que tiene y mejor intentar con delitos como homicidios y robo vehicular.
+Para una futura investigación recomendó revisar los movimientos intermunicipales para poder calcular una tasa de densidad poblacional más adecuada , así como realizar un “propensity score matching” con la tasa de victimización para hacer grupos de control  e imputar a los municipios no observados.  
+
+
+
+#Descripción de la Base de Datos 
+
+Para este estudio se utilizaron  diferentes bases de datos para generar una base de factores de riesgo  e indicadores de seguridad. La base final contiene 299 variables a nivel municipal  con variables  para cada factor de riesgo y los indicadores de violencia 
+
+ Las fuentes de información primaria son: 
+
++ CONEVAL: Rezago social (censo 2010).
++ INEGI: 
+    + Censo de Población y Vivienda 2010 
+    + Encuesta Nacional sobre la Dinámica de las Relaciones de los Hogares (ENDIREH)
+    + Encuesta  Nacional de Victimización y Percepción sobre Seguridad Pública ENVIPE (2013)
+    + Directorio Estadístico Nacional de Unidades Económicas DENUE 2010
++ SEP 
+    + Censo educativo (2013).
+    + ENLACE (2013).
++ Encuesta Nacional de Cultura  Política y Prácticas Ciudadanas (ENCUP, 2012)
+    + Sistema Nacional de Información de Salud (SINAIS, 2010)
+    + Egresos hospitalarios
+    + Recursos de salud
++ Secretariado Ejecutivo Sistema Nacional de Seguridad Pública (SESNSP )(Variable dependiente).
+ 
+Nota:  de cada fuente de información se tomo el último año  con el que se contaba. Esto debido a la falta de información anual para calcular los factores de riesgo. En el caso de las encuestas  estamos consientes en el muestreo a los municipios . También cabe mencionar que en la prueba ENALCE hay menos registros de los que se reportan.  La base se limpió y siguiendo las recomendaciones de la presentación ajustamos las variables por densidad poblacional, corregimos las NA´s y tomamos  los municipios con población mayor a 40 mil habitantes para quedarnos con las zonas urbanas.  Al final nos quedamos con 505 municipios de los 2459 originales. 
+
+
+#Análisis Exploratorio de Datos 
+
+## Municipios incluidos en el análisis
+
+![](img/municipios_incluidos.png)
+
+![](img/mapa_municipios_urbanos.png)
+
+$\pagebreak$
+
+## Estimación de las variables independientes
+
+Para poder definir los factores de riesgo se agruparon las variables en 8 grupos y se realizó un Análisis de Componentes Principales (PCA) para poder determinar las proxys para cada grupo de factor de riesgo.  Se tomaron las componentes 1 y 2 de cada grupo. 
+
+A continuación se describen las variables por grupo 
+
+![ ](img/factores_riesgo.png)
+
+```{r, echo=FALSE, warning=FALSE, error=FALSE, message=FALSE}
+out <- NULL
+for (f in names(factores)){
+    out <- c(out, knit_child('auxiliares_presentaciones/child_doc_final_mapas.Rmd', quiet = TRUE))
+}
+```
+
+`r paste(out, collapse='\n')`
+
+## Estadística descriptiva de las variables a modelar
+
+### Delitos
+
+Primero, presentamos unos mapas de la variable a explicar.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+source('load.r')
+multiplot(map_homicidios_r,map_robos_r,map_y_total_r, cols=2)
+```
+
+Presentamos la densidad de $y$ y de $log(y)$.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+source('load.r')
+multiplot(y_density,y_log_density, cols=2)
+```
+
+### Delitos y covariables
+
+Utilizamos $y$ y graficamos contra todas las covariables. De esta manera, seremos capaces de distinguir relaciones entre las variables antes de modelar. 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+source('load.r')
+multiplot(y_indep[[1]],y_indep[[2]],y_indep[[3]],y_indep[[4]],
+          y_indep[[5]],y_indep[[6]],y_indep[[7]],y_indep[[8]],
+          y_indep[[9]],y_indep[[10]],y_indep[[11]],y_indep[[12]],
+          y_indep[[13]],y_indep[[14]],y_indep[[15]],y_indep[[16]], cols=4)
+```
+
+Con estos gráficos podemos notar que la primer componente de ambientes familiares deteriorados parece estar muy relacionada con la variable de delitos. Observamos un buen comportamiento también de la primera y la segunda componente de oportunidades laborales.
+
+$\pagebreak$
+
+## Estadistica descriptiva de las covariables
+
+Presentamos los histogramas de las covariables.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+source('load.r')
+multiplot(x_density[[1]],x_density[[2]],x_density[[3]],x_density[[4]],
+          x_density[[5]],x_density[[6]],x_density[[7]],x_density[[8]],
+          x_density[[9]],x_density[[10]],x_density[[11]],x_density[[12]],
+          x_density[[13]],x_density[[14]],x_density[[15]],x_density[[16]], cols=4)
+```
+
+#Modelo 
+
+Siguiendo las recomendaciones del Dr. Vilalta se decidió utilizar tres variables dependientes 
+1.	Delitos = sumatoria de todos los delitos ajustada  por 100mil habitantes
+2.	Robo vehicular  ajustado por 100 mil habitantes
+3.	Homicidios ajustados por 100 mil habitantes
+
+Para las covariables se eligieron los componentes principales 1 y 2 para los 8 grupos de factores de riesgo descritos anteriormente.  Los PCA de los factores consumo y abuso de drogas, embarazo temprano y espacios públicos deteriorados fueron retirados del modelo debido a la baja calidad de los datos reflejada en el nivel de outliers que contenían. En su lugar se utilizaron los Kmeans obtenidos en el análisis de componentes principales. 
+
+$\pagebreak$
+
+#Resultados 
+
+Definimos 6 modelos entre los cuales buscaremos el que mejor ajusta los datos.
+
+#### Modelo 1 
+Delitos =  factores de riesgo 
+glm familia gaussiana
+
+#### Modelo 2 
+log 1+Delitos =  factores de riesgo 
+glm familia gaussiana
+
+#### Modelo 3 
+Delitos =  factores de riesgo 
+glm familia poisson
+
+#### Modelo 4
+ log 1+Delitos =  factores de riesgo 
+glm familia poisson
+
+#### Modelo 5 
+ Delitos =  factores de riesgo 
+glm familia quasi-poisson
+
+#### Modelo 6 
+ log 1+Delitos =  factores de riesgo 
+glm familia quasi- poisson
+
+$\pagebreak$
+
+### Resúmen estadístico de los modelos
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+library(texreg)
+
+names=c("(Intercept)", "pca1_amb_fam", "pca1_cap_soc", "pca1_consumo","pca1_desercion","pca1_embarazo","pca1_esp_pub","pca1_lab_desem", "pca1_marg_exc","pca2_amb_fam", "pca2_cap_soc", "pca2_consumo","pca2_desercion","pca2_embarazo","pca2_esp_pub", "pca2_lab_desem", "pca2_marg_exc")
+model_names=c("mod","mod_log","mod_poiss","mod_poiss_log","mod_q_poiss", "mod_q_poiss_log")
+#print(texreg(list(mod, mod_log, mod_poiss, mod_poiss_log, mod_q_poiss, mod_q_poiss_log), custom.coef.names=names), use.packages=FALSE,align="p{3cm}cccccc", custom.coef.names=names)
+texreg(list(mod, mod_log, mod_poiss, mod_poiss_log, mod_q_poiss, mod_q_poiss_log), custom.coef.names=names)
+```
+
+Como podemos observar a partir de la devianza, los mejores modelos parecen ser aquéllos en los que utilizamos la transformación logarítmica de la variable regresada. Analizamos los supuestos de todos los modelos de manera gráfica para poder reafirmar o rechazar las conclusiones que nos da esta medida.
+
+$\pagebreak$
+
+$\pagebreak$
+
+### Análisis de los supuestos
+
+**Modelo 2**
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+par(mfrow=c(2,2))
+print(plot( mod_log ))
+```
+
+**Modelo 4**
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+par(mfrow=c(2,2))
+print(plot( mod_poiss_log ))
+```
+
+**Modelo 6**
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+par(mfrow=c(2,2))
+print(plot( mod_q_poiss_log ))
+```
+
+Como podemos observar a partir de estos gráficos, la transformación a la variable regresora genera una gran cantidad de problemas con los supuestos del modelo. Por ende, aunque peores en términos de devianza, nos quedamos con el modelo poisson y el quasipoisson.
+
+El modelo **poisson** con la variable sin transformar obtiene peor devianza que el modelo **gaussiano** con la variable $y$ transformada. Sin embargo, los supuestos del modelo se sostienen mejor en el modelo **Poisson**.
+
+Tanto el modelo **poisson** como el **quasipoisson** son iguales en devianza y los supuestos se cumplen de manera aceptable.
+
+## Selección de Variables 
+
+Después de haber elegido el modelo, seleccionamos las variables que mejor nos permiten especificar un modelo parsimonioso y poderoso.
+
+Con el objetivo de poder establecer qué variables tienen un mayor peso sobre la variable regresada, hacemos un árbol y presentamos las variables en orden de importancia. 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
+varImpPlot(bosq,type = 2)
+
+```
+
+Basándonos en los resultados del análisis descriptivo, de las distribuciones de las covariables y en los resultados del árbol, se decide quitar las siguientes variables 
+
++ PC1_pca_desercion_escolar -
++ PC2_pca_espacios_publicos_insuficiente_deteriorado -
++ PC2_pca_consumo_abuso_drogas_ilegales -
++ PC1_pca_espacios_publicos_insuficiente_deteriorado -
++ PC1_pca_embarazo_temprano -
++ PC1_pca_consumo_abuso_drogas_ilegales -
++ PC2_pca_embarazo_temprano
+
+## Modelo final
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='asis'}
+library(texreg)
+
+#names=c("(Intercept)", "pca1_amb_fam", "pca1_cap_soc", "pca1_consumo","pca1_desercion","pca1_embarazo","pca1_esp_pub","pca1_lab_desem", "pca1_marg_exc","pca2_amb_fam", "pca2_cap_soc", "pca2_consumo","pca2_desercion","pca2_embarazo","pca2_esp_pub", "pca2_lab_desem", "pca2_marg_exc")
+
+
+# texreg(list(mod_upd, mod_poiss_upd, mod_q_poiss_upd), custom.coef.names=names)
+texreg(list(mod_upd, mod_poiss_upd, mod_q_poiss_upd))
+```
+
+#Recomendaciones y conclusiones
+
+El análisis muestra que existen diferentes clasificaciones por municipio donde se presentan los factores de riesgo y además se agrupan espacialmente. Por lo tanto la intervención para atacar estos factores debe ser diferenciada por municipio y por tipo de factor de riesgo. Por ejemplo, aquellos municipios donde el deterioro de los espacios públicos aparece como un factor de riesgo, deberán priorizar intervenciones para la mejora de espacios públicos.
+
+ Analizando el gasto del programa destinado a atender los factores de riesgo nos hemos percatado que la mayoría del presupuesto se destina a obras de infraestructura pública (espacios públicos). Dado que este es un programa complementario con SEDATU y SEDESOL entre otras dependencias,  y que el factor de espacios públicos deteriorados es el factor que menos explica los delitos y violencia, es alarmante la proporción del gasto destinada para la atención de este factor. Son necesarios lineamientos claros y un mayor estudio  de los factores de riesgo para poder asignar el presupuesto eficientemente. 
+
+El cálculo de variables que *miden* los conceptos estipulados en el marco conceptual del programa así como su asociación con el delito permite que se establezcan las necesidades de las áreas geográficas entorno a estos factores. Por ende, brinda una manera sistemática de establecer qué municipios son prioritarios como función de los factores de riesgo y su asociación con la violencia que presenta dicha zona y que se quiere atacar. Además, puede proporcionar una manera de establecer una medida de cuán apropiada es la distribución del dinero en las acciones vinculadas a mitigar estos factores de riesgo. Asimismo, permite establecer directrices para generar una distribución más apropiada de los recursos y generar mejores incentivos.
+
+La gran limitante de este modelo, sin embargo, es la cantidad limitada de datos que nos permitan medir los conceptos explicitados en el DOF. Cuando existen, además, como pudimos ver en el análisis descriptivo de los mismos poseen múltiples limitaciones que dificultan mucho el modelado y, en ocasiones, no permiten establecer conclusiones entorno a la geografía de los factores de riesgo y su relación con el delito y la violencia.
+
+#Referencias 
+
+-	Brantingham, P. J., & Faust, F. L. (1976). A Conceptual Model Of Crime Prevention. Crime &Delinquency, 22(3), 284-296.
+-	Cajas, J (2009), Los desviados. Cartografía urbana y criminalización de la vida cotidiana, Miguel Angel Porrua, México, 
+-	Clarke, R. V. (1995), Situational crime prevention. En M. Tonry y Farrington, D. (eds), Building a Safer Society: Strategic Approaches to Crime Prevention Chicago: The University of Chicago Press.
+-	Clarke, R.V. (1980). Situational Crime Prevention: Theory and Practice. British Journal of Criminology, 20, 136-47.
+-	 Clarke, R.V. (1983). Situational Crime Prevention: Its Theoretical Basis and Practical Scope. Crime and Justice: An Annual Review of Research, 4, 225-256.
+-	Clarke, R.V. (1992). Introduction. En R.V. Clarke (ed.), Situational Crime Prevention: Successful Case Studies. Guiderland, NY: Harrow and Heston.
+-	Comisión Intersecretarial para la prevención social de la violencia y delincuencia (2013), “ Bases del PNPSVD  e instalación de la Comisión Intersecretarial”
+-	Cornish, D. B., & Clarke, R. V. (1986). The reasoning criminal: rational choice perspectives on offending. NY: Springer-Verlag.
+-	Diario Oficial de la Federación (2014), Programa Nacional para la Prevención Social de la Violencia y la Delincuencia 2014-2018 http://www.dof.gob.mx/nota_detalle.php?codigo=5343087&fecha=30/04/2014 
+-	Durkheim, E. (2002), Las reglas del método sociológico, Alianza Editorial, Madrid. 
+-	Farrington, D. P. (1996). Understanding and preventing youth crime. Layerthorpe, York Pub. Services.
+-	Farrington, D.P. (1994). Early Developmental prevention of juvenile delinquency. RSA Journal. 5454(142), 22-34.
+-	Garland, D. (2005), La cultura del control. Crimen y orden social en la sociedad contemporánea, Gedisa, Barcelona 
+-	Hein, A. , Factores de riesgo y delincuencia juvenil: revisión de la literatura nacional e internacional.
+-	Hope, T. (1995). Community Crime Prevention. Crime and Justice, 19, 21.
+-	Kaplan H.M., O’Kane K.C., Lavrakas P.J., & Pesce E.J. (1978). Crime Prevention Through Environmental Design: Final Report on Commercial Demonstration, Portland, Oregon Arlington, Va. : Westinghouse Electric Corp.
+-	Kushmuk J., & Whittemore S.L. (1981) A Reevaluation of the Crime Prevention Through Environmental Design Program in Portland, Oregon. Washington, DC: National Institute of Justice.
+-	Merton, R (2002)Teoría y estructuras sociales, FCE, México. 
+-	Messner, S. F., & Tardiff, K. (1986). Economic Inequality and Levels of Homicide: An Analysis of Urban Neighborhoods. Criminology, 24, 297-317.
+-	México Evalúa (2014),  “ Prevención del delito en México:¿Dónde quedo la evidencia?
+-	Mockus, A. (2001). Cultura ciudadana, programa contra la violencia en Santa Fe de Bogotá, Colombia, 1995-1997. Washigton, D.C: BID
+-	Newman, O. (1972). Defensible space; crime prevention through urban design. New York: Macmillan.
+-	Secretaría de Gobernación. (2013b) Programa Nacional de Prevención Social de la Violencia y la Delincuencia (Infografía). http://www.segob.gob.mx/work/models/SEGOB/pdf/verBien.html. 
+-	Secretaría de Gobernación. (2013c, 15 de febrero) Acuerdo por el que s establecen los Lineamientos para el otorgamiento de apoyos a las entidades federativas en el marco del Programa Nacional de Prevención del Delito. Diario Oficial de La Federación, DCCXIII(11). Disponible en: http://dof.gob.mx/nota_detalle.php?codigo=5288039&fecha=15/02/2013.
+-	 Sherman, L. (1998), Preventing Crime: What Works, What Doesn´t, What´s Promising, U.S. Department of Justice, Office of Justice Programs, National Institute of Justice
+-	Skogan, W. G. (1990). Disorder and Decline: Crime and the Spiral of Decay in American Neighborhoods. New York: FreePress.
+-	Sutherland, E. (1988) Ladrones profesionales, La piqueta, Madrid.
+-	Van Dijk, J.M., & de Waard, J. (1991, Septiembre). A Two-Dimensional Typology of Crime Prevention Projects; With a Bibliography. Typology of Crime Prevention Project, Department of Crime Prevention, Netherlands Ministry of Justice, 483 503.
+-	Vilalta, C. & García, B. (2014) “Los factores que incrementan la probabilidad de éxito de las iniciativas fiscales federales en México, 1997-2009”. Política y Gobierno.
+-	Vilalta, C. & Muggah., R. Violent disorder in Ciudad Juarez: A spatial analysis of homicide. Trends in Organized Crime. 
+-	Vilalta, C. (2009) Un modelo descriptivo de la geografía del robo en la Zona Metropolitana del Valle de México. Journal of Latin American Geography, 8(1), 55-80.
+
+
+
+
+
+

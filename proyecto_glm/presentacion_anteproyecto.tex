@@ -1,0 +1,264 @@
+\documentclass[ignorenonframetext,]{beamer}
+\usetheme{Berkeley}
+\usecolortheme{beetle}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\usepackage{lmodern}
+\ifxetex
+  \usepackage{fontspec,xltxtra,xunicode}
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\else
+  \ifluatex
+    \usepackage{fontspec}
+    \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+    \newcommand{\euro}{€}
+  \else
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+      \fi
+\fi
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+
+% Comment these out if you don't want a slide with just the
+% part/section/subsection/subsubsection title:
+\AtBeginPart{
+  \let\insertpartnumber\relax
+  \let\partname\relax
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \let\insertsectionnumber\relax
+  \let\sectionname\relax
+  \frame{\sectionpage}
+}
+\AtBeginSubsection{
+  \let\insertsubsectionnumber\relax
+  \let\subsectionname\relax
+  \frame{\subsectionpage}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+
+\title{Anteproyecto GLM}
+\author{Carlos Petricioli, Andrea Fernandez, Andrea Garcia}
+\date{09/11/2014}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{Introducción}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Nos interesa modelar la violencia y el delito en el territorio
+  mexicano enfocándonos en las zonas definidas como \emph{prioritarias}
+  y teniendo como base los factores de \emph{riesgo identificados} como
+  precursores de la violencia y el delito.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Planteamiento del problema}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  A partir de la creación del Programa Nacional para la Prevención
+  Social de la Violencia y la Delincuencia 2014-2018, se ha creado la
+  necesidad de tener un conjunto ordenado de indicadores que permita dar
+  seguimiento, evaluar y generar las recomendaciones necesarias para que
+  año a año se cumpla el objeto de atender los factores de riesgo y de
+  protección vinculados a la violencia y a la delincuencia.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Planteamiento del problema}
+
+\begin{itemize}
+\item
+  Evaluación de las variables asociadas a los factores de riesgo.
+\item
+  Modelo explicativo con reporte.
+\item
+  Posible propuesta de indicadores futuros.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Fuentes de datos}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  CONEVAL: Resago social (censo 2010).
+\item
+  INEGI:
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Censo
+  \item
+    Encuesta Nacional sobre la Dinaámica de las Relaciones de los
+    Hogares (ENDIREH)
+  \item
+    Encuesta ENVIPE (2013)
+  \item
+    DENUE
+  \end{itemize}
+\item
+  SEP
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Censo educativo (2013).
+  \item
+    ENLACE (2013).
+  \end{itemize}
+\item
+  ENCUP (Gob e INEGI).
+\item
+  SINAIS
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Egresos hospitalarios
+  \item
+    Recursos de salud
+  \end{itemize}
+\item
+  SESNSP (Variable dependiente).
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Problemas con los datos y modelado.}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Años.
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    De cada fuente de los datos se toma el último año.
+  \end{itemize}
+\item
+  Medición de los factores de riesgo.
+\item
+  Encuestas
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Son estatales.
+  \item
+    A todos los municipios.
+  \item
+    Considerar el muestreso de los municipios (No es trivial).
+  \end{itemize}
+\item
+  Espacios públicos.
+\item
+  NA's.
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Registros admin: 0's.
+  \item
+    Encuestas: muestreo en todos los mun.
+  \end{itemize}
+\item
+  Enlace:
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Hay menos registros públicos que los se reportan.
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Modelo}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  La idea es modelar algún agregado de los delitos por municipio.
+\item
+  Controlar por el tipo de delito.
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Violencia, no violencia.
+  \item
+    Bancos, empresa, otros.
+  \item
+    Robo común, homicidios, delitos patrimoniales.
+  \item
+    Transportistas, sindicatos, particulares, negocios.
+  \end{itemize}
+\item
+  Utilizar como variables explicativas los factores de riesgo.
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Individuales, familiares, comunitarios, escolares, sociales.
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\section{Estadística Descriptiva
+Inicial}\label{estadistica-descriptiva-inicial}
+
+\begin{frame}{Embarazo temprano}
+
+\end{frame}
+
+\begin{frame}{Marginación y exclusión social}
+
+\end{frame}
+
+\begin{frame}{Falta de oportunidades laborales, informalidad y
+desocupación}
+
+\end{frame}
+
+\begin{frame}{Espacios públicos insuficientes y deteriorados}
+
+\end{frame}
+
+\begin{frame}{Capital social y participación incipiente}
+
+\end{frame}
+
+\begin{frame}{Deserción escolar}
+
+\end{frame}
+
+\begin{frame}{Consumo y abuso de drogas legales e ilegales}
+
+\end{frame}
+
+\begin{frame}{Ambientes familiares deteriorados y problemáticos}
+
+\end{frame}
+
+\end{document}
