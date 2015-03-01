@@ -2,6 +2,7 @@ library(plyr)
 library(dplyr)
 library(tidyr)
 library(stringr)
+library(testit)
 
 calculateRate <- function(x, rate, control.pop) {
     if(is.numeric(x)) {
@@ -11,8 +12,10 @@ calculateRate <- function(x, rate, control.pop) {
 }
 
 setwd("~/Dropbox/maestria/maestria/src")
-data <- read.table('../data/segob_secretariadoEjecutivoIncidenciaDelictiva_municipios.csv', dec=',', header=T, sep=',',quote = "\"'", stringsAsFactors=F)
+data <- read.table('../data/segob_secretariadoEjecutivoIncidenciaDelictiva_municipios.csv', dec='.', header=T, sep=',',quote = "\"'", stringsAsFactors=F)
 names(data) <- tolower(names(data))
+
+data[,9:21] <- lapply(data[,9:21],function(x){as.numeric(gsub(",", "", x))})
 
 #dim(data)
 
@@ -67,3 +70,12 @@ df_m <-mutate(df_m,
               robos_r=calculateRate(robos, rate=100000, control.pop=inegi_cpv_pob1))
 
 write.csv(df_m, '../data/dependent.csv')
+
+#assert("total de delitos del fuero comun en 2013 es 1681077", df_m$todos, na.rm=T) == 1681077)
+
+# mergeamos con results
+
+results <- readRDS('../data/results.rds')
+
+df_f <- merge(results, df_m, by="cvegeo", all.x=T, all.y=F)
+saveRDS(df_f, '../data/model.rds')
