@@ -59,7 +59,7 @@ out <- c(out, knit_child('problemas/1.Rmd', quiet = TRUE))
 
 ##2
 Aprender estructura (3). Con el objetico de crear una red más robusta. Genera
-muestras bootstrap (a partir de los datos de entrenamienti), y calcula una red
+muestras bootstrap (a partir de los datos de entrenamiento), y calcula una red
 promedio. Recuerda incluir tu conocimiento experto (whitelists/blacklists).
 
 *Describe cuantas muestras usaste y el umbral que usaste para incluir un arco en
