@@ -10,6 +10,7 @@
 ```{r}
 
 # para exportar la red a samiam 
+options(digits=4)
 write.net ("fit_mle.net", fit_mle)
 
 comp_fit_mle <- compile(as.grain(fit_mle)) ## ya recvisé y se supone que si poporta este tipo de redes :S

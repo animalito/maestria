@@ -20,6 +20,8 @@ registraban 16 atributos que incluyen la respuesta del cliente, esto es si el
 cliente contrató el producto.
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
+options(digits=4)
+options(scipen=999)
 source('src/load_libraries.r', chdir=T)
 ```
 
