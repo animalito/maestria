@@ -16,7 +16,7 @@ probs_est_mle
 ```
  Esta definida para todas las celdas, sin embargo tenemos una matriz rala. Para solucionar vamos a suavizar y usar un modelo logístico para ver cuál funciona mejor
  
- Suavizamiento 
+#### Suavizamiento 
 ```{r}
 fit_iss <- bn.fit(anet, data = mkt_train, method = 'bayes', iss =100)
 fit_iss
@@ -37,7 +37,7 @@ probs_est_bayes_b <- data.frame(fit_iss_b[['housing']]$prob)
 names(probs_est_bayes_b)[2] <- 'bayes_b'
 
 #las unimos 
-probs_2 <- join(probs_est_mle, probs_est_bayes, probs_est_bayes_s, probs_est_bayes_b)
+probs_2 <- join(join(probs_est_mle, probs_est_bayes), join(probs_est_bayes_s, probs_est_bayes_b))
 probs_2 #### no sé por que no quiere poner la tablita !!!!!!!
 
 
@@ -47,10 +47,11 @@ probs_2 #### no sé por que no quiere poner la tablita !!!!!!!
 
 En general comparando máxima verosimilitud  y los diferentes tamaños de muestra imaginaria nos dan lo mismo 
 
-##Modelo Logístico 
-```{r}
+###Modelo Logístico 
+```{r, eval=F}
 dat_res <- mkt_train %>%
   group_by(housing, previous, poutcome, duration.bin, y)%>%
+  %>% ungroup() %>%
   summarise (num = n ()) %>%
   group_by(housing, previous, poutcome, duration.bin) %>%
   mutate (total = sum(num)) %>%
@@ -69,8 +70,9 @@ ggplot(dat_res_sub, aes(x = housing, y = previous, colour = duration.bin,
   scale_size_continuous("# obs.", labels = cuadrado) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
 
+```
 
-
+```{r, eval=T}
 # modelo nulo 
 mod_1 <- bayesglm(y ~ 1, data = mkt_train,
   prior.scale = 2.5, family = 'binomial')
@@ -90,10 +92,11 @@ mod_1$aic
 mod_2$aic
 mod_3$aic
 ```
+
 El modelo saturado es el que tiene menor AIC 
 
-Predecir 
-```{r}
+#### Predecir 
+```{r, eval=T}
 grid_1 <- expand.grid(list(housing = unique(mkt_test$housing), 
   previous = unique(mkt_test$previous),
   poutcome = unique(mkt_test$poutcome),
@@ -136,10 +139,3 @@ ggplot(dat.cal, aes(x=as.numeric(as.character(grupo.prob)), y=prob.emp)) + geom_
 ```
  Ahora predecimos con el modelo de máxima verosimilitud 
  
-```{r}
-
-
-
-
-```
-

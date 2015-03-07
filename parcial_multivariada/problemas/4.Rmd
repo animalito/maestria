@@ -10,7 +10,7 @@
 ```{r}
 
 # para exportar la red a samiam 
-write.net ("~/Documents/maestria animalito/parcial_multivariada/fit_mle.net", fit_mle)
+write.net ("fit_mle.net", fit_mle)
 
 comp_fit_mle <- compile(as.grain(fit_mle)) ## ya recvisé y se supone que si poporta este tipo de redes :S
 
