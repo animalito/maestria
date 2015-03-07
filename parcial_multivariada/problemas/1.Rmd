@@ -15,12 +15,22 @@ Excluimos:
 
 ```{r}
 load("../datos//mkt.Rdata")
+sustituir <- function(x){
+    x <- gsub("\\[|\\(","de", x, perl=T)
+    x <- gsub("||]|\\)", "", x, perl=T)
+    x <- gsub("\\)", "", x)
+    x <- gsub("\\,", "a", x, perl=T)
+    x <- gsub(" ", "", x)
+    as.factor(x)
+}
+
 mkt$age.bin <- cut2(mkt$age, cuts=seq(from=17, to=96, by=7)) 
-#mkt$age.bin <- gsub("\\[|\\]|\\)|\\(", "", mkt$age.bin, perl=T)
+mkt$age.bin <- sustituir(mkt$age.bin)
 
 mkt$balance.bin <- as.factor(ifelse(mkt$balance < 0, "deudor", "ahorrador"))
-#mkt$balance.bin <- gsub("\\[|\\]|\\)|\\(", "", mkt$balance.bin, perl=T)
+
 mkt$duration.bin <- cut2(mkt$duration, cuts=quantile(mkt$duration))
+mkt$duration.bin <- sustituir(mkt$duration.bin)
 
 mkt$previous <- as.factor(ifelse(mkt$previous==0, "no", "yes"))
 mkt$campaign <- as.factor(mkt$campaign)

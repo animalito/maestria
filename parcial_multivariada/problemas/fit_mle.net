@@ -47,7 +47,7 @@ node y
 }
 node age.bin 
 {
-  states = ( "[17_24_" "[24_31_" "[31_38_" "[38_45_" "[45_52_" "[52_59_" "[59_66_" "[66_73_" "[73_80_" "[80_87_" "[87_94_" "[94_95]" );
+  states = ( "de17a24" "de24a31" "de31a38" "de38a45" "de45a52" "de52a59" "de59a66" "de66a73" "de73a80" "de80a87" "de87a94" "de94a95]" );
 }
 node balance.bin 
 {
@@ -55,7 +55,7 @@ node balance.bin
 }
 node duration.bin 
 {
-  states = ( "[   0_ 103_" "[ 103_ 180_" "[ 180_ 319_" "[ 319_4918]" );
+  states = ( "de0a103" "de103a180" "de180a319" "de319a4918]" );
 }
 potential ( job | housing loan ) 
 {
