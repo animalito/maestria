@@ -94,9 +94,13 @@ mkt_test &lt;- anti_join(mkt, mkt_train)</code></pre>
 </ul>
 <p>Excluimos: - id: no queremos incormporar el id de las llamadas - contact: los tipos de comunicacion en la base son telefonicos al fin y al cabo. Realmente, no hay diferencias en canales y son el mismo medio. Dado que el otro es desconocido, no es como si pudieran hacer un cambio por eficiencia de canales.</p>
 <pre class="r"><code>load(&quot;../datos//mkt.Rdata&quot;)
-mkt$age.bin &lt;- cut2(mkt$age, cuts=seq(from=17, to=96, by=7))
+mkt$age.bin &lt;- cut2(mkt$age, cuts=seq(from=17, to=96, by=7)) 
+#mkt$age.bin &lt;- gsub(&quot;\\[|\\]|\\)|\\(&quot;, &quot;&quot;, mkt$age.bin, perl=T)
+
 mkt$balance.bin &lt;- as.factor(ifelse(mkt$balance &lt; 0, &quot;deudor&quot;, &quot;ahorrador&quot;))
+#mkt$balance.bin &lt;- gsub(&quot;\\[|\\]|\\)|\\(&quot;, &quot;&quot;, mkt$balance.bin, perl=T)
 mkt$duration.bin &lt;- cut2(mkt$duration, cuts=quantile(mkt$duration))
+
 mkt$previous &lt;- as.factor(ifelse(mkt$previous==0, &quot;no&quot;, &quot;yes&quot;))
 mkt$campaign &lt;- as.factor(mkt$campaign)
 
@@ -1745,6 +1749,264 @@ ggplot(dat.cal, aes(x=as.numeric(as.character(grupo.prob)), y=prob.emp)) + geom_
 <h2>4</h2>
 <p>Queries de probabilidad condicional (1). Para estos incisos puedes usar gRain o samiam:</p>
 <p><em><span class="math">\(p(Y=1) =\)</span> </em><span class="math">\(p(Y=1|JOB=unemployed, MARITAL=single, EDUCATION=primary) =\)</span> *<span class="math">\(p(JOB=admin.|MARITAL=married, EDUCATION=primary, BALANCE=1000) =\)</span></p>
+<div id="probabilidades-condicionales" class="section level3">
+<h3>Probabilidades condicionales</h3>
+<p>¿¿??¿¿¿ Hola Animal, :) Para correr el samiam nos estan haciendo ruido las variables que tienen intervalos las que hiciste con cut2 , por que la reina de SAMIAN no acepta [] ni() si logras que corra el complile as grain creo que es mejor para los queries te dejo el esqueleto si es que te gusta la 3</p>
+<p>oka, dame un ratin para ver que show</p>
+<pre class="r"><code># para exportar la red a samiam 
+write.net (&quot;fit_mle.net&quot;, fit_mle)
+
+comp_fit_mle &lt;- compile(as.grain(fit_mle)) ## ya recvisé y se supone que si poporta este tipo de redes :S</code></pre>
+<pre><code>## Warning in as.grain.bn.fit(fit_mle): the gRain package does not support
+## ordinal networks, disregarding the ordering of the levels.</code></pre>
+<pre class="r"><code>query_1 &lt;- setEvidence(comp_fit_mle, nodes = c('y'), 
+  states = c('yes'))
+querygrain(query_1)</code></pre>
+<pre><code>## $job
+## job
+##        admin.   blue-collar  entrepreneur     housemaid    management 
+##   0.115290878   0.217271826   0.032424275   0.027245115   0.208384062 
+##       retired self-employed      services       student    technician 
+##   0.049832713   0.034023576   0.091099038   0.020507662   0.168243609 
+##    unemployed       unknown 
+##   0.029335137   0.006342109 
+## 
+## $housing
+## housing
+##        no       yes 
+## 0.4477678 0.5522322 
+## 
+## $loan
+## loan
+##     no    yes 
+## 0.8402 0.1598 
+## 
+## $balance.bin
+## balance.bin
+##  ahorrador     deudor 
+## 0.91648663 0.08351337 
+## 
+## $default
+## default
+##         no        yes 
+## 0.98169135 0.01830865 
+## 
+## $month
+## month
+##         apr         aug         dec         feb         jan         jul 
+## 0.063644550 0.134401120 0.005136384 0.060475060 0.031677782 0.150414797 
+##         jun         mar         may         nov         oct         sep 
+## 0.116301658 0.010737336 0.307452503 0.088660665 0.017516192 0.013581952 
+## 
+## $previous
+## previous
+##        no       yes 
+## 0.8090192 0.1909808 
+## 
+## $poutcome
+## poutcome
+##    failure      other    success    unknown 
+## 0.10192729 0.04182193 0.04705571 0.80919508 
+## 
+## $age.bin
+## age.bin
+##      [17,24)      [24,31)      [31,38)      [38,45)      [45,52) 
+## 0.0113418858 0.1439186146 0.2950996404 0.2029794015 0.1619125760 
+##      [52,59)      [59,66)      [66,73)      [73,80)      [80,87) 
+## 0.1274474649 0.0409836156 0.0081405909 0.0053726732 0.0024030062 
+##      [87,94)      [94,95] 
+## 0.0003003981 0.0001001327 
+## 
+## $marital
+## marital
+##  divorced   married    single 
+## 0.1143785 0.6031370 0.2824845 
+## 
+## $campaign
+## campaign
+##            1            2            3            4            5 
+## 3.904638e-01 2.770592e-01 1.212937e-01 7.610267e-02 3.891130e-02 
+##            6            7            8            9           10 
+## 2.877977e-02 1.631674e-02 1.104631e-02 7.187216e-03 6.246923e-03 
+##           11           12           13           14           15 
+## 4.235411e-03 3.901772e-03 2.972247e-03 1.883081e-03 1.749266e-03 
+##           16           17           18           19           20 
+## 1.751061e-03 1.716261e-03 1.023156e-03 1.155176e-03 1.023156e-03 
+##           21           22           23           24           25 
+## 7.921206e-04 3.630553e-04 5.280804e-04 4.950754e-04 3.630553e-04 
+##           26           27           28           29           30 
+## 2.640402e-04 1.980302e-04 4.290653e-04 2.970452e-04 1.980302e-04 
+##           31           32           33           34           35 
+## 2.970452e-04 1.980302e-04 6.601005e-05 9.901508e-05 1.320201e-04 
+##           36           37           38           39           41 
+## 9.901508e-05 6.601005e-05 3.300503e-05 0.000000e+00 3.300503e-05 
+##           43           44           46           50           51 
+## 9.901508e-05 3.300503e-05 3.300503e-05 0.000000e+00 0.000000e+00 
+##           55           58 
+## 3.300503e-05 3.300503e-05 
+## 
+## $education
+## education
+##    primary  secondary   tertiary    unknown 
+## 0.15334264 0.51448773 0.29163195 0.04053768 
+## 
+## $duration.bin
+## duration.bin
+## [   0, 103) [ 103, 180) [ 180, 319) [ 319,4918] 
+##  0.02401606  0.11030357  0.23160286  0.63407751</code></pre>
+<pre class="r"><code>query_2 &lt;- setEvidence(comp_fit_mle, 
+                       nslist=list(y=&quot;yes&quot;, job=&quot;unemployed&quot;, marital=&quot;single&quot;, education=&quot;primary&quot;))
+querygrain(query_2)</code></pre>
+<pre><code>## $housing
+## housing
+##        no       yes 
+## 0.5879099 0.4120901 
+## 
+## $loan
+## loan
+##         no        yes 
+## 0.90849789 0.09150211 
+## 
+## $balance.bin
+## balance.bin
+##  ahorrador     deudor 
+## 0.93190738 0.06809262 
+## 
+## $default
+## default
+##         no        yes 
+## 0.98450461 0.01549539 
+## 
+## $month
+## month
+##         apr         aug         dec         feb         jan         jul 
+## 0.060739881 0.170415727 0.006869792 0.065469404 0.035239900 0.138743039 
+##         jun         mar         may         nov         oct         sep 
+## 0.127255853 0.013923102 0.254627068 0.087096319 0.022212667 0.017407248 
+## 
+## $previous
+## previous
+##        no       yes 
+## 0.8073374 0.1926626 
+## 
+## $poutcome
+## poutcome
+##    failure      other    success    unknown 
+## 0.09657613 0.04080586 0.05508293 0.80753508 
+## 
+## $age.bin
+## age.bin
+##      [17,24)      [24,31)      [31,38)      [38,45)      [45,52) 
+## 0.0223767132 0.3695048495 0.3577279581 0.1454913985 0.0644972742 
+##      [52,59)      [59,66)      [66,73)      [73,80)      [80,87) 
+## 0.0351764931 0.0049755341 0.0002497793 0.0000000000 0.0000000000 
+##      [87,94)      [94,95] 
+## 0.0000000000 0.0000000000 
+## 
+## $campaign
+## campaign
+##            1            2            3            4            5 
+## 3.906722e-01 2.770507e-01 1.212715e-01 7.604750e-02 3.889973e-02 
+##            6            7            8            9           10 
+## 2.876161e-02 1.630630e-02 1.103509e-02 7.177579e-03 6.235831e-03 
+##           11           12           13           14           15 
+## 4.228880e-03 3.895176e-03 2.966447e-03 1.879545e-03 1.745630e-03 
+##           16           17           18           19           20 
+## 1.747800e-03 1.712694e-03 1.021029e-03 1.152775e-03 1.021029e-03 
+##           21           22           23           24           25 
+## 7.904740e-04 3.623006e-04 5.269827e-04 4.940462e-04 3.623006e-04 
+##           26           27           28           29           30 
+## 2.634913e-04 1.976185e-04 4.281734e-04 2.964277e-04 1.976185e-04 
+##           31           32           33           34           35 
+## 2.964277e-04 1.976185e-04 6.587283e-05 9.880925e-05 1.317457e-04 
+##           36           37           38           39           41 
+## 9.880925e-05 6.587283e-05 3.293642e-05 0.000000e+00 3.293642e-05 
+##           43           44           46           50           51 
+## 9.880925e-05 3.293642e-05 3.293642e-05 0.000000e+00 0.000000e+00 
+##           55           58 
+## 3.293642e-05 3.293642e-05 
+## 
+## $duration.bin
+## duration.bin
+## [   0, 103) [ 103, 180) [ 180, 319) [ 319,4918] 
+##  0.02387354  0.10987791  0.23179100  0.63445755</code></pre>
+<pre class="r"><code>query_3 &lt;- setEvidence(comp_fit_mle,
+                       nslist=list(job=&quot;admin.&quot;, marital=&quot;married&quot;, education=&quot;primary&quot;, balance.bin=&quot;ahorrador&quot;))
+querygrain(query_3)</code></pre>
+<pre><code>## $housing
+## housing
+##        no       yes 
+## 0.4074242 0.5925758 
+## 
+## $loan
+## loan
+##        no       yes 
+## 0.8255779 0.1744221 
+## 
+## $default
+## default
+##          no         yes 
+## 0.990351321 0.009648679 
+## 
+## $month
+## month
+##         apr         aug         dec         feb         jan         jul 
+## 0.064148954 0.125008775 0.004490228 0.058491310 0.030326090 0.154734103 
+##         jun         mar         may         nov         oct         sep 
+## 0.113874359 0.009658806 0.322912084 0.088443679 0.015768186 0.012143427 
+## 
+## $previous
+## previous
+##        no       yes 
+## 0.8170667 0.1829333 
+## 
+## $poutcome
+## poutcome
+##    failure      other    success    unknown 
+## 0.10790298 0.04036239 0.03449618 0.81723845 
+## 
+## $age.bin
+## age.bin
+##      [17,24)      [24,31)      [31,38)      [38,45)      [45,52) 
+## 0.0012128988 0.0899290196 0.2977927716 0.2294095404 0.2138094316 
+##      [52,59)      [59,66)      [66,73)      [73,80)      [80,87) 
+## 0.1312701071 0.0346936991 0.0015094246 0.0003731072 0.0000000000 
+##      [87,94)      [94,95] 
+## 0.0000000000 0.0000000000 
+## 
+## $campaign
+## campaign
+##            1            2            3            4            5 
+## 3.894667e-01 2.771000e-01 1.214000e-01 7.636667e-02 3.896667e-02 
+##            6            7            8            9           10 
+## 2.886667e-02 1.636667e-02 1.110000e-02 7.233333e-03 6.300000e-03 
+##           11           12           13           14           15 
+## 4.266667e-03 3.933333e-03 3.000000e-03 1.900000e-03 1.766667e-03 
+##           16           17           18           19           20 
+## 1.766667e-03 1.733333e-03 1.033333e-03 1.166667e-03 1.033333e-03 
+##           21           22           23           24           25 
+## 8.000000e-04 3.666667e-04 5.333333e-04 5.000000e-04 3.666667e-04 
+##           26           27           28           29           30 
+## 2.666667e-04 2.000000e-04 4.333333e-04 3.000000e-04 2.000000e-04 
+##           31           32           33           34           35 
+## 3.000000e-04 2.000000e-04 6.666667e-05 1.000000e-04 1.333333e-04 
+##           36           37           38           39           41 
+## 1.000000e-04 6.666667e-05 3.333333e-05 0.000000e+00 3.333333e-05 
+##           43           44           46           50           51 
+## 1.000000e-04 3.333333e-05 3.333333e-05 0.000000e+00 0.000000e+00 
+##           55           58 
+## 3.333333e-05 3.333333e-05 
+## 
+## $duration.bin
+## duration.bin
+## [   0, 103) [ 103, 180) [ 180, 319) [ 319,4918] 
+##   0.2468821   0.2512642   0.2485981   0.2532555 
+## 
+## $y
+## y
+##        no       yes 
+## 0.8823106 0.1176894</code></pre>
+</div>
 </div>
 <div id="section-4" class="section level2">
 <h2>5</h2>

@@ -18,16 +18,11 @@ query_1 <- setEvidence(comp_fit_mle, nodes = c('y'),
   states = c('yes'))
 querygrain(query_1)
 
-
-query_2 <- setEvidence(comp_fit_mle, nodes = c('y', 'job', 'marital', 'education'), 
-  states = c('yes', 'unemployed', 'single', 'primary'))
+query_2 <- setEvidence(comp_fit_mle, 
+                       nslist=list(y="yes", job="unemployed", marital="single", education="primary"))
 querygrain(query_2)
 
-
-query_3 <- setEvidence(comp_fit_mle, nodes = c( 'job', 'marital', 'education', 'balance.bin'), 
-  states = c('admin', 'married', 'primary','ahorrador' ))
+query_3 <- setEvidence(comp_fit_mle,
+                       nslist=list(job="admin.", marital="married", education="primary", balance.bin="ahorrador"))
 querygrain(query_3)
-
-
-
 ```

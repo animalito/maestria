@@ -117,6 +117,11 @@ samiam:
 *$p(Y=1|JOB=unemployed, MARITAL=single, EDUCATION=primary) =$
 *$p(JOB=admin.|MARITAL=married, EDUCATION=primary, BALANCE=1000) =$
 
+```{r, echo=F, error=F, message=F, warning=F}
+out <- NULL
+out <- c(out, knit_child('problemas/4.Rmd', quiet = TRUE))
+```
+`r paste(out, collapse='\n')`
 
 ##5
 
