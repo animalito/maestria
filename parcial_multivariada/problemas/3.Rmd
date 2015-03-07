@@ -1,0 +1,145 @@
+### Modelos locales
+
+Dado el modelo promedio  Y depende solamente de housing, previous, outcome, y duration.bin
+Ajustamos por Máxima verosimilitud y revisamos que  este definida para todas las 
+celdas.
+
+```{r}
+
+fit_mle <- bn.fit(anet, data = mkt_train, method = 'mle')
+fit_mle
+# condicionando a housing 
+probs_est_mle <- data.frame(fit_mle[['housing']]$prob)
+names(probs_est_mle)[2] <- 'mle'
+probs_est_mle
+
+```
+ Esta definida para todas las celdas, sin embargo tenemos una matriz rala. Para solucionar vamos a suavizar y usar un modelo logístico para ver cuál funciona mejor
+ 
+ Suavizamiento 
+```{r}
+fit_iss <- bn.fit(anet, data = mkt_train, method = 'bayes', iss =100)
+fit_iss
+
+probs_est_bayes <- data.frame(fit_iss[['housing']]$prob)
+names(probs_est_bayes)[2] <- 'bayes'
+probs_1 <- join(probs_est_mle, probs_est_bayes)
+probs_1
+
+# si disminuimos iss a 50  "smaller"
+fit_iss_s <- bn.fit(anet, data = mkt_train, method = 'bayes', iss =50)
+probs_est_bayes_s <- data.frame(fit_iss_s[['housing']]$prob)
+names(probs_est_bayes_s)[2] <- 'bayes_s'
+
+# si aumentamos iss a 150  "bigger"
+fit_iss_b <- bn.fit(anet, data = mkt_train, method = 'bayes', iss =150)
+probs_est_bayes_b <- data.frame(fit_iss_b[['housing']]$prob)
+names(probs_est_bayes_b)[2] <- 'bayes_b'
+
+#las unimos 
+probs_2 <- join(probs_est_mle, probs_est_bayes, probs_est_bayes_s, probs_est_bayes_b)
+probs_2 #### no sé por que no quiere poner la tablita !!!!!!!
+
+
+
+# podríamos hacer validacion cruzada  aunque dado que tenemos muchas observaciones creo mle fuenciona bien 
+```
+
+En general comparando máxima verosimilitud  y los diferentes tamaños de muestra imaginaria nos dan lo mismo 
+
+##Modelo Logístico 
+```{r}
+dat_res <- mkt_train %>%
+  group_by(housing, previous, poutcome, duration.bin, y)%>%
+  summarise (num = n ()) %>%
+  group_by(housing, previous, poutcome, duration.bin) %>%
+  mutate (total = sum(num)) %>%
+  ungroup () %>%
+  mutate (prop= num /total)
+dat_res
+
+dat_res_sub <- filter(dat_res, y=='yes', num >5)
+ 
+cuadrado <- function(x){x ^ 2}
+ggplot(dat_res_sub, aes(x = housing, y = previous, colour = duration.bin, 
+  group = duration.bin)) + 
+  geom_point(aes(size = sqrt(num))) +
+  geom_jitter() +
+  facet_wrap(~poutcome) + 
+  scale_size_continuous("# obs.", labels = cuadrado) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+
+
+library(arm)
+# modelo nulo 
+mod_1 <- bayesglm(y ~ 1, data = mkt_train,
+  prior.scale = 2.5, family = 'binomial')
+display(mod_1)
+
+#modelo sencillo   
+mod_2 <- bayesglm(y ~ housing + previous+ poutcome + duration.bin, data = mkt_train,
+  prior.scale = 2.5, family = 'binomial')
+display(mod_2)
+
+#modelo saturado
+mod_3 <- bayesglm(y ~ housing * previous * poutcome *duration.bin, data = mkt_train,
+  prior.scale = 2.5, family = 'binomial')
+display(mod_3)
+
+mod_1$aic
+mod_2$aic
+mod_3$aic
+```
+El modelo saturado es el que tiene menor AIC 
+
+Predecir 
+```{r}
+grid_1 <- expand.grid(list(housing = unique(mkt_test$housing), 
+  previous = unique(mkt_test$previous),
+  poutcome = unique(mkt_test$poutcome),
+  duration.bin= unique(mkt_test$duration.bin)), stringsAsFactors=FALSE)
+
+grid_1$prob <- predict(mod_3, grid_1, type='response')
+
+
+
+grid_2 <- filter(grid_1, previous!='unknown')
+ggplot(grid_2, aes(x = previous, y = prob, colour = duration.bin, group = duration.bin))+ 
+  geom_jitter() +
+  facet_wrap(~ housing) + 
+  theme(axis.text.x=element_text(angle = 45, hjust = 1))
+
+#incluyendo intervalos de probabilidad 
+library (Hmisc)
+#library (gRain) No lo usamos por que no compila si con el predict.grain
+
+sims_1 <- sim(mod_3, 100)
+mod_3$coefficients <- sims_1@coef[3,]
+grid_1$prob <- predict(mod_3, grid_1, type='response')
+display(mod_3)
+
+dat_x <- ddply(data.frame(i=1:100), 'i', function(df){
+  mod_3$coefficients <- sims_1@coef[df$i,]
+  grid_1$prob <- predict(mod_3, grid_1, type='response')
+  grid_1$sim.no <- df$i
+  grid_1
+})
+
+
+mkt_train$prob.1 <- predict(mod_3, type='response')
+mkt_train$grupo.prob <- cut2(mkt_train$prob.1, g=20, levels.mean=TRUE)
+dat.cal <- ddply(mkt_train, c('grupo.prob'), summarise, total=length(housing),
+  total.y=sum(y=='yes'))
+dat.cal$prob.emp <- dat.cal$total.y/dat.cal$total
+ggplot(dat.cal, aes(x=as.numeric(as.character(grupo.prob)), y=prob.emp)) + geom_point() +
+  geom_abline(intercept=0,slope=1)
+```
+ Ahora predecimos con el modelo de máxima verosimilitud 
+ 
+```{r}
+
+
+
+
+```
+
