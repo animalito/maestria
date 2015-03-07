@@ -3,7 +3,7 @@
 Realizaremos 500 muestras bootstrap del mismo tamaño que el conjunto de entrenamiento. Mantendremos como criterio el bic y el conocimiento de experto que se introdujo en la generación de la lista negra del problema 1.
 
 
-```{r, warning=F, error=F, message=F, fig.cap="Gráfica del problema 1 con los pesos extraidos vía bootstrap"}
+```{r, warning=F, error=F, message=F, fig.cap="Gráfica del problema 1 con los pesos extraidos vía bootstrap", cache=T}
 bs <- boot.strength(mkt_train, R=500, m=30000, algorithm='hc', algorithm.args=list(score='bic', blacklist=b.list))
 kable(head(bs %>% arrange(-strength), n=20))
 

@@ -102,6 +102,13 @@ interés).
 *Del conjunto de personas con resultado positivo (y = yes) ¿Qué porcentaje 
 clasificas correcto usando cada uno de los dos modelos locales?
 
+```{r, echo=F, error=F, message=F, warning=F}
+out <- NULL
+out <- c(out, knit_child('problemas/3.Rmd', quiet = TRUE))
+```
+`r paste(out, collapse='\n')`
+
+
 ##4
 Queries de probabilidad condicional (1). Para estos incisos puedes usar gRain o
 samiam:

@@ -21,7 +21,7 @@ mkt$duration.bin <- cut2(mkt$duration, cuts=quantile(mkt$duration))
 mkt$previous <- as.factor(ifelse(mkt$previous==0, "no", "yes"))
 mkt$campaign <- as.factor(mkt$campaign)
 
-mkt <- mkt %>% select(-age, -balance, -duration, -id, -contact)
+mkt <- mkt %>% dplyr::select(-age, -balance, -duration, -id, -contact)
 ```
 
 Definimos relaciones a excluir (__blacklist__)
@@ -56,8 +56,8 @@ No se incluye un __whitelist__ pues las relaciones que deberían de ser incluida
 Separamos los datos en prueba y entrenamiento:
 ```{r}
 set.seed(18937)
-mkt_train <- sample_n(mkt, 30000)
-mkt_test <- anti_join(mkt, mkt_train)
+mkt_train <- dplyr::sample_n(mkt, 30000)
+mkt_test <- dplyr::anti_join(mkt, mkt_train)
 ```
 
 Ahora, entrenamos la red utilizando el algoritmo de __hill climbing__. Elegimos como criterio el __bic__ pues suele ser un poco mas restrictivo y queremos primero explorar una red mas parsimoniosa

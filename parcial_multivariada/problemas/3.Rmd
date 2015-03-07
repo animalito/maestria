@@ -70,7 +70,7 @@ ggplot(dat_res_sub, aes(x = housing, y = previous, colour = duration.bin,
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
 
 
-library(arm)
+
 # modelo nulo 
 mod_1 <- bayesglm(y ~ 1, data = mkt_train,
   prior.scale = 2.5, family = 'binomial')
@@ -110,7 +110,7 @@ ggplot(grid_2, aes(x = previous, y = prob, colour = duration.bin, group = durati
   theme(axis.text.x=element_text(angle = 45, hjust = 1))
 
 #incluyendo intervalos de probabilidad 
-library (Hmisc)
+
 #library (gRain) No lo usamos por que no compila si con el predict.grain
 
 sims_1 <- sim(mod_3, 100)
