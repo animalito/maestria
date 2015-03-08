@@ -136,11 +136,18 @@ Sea $Y=V\ E$, esto es, Y son todas las variables que no están en la evidencia E
 *Para cada variables Yi en Y, ¿cuál es el valor más probable? Es decir,
     $argmaxyip(Yi=yi|E=e)$
 *Calcula los valores y de máxima probabilidad posterior $MAP(Y|E=e)$.
+
+
+Dada la evidencia los resultados son los siguientes: 
+![](img/samaiam.png)
+ 
+ 
 *¿Coinciden los valores de los incisos anteriores para todas las variables?, 
 ¿Cuál es la diferencia entre los dos métodos?, ¿Cuándo usarías uno u otro? 
 
-
-
+```{r}
+####### Animal solo falta responder esta ;)  yo usaria la otra por que me choca samaiam jaja pero no creo que le pueda poner eso 
+```
 
 
 

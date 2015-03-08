@@ -1,6 +1,7 @@
 ### Modelos locales
 
-Dado el modelo promedio  Y depende solamente de housing, previous, outcome, y duration.bin
+Dado el modelo promedio  Y depende solamente de housing, previous, outcome, y 
+duration.bin
 Ajustamos por Máxima verosimilitud y revisamos que  este definida para todas las 
 celdas.
 
@@ -14,7 +15,9 @@ names(probs_est_mle)[2] <- 'mle'
 probs_est_mle
 
 ```
- Esta definida para todas las celdas, sin embargo tenemos una matriz rala. Para solucionar vamos a suavizar y usar un modelo logístico para ver cuál funciona mejor
+ Esta definida para todas las celdas, sin embargo tenemos una matriz rala.
+ Para solucionar vamos a suavizar y usar un modelo logístico para ver cuál 
+ funciona mejor
  
 #### Suavizamiento 
 ```{r}
@@ -37,15 +40,18 @@ probs_est_bayes_b <- data.frame(fit_iss_b[['housing']]$prob)
 names(probs_est_bayes_b)[2] <- 'bayes_b'
 
 #las unimos 
-probs_2 <- join(join(probs_est_mle, probs_est_bayes), join(probs_est_bayes_s, probs_est_bayes_b))
-probs_2 #### no sé por que no quiere poner la tablita !!!!!!!
+probs_2 <- join(join(probs_est_mle, probs_est_bayes), join(probs_est_bayes_s, 
+                                                           probs_est_bayes_b))
+probs_2 
 
 
 
-# podríamos hacer validacion cruzada  aunque dado que tenemos muchas observaciones creo mle fuenciona bien 
+# podríamos hacer validacion cruzada  aunque dado que tenemos muchas 
+observaciones creo mle funciona bien 
 ```
 
-En general comparando máxima verosimilitud  y los diferentes tamaños de muestra imaginaria nos dan lo mismo 
+En general comparando máxima verosimilitud  y los diferentes tamaños de muestra 
+imaginaria nos dan lo mismo 
 
 ###Modelo Logístico 
 ```{r, eval=F}
@@ -79,12 +85,14 @@ mod_1 <- bayesglm(y ~ 1, data = mkt_train,
 display(mod_1)
 
 #modelo sencillo   
-mod_2 <- bayesglm(y ~ housing + previous+ poutcome + duration.bin, data = mkt_train,
+mod_2 <- bayesglm(y ~ housing + previous+ poutcome + duration.bin, 
+                  data = mkt_train,
   prior.scale = 2.5, family = 'binomial')
 display(mod_2)
 
 #modelo saturado
-mod_3 <- bayesglm(y ~ housing * previous * poutcome *duration.bin, data = mkt_train,
+mod_3 <- bayesglm(y ~ housing * previous * poutcome *duration.bin, 
+                  data = mkt_train,
   prior.scale = 2.5, family = 'binomial')
 display(mod_3)
 
@@ -107,7 +115,8 @@ grid_1$prob <- predict(mod_3, grid_1, type='response')
 
 
 grid_2 <- filter(grid_1, previous!='unknown')
-ggplot(grid_2, aes(x = previous, y = prob, colour = duration.bin, group = duration.bin))+ 
+ggplot(grid_2, aes(x = previous, y = prob, colour = duration.bin, 
+                   group = duration.bin))+ 
   geom_jitter() +
   facet_wrap(~ housing) + 
   theme(axis.text.x=element_text(angle = 45, hjust = 1))
@@ -129,13 +138,11 @@ dat_x <- ddply(data.frame(i=1:100), 'i', function(df){
 })
 
 
-mkt_train$prob.1 <- predict(mod_3, type='response')
-mkt_train$grupo.prob <- cut2(mkt_train$prob.1, g=20, levels.mean=TRUE)
+mkt_test$prob.1 <- predict(mod_3, type='response')
+mkt_test$grupo.prob <- cut2(mkt_test$prob.1, g=20, levels.mean=TRUE)
 dat.cal <- ddply(mkt_train, c('grupo.prob'), summarise, total=length(housing),
   total.y=sum(y=='yes'))
 dat.cal$prob.emp <- dat.cal$total.y/dat.cal$total
 ggplot(dat.cal, aes(x=as.numeric(as.character(grupo.prob)), y=prob.emp)) + geom_point() +
   geom_abline(intercept=0,slope=1)
 ```
- Ahora predecimos con el modelo de máxima verosimilitud 
- 

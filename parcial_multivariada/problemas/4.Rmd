@@ -1,11 +1,5 @@
 ### Probabilidades condicionales
-¿¿??¿¿¿ Hola Animal,
- :) 
- Para correr el samiam nos estan haciendo ruido las variables que tienen intervalos las que hiciste con cut2 , por que la reina de SAMIAN no acepta [] ni() 
- si logras que corra el complile as grain creo que es mejor para los queries 
- te dejo el esqueleto si es que te gusta la 3 
- 
- oka, dame un ratin para ver que show
+
  
 ```{r}
 
@@ -13,8 +7,7 @@
 options(digits=4)
 write.net ("fit_mle.net", fit_mle)
 
-comp_fit_mle <- compile(as.grain(fit_mle)) ## ya recvisé y se supone que si poporta este tipo de redes :S
-
+comp_fit_mle <- compile(as.grain(fit_mle)) 
 query_1 <- setEvidence(comp_fit_mle, nodes = c('y'), 
   states = c('yes'))
 querygrain(query_1)
