@@ -46,8 +46,7 @@ probs_2
 
 
 
-# podríamos hacer validacion cruzada  aunque dado que tenemos muchas 
-observaciones creo mle funciona bien 
+# podríamos hacer validacion cruzada  aunque dado que tenemos muchas observaciones creo mle funciona bien 
 ```
 
 En general comparando máxima verosimilitud  y los diferentes tamaños de muestra 
@@ -57,8 +56,8 @@ imaginaria nos dan lo mismo
 ```{r, eval=F}
 dat_res <- mkt_train %>%
   group_by(housing, previous, poutcome, duration.bin, y)%>%
-  %>% ungroup() %>%
   summarise (num = n ()) %>%
+  ungroup() %>%
   group_by(housing, previous, poutcome, duration.bin) %>%
   mutate (total = sum(num)) %>%
   ungroup () %>%
@@ -138,8 +137,9 @@ dat_x <- ddply(data.frame(i=1:100), 'i', function(df){
 })
 
 
-mkt_test$prob.1 <- predict(mod_3, type='response')
-mkt_test$grupo.prob <- cut2(mkt_test$prob.1, g=20, levels.mean=TRUE)
+mkt_train$prob.1 <- predict(mod_3, type='response')
+mkt_train$grupo.prob <- cut2(mkt_train$prob.1, g=20, levels.mean=TRUE)
+
 dat.cal <- ddply(mkt_train, c('grupo.prob'), summarise, total=length(housing),
   total.y=sum(y=='yes'))
 dat.cal$prob.emp <- dat.cal$total.y/dat.cal$total
