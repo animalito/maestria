@@ -1,0 +1,70 @@
+---
+title: "Examen 1, parte 3, Métodos análiticos"
+output: html_document
+---
+
+
+### Parte 3: Recomendación
+
+
+https://movielens.org
+
+Utilizaremos datos de movielens:
+
+These files contain 1,000,209 anonymous ratings of approximately 3,900 movies 
+made by 6,040 MovieLens users who joined MovieLens in 2000.
+
+
+```{r}
+rat <- read.table('ml-1m/ratings.dat',header=F, sep=":")
+rat$V2 <- NULL
+rat$V4 <- NULL
+rat$V6 <- NULL
+head(rat)
+names(rat) <- c('user_id','movie_id','rating')
+rat.2 <- rat %>% group_by(user_id) %>%
+  mutate(media.usu = mean(rating)) %>%
+  group_by(movie_id) %>%
+  mutate(media.movie = mean(rating)) %>%
+  ungroup() %>%
+  mutate(media = mean(rating)) %>%
+  mutate(rating.adj = rating - (media.movie + media.usu - media))
+library(Matrix)
+i <- rat.2$user_id
+j <- rat.2$movie_id
+x <- rat.2$rating.adj
+X <- sparseMatrix(i=i,j=j,x=x)
+```
+
+
+```{r}
+con <- file("ml-1m/movies.dat", "r", blocking = FALSE)
+lineas <- readLines(con) # empty
+close(con)
+lista.movies <- list()
+salida <- lapply(lineas, function(linea){
+  sp <- strsplit(linea, '::', fixed=T)[[1]]
+  data_frame(movie_id = sp[1], movie_nom = sp[2], tipo = sp[3])
+})
+movies.df <- rbind_all(salida)
+movies.df$movie_id <- as.integer(movies.df$movie_id)
+```
+
+1. Construye una muestra de entrenamiento y una de validación
+2. Ajusta y evalúa el modelo base.
+3. Utiliza descenso estocástico o descomposición en valores singulares para encontrar factores latentes (ajustados a los residuales del modelo base). 
+4. Explica cómo hacer predicciones a partir del modelo (predicción de la calificación 1-5). ¿Qué películas recomendarías para el usuario usuario 4000 y el usuario 6000, y usuario 1333? (que no haya visto!)
+5. Evalúa el modelo de factores latentes que ajustaste usando la muestra de validación.
+
+Nota: puedes intentar usar el código de clase para descenso en gradiente. También puedes usar este código simple que hace descomposición en valores singulares:
+
+```{r}
+library("irlba")
+out <- irlba(X, nu=50, nv=50) # 50 factores latentes con svd, 
+factores.peliculas <- data.frame(out$v%*%diag(sqrt(out$d)), movie_id=1:nrow(out$v)) %>% 
+  left_join(movies.df) %>%
+  arrange(desc(X2))
+factores.personas <- data.frame(out$u%*%diag(sqrt(out$d)), user_id=1:nrow(out$u))
+```
+
+
