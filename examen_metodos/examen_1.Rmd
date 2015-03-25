@@ -5,7 +5,7 @@ output: html_document
 
 Entrega tus resultados y el código que utilizaste. 
 
-### Parte 1: correos de Enron, similitud y minhashing.
+# Parte 1: correos de Enron, similitud y minhashing.
 
 En este ejemplo construiremos uan aplicación para devolver rápidamente
 correos similares a uno dado, en el sentido de que contienen palabras similares. Utilizaremos minhashing/LSH.
@@ -34,7 +34,9 @@ docID wordID count
 ### Enron (bag of words)
 
 ```{r}
+# lectura de datos
 library(dplyr)
+library(Rcpp)
 enron <- read.table('enron/docword.enron.txt', skip=3, header=FALSE, sep=' ')
 names(enron) <- c('doc','word_id','n')
 head(enron)
@@ -42,6 +44,7 @@ length(unique(enron$word_id))
 length(unique(enron$doc))
 vocab <- read.table('enron/vocab.enron.txt', header=FALSE)
 vocab$word_id <- 1:nrow(vocab)
+names(vocab) <- c("word", "word_id")
 ```
 
 Usaremos **similitud de jaccard** basada en el modelo *bag of words* para documentos, es decir, sólo en función de las palabras que contienen: la similitud entre el documento A y B es el número de palabras en común dividido entre el número total de palabras que ocurren en los dos documentos. Aquí hay una implementación simple:
@@ -51,15 +54,103 @@ Usaremos **similitud de jaccard** basada en el modelo *bag of words* para docume
 jaccard <- function(doc1, doc2){
   a <- length(union(doc1$word_id, doc2$word_id))
   c <- length(intersect(doc1$word_id, doc2$word_id))
-  c/a
+  c/a # y las repetidas? sets...
 }
 jaccard(filter(enron, doc==1), filter(enron, doc==2))
 jaccard(filter(enron, doc==1), filter(enron, doc==8000))
 ```
 
-1. Construye una matriz de firmas de minhashing para esta colección. Utiliza la matriz de firmas para encontrar mails similares al 900 (más de 50% de similitud de Jaccard) ¿Qué palabras comparten estos documentos?
+## 1
+Construye una matriz de firmas de minhashing para esta colección. Utiliza la matriz de firmas para encontrar mails similares al 900 (más de 50% de similitud de Jaccard) ¿Qué palabras comparten estos documentos?
+
+Necesitamos generar $m$ funciones hash tales que
+\[
+h_i(x) = (ax + b mod p) mod k
+\]
+
+donde $k$ es el número de tejas posibles, $p$ un primo tal que $p > k > 0$, $a,b$ escogidos al azar donde $0<a$ y $a,b<p$. 
+
+Para generar una lista de hashes con estas características, utilizamos la siguiente función.
+```{r}
+set.seed(19871128)
+m <- 200 # numero de funciones hash
+hash.lista <- lapply(1:m, function(i){
+    p <- 29167# primo > 28102 (numero de tejas)
+    a <- sample(1:(p-1), 1) # 0<a<p
+    b <- sample(1:(p-1), 1) # 0<b<p
+    function(x){
+        (((a*(x-1) + b) %% p) %% 28102) + 1
+    }
+})
+```
+
+Utilizaremos el algoritmo por renglón para poder calcular la matriz de firmas. 
+
+Para este debemos seguir los siguientes pasos:
+
+1. Definimos la matriz de firmas como $sig(i,c)=inf$.
+2. Ciclamos
+    - Para cada renglón $r$ (_teja_):
+        - Para cada documento $c$ (_columna_):
+            - Si $c$ tiene un 1 en el renglón $r$, entonces para cada función hash $h_i$, si $h_i(r)$ es menor a $sig(i,c)$, entonces $sig(i,c)=h_i(r)$.
+            
+Al final del algoritmo, $sig$ es la matriz de firmas de los documentos bajo las funciones hash $h_1,...,h_m$.
+
+Implementamos el algoritmo de tal forma que aprovechemos que la matriz de tejas documentos ya está calculada en _enron_.
+
+```{r, eval=F}
+# Jalamos funcion auxiliar
+sourceCpp('src/update_mat.cpp')
+
+minhash <- function(matriz, hashes){
+    r <- length(unique(enron$word_id))  # numero de palabras
+    c <- length(unique(enron$doc)) # numero de documentos
+    m <- length(hashes) # numero de hashes
+    sig <- matrix(rep(Inf, m*c), ncol=c) # Paso 1 algoritmo
+    for(i in 1:r){ # Paso 2: iteramos en renglones
+        renglon <- sapply(hashes, function(hash){hash(i)})# Aplicamos todos los hashes a cada palabra en el vocabulario
+        docs <- enron$doc[which(enron$word_id==i)]# Extraemos todos los docs con esa palabra
+        out <- sapply(docs,function(doc){update_mat(sig, doc, renglon)})# Updateamos la matriz de firmas iterando sobre los docs que tienen esa palabra
+    }
+    sig
+}
+    
+firmas <- minhash(enron, hash.lista)
+save(firmas, file='./output/firmas.Rdata')
+```
+
+Par de sanity checks.
+
+```{r}
+load('output/firmas.Rdata')
+dim(firmas)
+firmas[1:6,1:6]
+```
+
+Una vez calculada la matriz de firmas, encontramos los mails más parecidos al 900 con similitud de jaccard mayor al 50\%.
+
+```{r}
+doc <- 900
+# Lo vemos
+words <- left_join(filter(enron, doc==900),vocab)$word #correo grosero!
+words
+```
+
+```{r}
+# extraemos sus firmas
+doc.firma <- firmas[,doc]
+# sacamos similitudes aproximadas
+sim_est <- apply(firmas, 2, function(x){mean(x==doc.firma)})
+# sacamos docs con similitud mayor a 50%
+docs.sim <- which(sim_est>=0.5)
+
+# palabras compartidas
+lapply(docs.sim[-1], FUN=function(x){union(left_join(filter(enron, doc==900),vocab)$word, left_join(filter(enron, doc==x),vocab)$word)})
+```
 
 2. (LSH) Utiliza 8 bandas de 2 hashes cada una para obtener pares candidatos para similitud. Devuelve los 20 mejores candidatos (si existen) para los documentos 100, 105,1400. Recuerda calcular la similitud exacta para los pares candidatos que consideres. 
+
+
 
 3. Describe la distribución de palabras para cada uno de los tres clusters que encontraste en el inciso anterior. 
 Describe los clusters en términos de las palabras más comunes. Utiliza código como el siguiente:
@@ -97,77 +188,4 @@ minhash <- function(dat, hash.lista){
     sig
 }
 ```
-
-### Parte 2: Aplicación a búsqueda de items populares
-
-Implementa la aplicación que vimos de búsqueda de items populares. Muestra
-las 15 películas más populares en enero de 2000, junio de 2000 y enero de 2001
-Puedes utilizar los datos proporcionados en el sitio de la clase para evitar hacer más procesamiento.
-
-
-### Parte 3: Recomendación
-
-
-https://movielens.org
-
-Utilizaremos datos de movielens:
-
-These files contain 1,000,209 anonymous ratings of approximately 3,900 movies 
-made by 6,040 MovieLens users who joined MovieLens in 2000.
-
-
-```{r}
-rat <- read.table('ml-1m/ratings.dat',header=F, sep=":")
-rat$V2 <- NULL
-rat$V4 <- NULL
-rat$V6 <- NULL
-head(rat)
-names(rat) <- c('user_id','movie_id','rating')
-rat.2 <- rat %>% group_by(user_id) %>%
-  mutate(media.usu = mean(rating)) %>%
-  group_by(movie_id) %>%
-  mutate(media.movie = mean(rating)) %>%
-  ungroup() %>%
-  mutate(media = mean(rating)) %>%
-  mutate(rating.adj = rating - (media.movie + media.usu - media))
-library(Matrix)
-i <- rat.2$user_id
-j <- rat.2$movie_id
-x <- rat.2$rating.adj
-X <- sparseMatrix(i=i,j=j,x=x)
-```
-
-
-```{r}
-con <- file("ml-1m/movies.dat", "r", blocking = FALSE)
-lineas <- readLines(con) # empty
-close(con)
-lista.movies <- list()
-salida <- lapply(lineas, function(linea){
-  sp <- strsplit(linea, '::', fixed=T)[[1]]
-  data_frame(movie_id = sp[1], movie_nom = sp[2], tipo = sp[3])
-})
-movies.df <- rbind_all(salida)
-movies.df$movie_id <- as.integer(movies.df$movie_id)
-```
-
-1. Construye una muestra de entrenamiento y una de validación
-2. Ajusta y evalúa el modelo base.
-3. Utiliza descenso estocástico o descomposición en valores singulares para encontrar factores latentes (ajustados a los residuales del modelo base). 
-4. Explica cómo hacer predicciones a partir del modelo (predicción de la calificación 1-5). ¿Qué películas recomendarías para el usuario usuario 4000 y el usuario 6000, y usuario 1333? (que no haya visto!)
-5. Evalúa el modelo de factores latentes que ajustaste usando la muestra de validación.
-
-Nota: puedes intentar usar el código de clase para descenso en gradiente. También puedes usar este código simple que hace descomposición en valores singulares:
-
-```{r}
-library("irlba")
-out <- irlba(X, nu=50, nv=50) # 50 factores latentes con svd, 
-factores.peliculas <- data.frame(out$v%*%diag(sqrt(out$d)), movie_id=1:nrow(out$v)) %>% 
-  left_join(movies.df) %>%
-  arrange(desc(X2))
-factores.personas <- data.frame(out$u%*%diag(sqrt(out$d)), user_id=1:nrow(out$u))
-```
-
-
-
 
