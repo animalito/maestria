@@ -9,3 +9,14 @@
 *.Rproj
 *.DS_Store
 .Rproj.user
+
+# Ignore
+
+**/*.RData
+**/*.Rdata
+**/*.rdb
+**/*.rdx
+**/unnamed-chunk*.*
+**/*.txt
+**/*.dat
+

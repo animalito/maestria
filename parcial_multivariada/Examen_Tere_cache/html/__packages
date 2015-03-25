@@ -1,0 +1,17 @@
+base
+plyr
+dplyr
+knitr
+bnlearn
+lattice
+survival
+Formula
+ggplot2
+Hmisc
+MASS
+Matrix
+Rcpp
+lme4
+arm
+gRbase
+gRain
