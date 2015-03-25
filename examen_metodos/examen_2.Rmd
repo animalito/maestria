@@ -1,0 +1,12 @@
+---
+title: "Examen 1, parte 2, Métodos análiticos"
+output: html_document
+---
+
+### Parte 2: Aplicación a búsqueda de items populares
+
+Implementa la aplicación que vimos de búsqueda de items populares. Muestra
+las 15 películas más populares en enero de 2000, junio de 2000 y enero de 2001
+Puedes utilizar los datos proporcionados en el sitio de la clase para evitar hacer más procesamiento.
+
+
