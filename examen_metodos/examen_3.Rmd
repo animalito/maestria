@@ -97,12 +97,13 @@ dat.2 <- rat %>%
 ## reescribimos ids:
 dat.2$movie_id_2 <- as.numeric(factor(dat.2$movie_id))
 
+### juntamos nombres
+dat.2 <- dat.2 %>% left_join(movies.df)
+
 dat.entrena <- dplyr::filter(dat.2, !valida_usu | !valida_peli)
 dat.valida <- dplyr::filter(dat.2, valida_usu & valida_peli)
 nrow(dat.entrena) + nrow(dat.valida)
 nrow(dat.2)
-
-
 ```
 
 # Modelo base
@@ -138,26 +139,105 @@ Una vez que observamos una calificación $x_{ij}$, el residual del modelo de ref
 $$r_{ij} = x_{ij} - \hat{x_{ij}}$$
 
 ```{r}
-dat.entrena.2 <- dat.entrena %>% group_by(user_id) %>%
-  mutate(media.usu = mean(rating)) %>% ungroup() %>%
-  group_by(movie_id) %>%
-  mutate(media.movie = mean(rating)) %>%
-  ungroup() %>%
-  mutate(media = mean(rating)) %>%
-  mutate(rating.adj = rating - (media.movie + media.usu - media))
+
+medias.usuario.e <- dat.entrena %>% group_by(user_id) %>% dplyr::summarise(media_usu = mean(rating), num_calif_usu = length(rating))
+medias.peliculas.e <- dat.entrena %>% group_by(movie_id) %>% summarise(media_peli = mean(rating), num_calif_peli = length(rating))
+media.gral.e <- mean(dat.entrena$rating)
+dat.valida.2 <- dat.valida %>%
+  left_join(medias.usuario.e) %>%
+  left_join(medias.peliculas.e) %>%
+  mutate(media.gral = media.gral.e) %>%
+  mutate(prediccion = media_usu - media.gral + media_peli)
+
+# sin prediccion, inputamos con la media general
+dat.valida.2$prediccion[is.na(dat.valida.2$prediccion)] <- media.gral.e
+
+sqrt(mean((dat.valida.2$prediccion - dat.valida.2$rating)^2))
+```
+
+Revisemos un poco mas el error de validacion. Veamos cual es el efecto de las peliculas que tienen pocas calificaciones. Se ve que tenemos la dificultad del ruido para centrar las calificaciones de usuarios o películas cuando hay pocas calificaciones.
+
+```{r}
+medias.peliculas <- dat.2 %>% group_by(movie_id) %>% summarise(media_peli = mean(rating), num_calif_peli = length(rating))
+media.gral <- mean(dat.2$rating)
+medias.p.2 <- left_join(medias.peliculas, movies.df)
+arrange(medias.p.2, desc(media_peli)) %>% head
+
+ggplot(medias.p.2, aes(x=num_calif_peli, y=media_peli)) + geom_point()
+```
+
+Podemos regularizar tomando
+
+$$
+\hat{x_{ij}} = \hat{\mu} + \frac{n_i}{\lambda+n_i} \hat{a_i} + \frac{m_j}{\lambda+m_j}\hat{b_j} 
+$$
+
+```{r}
+error.valida <- sapply(c(0.001,0.01,0.1,1,5,10,20,40,60,80,100,200), 
+                function(lambda){
+
+                  dat.valida.2 <- dat.valida %>%
+                    left_join(medias.usuario.e, by='user_id') %>%
+                    left_join(medias.peliculas.e, by='movie_id') %>%
+                    mutate(media.gral = media.gral.e) %>%
+                    mutate(prediccion = media.gral + (num_calif_usu/(num_calif_usu+lambda))*(media_usu - media.gral) +
+             (num_calif_peli/(num_calif_peli+lambda))*(media_peli-media.gral))
+                 dat.valida.2$prediccion[is.na(dat.valida.2$prediccion)] <- media.gral.e
+  
+                 sqrt(mean((dat.valida.2$prediccion - dat.valida.2$rating)^2))
+})
+
+plot(error.valida)
+```
+
+El minimio del error de validacion se obtiene en `r min(error.valida)`. Sin embargo, este no dista mucho del maximo `r max(error.valida)`.
+
+```{r,eval=F, echo=F}
+lambda <- 40
+dat.valida.2 <- dat.valida %>%
+                    left_join(medias.usuario.e, by='user_id') %>%
+                    left_join(medias.peliculas.e, by='movie_id') %>%
+                    mutate(media.gral = media.gral.e) %>%
+                    mutate(prediccion = media.gral + (num_calif_usu/(num_calif_usu+lambda))*(media_usu - media.gral) +
+             (num_calif_peli/(num_calif_peli+lambda))*(media_peli-media.gral))
+                 dat.valida.2$prediccion[is.na(dat.valida.2$prediccion)] <- media.gral.e
+  
+                 sqrt(mean((dat.valida.2$prediccion - dat.valida.2$rating)^2))
+
+dat.entrena.2 <- dat.entrena %>%
+                    left_join(medias.usuario.e, by='user_id') %>%
+                    left_join(medias.peliculas.e, by='movie_id') %>%
+                    mutate(media.gral = media.gral.e) %>%
+                    mutate(prediccion = media.gral + (num_calif_usu/(num_calif_usu+lambda))*(media_usu - media.gral) +
+             (num_calif_peli/(num_calif_peli+lambda))*(media_peli-media.gral))
+                 dat.entrena.2$prediccion[is.na(dat.entrena.2$prediccion)] <- media.gral.e
+  
+                 sqrt(mean((dat.entrena.2$prediccion - dat.entrena.2$rating)^2))
+```
+
+
+# Descenso estocastico
+
+Generamos matrices ralas de entrenamiento y validacion.
+
+```{r}
+dat.entrena.2 <- dat.entrena %>%
+    left_join(medias.usuario.e) %>%
+    left_join(medias.peliculas.e) %>%
+    mutate(prediccion = media_usu - media.gral.e + media_peli) %>%
+    mutate(rating.adj = rating - prediccion) 
+
+dat.valida.2 <- dat.valida %>%
+    left_join(medias.usuario.e) %>%
+    left_join(medias.peliculas.e) %>%
+    mutate(prediccion = media_usu - media.gral.e + media_peli) %>%
+    mutate(rating.adj = rating - prediccion) 
 
 i <- dat.entrena.2$user_id
 j <- dat.entrena.2$movie_id_2
 x <- dat.entrena.2$rating.adj
 X <- sparseMatrix(i=i,j=j,x=x)
 
-dat.valida.2 <- dat.valida %>% group_by(user_id) %>%
-  mutate(media.usu = mean(rating)) %>% ungroup() %>%
-  group_by(movie_id) %>%
-  mutate(media.movie = mean(rating)) %>%
-  ungroup() %>%
-  mutate(media = mean(rating)) %>%
-  mutate(rating.adj = rating - (media.movie + media.usu - media))
 
 i.v <- dat.valida.2$user_id
 j.v <- dat.valida.2$movie_id_2
@@ -171,7 +251,7 @@ Rcpp::sourceCpp('src/netflix_gradiente.cpp')
 Rcpp::sourceCpp('src/calc_error_bias.cpp')
 ```
 
-Primero, se debe inicializar los parametros
+Primero, se deben inicializar los parametros
 
 ```{r}
 #inicializar parámetros
@@ -187,7 +267,7 @@ sqrt(calc_error(i.v,j.v,x.v, P, Q,a,b))
 
 
 
-for(k in 1:30){
+for(k in 1:10){
   print(k)
   out <- netflix_gradiente(i, j, x, P, Q, a, b, 0.004, 0.01)
   P <- out[[1]]
@@ -214,3 +294,78 @@ arrange(xx, desc(X1)) %>% tail(20)
 arrange(xx, desc(X2)) %>% head(20)
 arrange(xx, desc(X2)) %>% tail(20)
 ```
+
+
+# Recomendaciones al usuario
+
+Explica cómo hacer predicciones a partir del modelo (predicción de la calificación 1-5). ¿Qué películas recomendarías para el usuario usuario 4000 y el usuario 6000, y usuario 1333? (que no haya visto!)
+
+```{r}
+# Necesitamos las medias por pelicula
+peli.media <- dat.entrena.2 %>% group_by(movie_id_2) %>% dplyr::summarise(media.peli = mean(rating)) %>% left_join(movies.df.2)
+usuario.media <- dat.entrena %>% group_by(user_id) %>% summarise(media.usu = mean(rating))
+media.gral <- mean(dat.entrena$rating)
+usuario <- 4000
+
+recomendar <- function(usuario){
+# Extraemos las calificaciones que dio el usuario 1
+califs.1 <- dat.entrena.2 %>% dplyr::filter(user_id==usuario) %>%
+  arrange(desc(rating.adj))
+#head(califs.1)
+
+# Extraemos las predicciones de todas las peliculas para el usuario 4000
+pred.1 <- data.frame(peli.media %>% arrange(movie_id_2), pred.x =  Q%*%P[usuario, ] ) %>%
+    arrange(desc(pred.x)) %>%
+    mutate(media.gral=media.gral,media.usuario=filter(usuario.media, user_id==usuario)$media.usu,
+           rating.pred=pred.x + media.peli + media.usuario - media.gral) #calculamos las calis del 1-5 para todas las pelis para el usuario 4000
+#head(pred.1,20)
+# Necestiamos saber cuales peliculas ya vio para filtrarlas
+ya_vio <- dat.2 %>% dplyr::filter(user_id==usuario) %>% dplyr::select(movie_id) %>% unique()
+
+anti_join(pred.1,ya_vio) %>% arrange(desc(pred.x)) 
+}
+
+pred.1.1 <-recomendar(4000)
+pred.1.1 %>% dplyr::select(movie_nom, tipo, rating.pred) %>% head(20)
+
+```
+
+Le recomendariamos las peliculas que mejor se ajustan al ususario (es decir, las mejores segun la prediccion de descenso en gradiente). Para recuperar el valor en la escala 1-5 debemos calcular $x_{ij}=r_{ij}+\hat{b_j} + \hat{a_i} - \hat{\mu}$.
+
+
+Recomendaciones para el usuario 6000
+```{r}
+pred.2 <- recomendar(6000)
+pred.2 %>% dplyr::select(movie_nom, tipo, rating.pred) %>% head(20)
+
+```
+
+
+Recomendaciones para el usuario 1333
+```{r}
+pred.3 <- recomendar(1333)
+pred.3 %>% dplyr::select(movie_nom, tipo, rating.pred) %>% head(20)
+```
+
+# Evaluacion del modelo con validacion
+
+Veamos como se ve el conjunto de validacion
+
+```{r}
+ggplot(dat.valida.2, aes(x=prediccion, y=rating, colour=factor(rating))) + geom_jitter()
+
+# res=rating.adj
+# calif=rating
+# pred_base = prediccion
+
+dat.valida.2$ajuste <- apply(dat.valida.2, 1, function(reng){ 
+    Q[as.numeric(reng['user_id'])] * P[as.numeric(reng['movie_id_2'])]  
+    }) 
+dat.valida.2$pred <- dat.valida.2$ajuste + dat.valida.2$prediccion
+
+ggplot(dat.valida.2, aes(x=rating.adj, y=ajuste, colour=factor(rating))) + geom_point()
+```
+
+Se observan algunas fallas pero en general el modelo mantiene a las personas en el lado correcto segun sus gustos. 
+
+
