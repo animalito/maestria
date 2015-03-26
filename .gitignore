@@ -14,9 +14,11 @@
 
 **/*.RData
 **/*.Rdata
+**/*.rdata
 **/*.rdb
 **/*.rdx
 **/unnamed-chunk*.*
 **/*.txt
 **/*.dat
+**/*.csv*
 
