@@ -72,14 +72,26 @@ donde $k$ es el número de tejas posibles, $p$ un primo tal que $p > k > 0$, $a,
 
 Para generar una lista de hashes con estas características, utilizamos la siguiente función.
 ```{r}
-set.seed(19871128)
-m <- 200 # numero de funciones hash
-hash.lista <- lapply(1:m, function(i){
-    p <- 29167# primo > 28102 (numero de tejas)
-    a <- sample(1:(p-1), 1) # 0<a<p
-    b <- sample(1:(p-1), 1) # 0<b<p
+# # Mi funcion
+# set.seed(2805)
+# m <- 200 # numero de funciones hash
+# hash.lista <- lapply(1:m, function(i){
+#     p <- 29167# primo > 28099 (numero de tejas)
+#     a <- sample(1:(p-1), 1) # 0<a<p
+#     b <- sample(1:(p-1), 1) # 0<b<p
+#     function(x){
+#         (((a*(x-1) + b) %% p) %% 28099) + 1
+#     }
+# })
+
+# La de la ayuda...
+set.seed(2805)
+hash.lista <- lapply(1:200, function(i){
+    primo <- length(unique(enron$word_id))
+    a <- sample(1:(primo-1), 1)
+    b <- sample(1:(primo-1), 1)
     function(x){
-        (((a*(x-1) + b) %% p) %% 28102) + 1
+        ((a*(x-1) + b) %% primo)  + 1
     }
 })
 ```
@@ -162,7 +174,7 @@ plot(s <- seq(0, 1, by = 0.01), 1 - (1 - s^r)^b, type = "l", ylab = "Probabilida
 
 Ahora dividimos la matriz de firmas en 8 bandas de 2 hashes cada uno. Después, calculamos un nuevo hash para extraer pares candidatos. Obtenemos una matriz de dimensión documentos por hashes.
 
-```{r}
+```{r, warning=F}
 mat.split <- split(data.frame((firmas)), rep(1:8, each=2))
 
 # Agarro la firma y la sumo - asi tal cual! Ese es mi hash ahora. Obviamente, con la suma hay falsos positivos pero es muy eficiente. Si la suma es igual, digo que son paress candidatos (es decir, que caen en "la misma cubeta")
@@ -178,7 +190,7 @@ mat.hashed$doc_no <- 1:nrow(mat.hashed)
 
 Extraemos los pares que coinciden en la primera banda.
 
-```{r, eval=F}
+```{r, eval=T}
 # Calculamos pares candidatos
 candidatos <- lapply(1:8, function(i){ #para cada banda
     tab.1 <- table(mat.hashed[,i]) # extraemos el hash de la banda i
@@ -197,14 +209,15 @@ dim(candidatos.tot)
 candidatos.tot.2 <- unique(candidatos.tot)
 dim(candidatos.tot.2)
 
-save(candidatos.tot, candidatos.tot.2, file="output/candidatos.Rdata")
+save(candidatos.tot.2, candidatos.tot, file="output/candidatos.Rdata")
+
 ```
 Los pares candidatos son `r dim(candidatos.tot.2)[1]` y están guardados en _candidatos.tot.2_. Ahora debemos calcular la similitud exacta para cada uno de esos pares para eliminar falsos positivos.
 
 Como vemos, son muchos los pares candidatos. Nos quedamos únicamente con los de interes y eliminamos de la matriz filtrada la coicidencia consigo mismo.
 
 ```{r}
-load("output/candidatos.Rdata")
+load('./output/candidatos.Rdata')
 # Nos quedamos los pares candidatos que incluyen los de interes
 interes <- c(100,105,1400)
 todos <- as.data.frame(candidatos.tot.2)
@@ -223,6 +236,8 @@ lapply(por.doc, function(df){
     simil <- df %>% arrange(-jaccard) %>% select(V2)
     simil[!is.na(simil[1:20,]),]
 })
+
+
 ```
 
 ## LSH
@@ -230,13 +245,20 @@ Describe la distribución de palabras para cada uno de los tres clusters que enc
 Describe los clusters en términos de las palabras más comunes. Utiliza código como el siguiente:
 
 ```{r}
-filter(enron, doc %in% c(900, 1153, 1506, 2083, 2325, 2435)) %>% group_by(word_id) %>%
-  summarise(n_tot= sum(n)) %>% arrange(desc(n_tot)) %>% left_join(vocab)
+docs.similares <- lapply(por.doc, function(df){
+    simil <- df %>% arrange(-jaccard) %>% select(V2) 
+    simil$V2
+})
+
+lapply(docs.similares, FUN=function(docs){filter(enron, doc %in% docs) %>% group_by(word_id) %>%
+  summarise(n_tot= sum(n)) %>% arrange(desc(n_tot)) %>% left_join(vocab)})
 ```
+
+### 
 
 Ayuda: puedes comenzar con el siguiente código si quieres
 
-```{r}
+```{r, eval=F}
 set.seed(2805)
 hash.lista <- lapply(1:200, function(i){
     primo <- 28099
