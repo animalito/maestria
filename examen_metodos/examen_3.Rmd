@@ -89,7 +89,6 @@ set.seed(28882)
 valida_usuarios <- sample(unique(rat$user_id), 0.1*usuarios) 
 valida_pelis <- sample(unique(rat$movie_id), 0.1*pelis)
 
-# con 0.3 salen PESIMO LOS RESULTADOS! pongo .1
 
 dat.2 <- rat %>%
   dplyr::mutate(valida_usu= user_id %in% valida_usuarios) %>%
@@ -188,7 +187,7 @@ sqrt(calc_error(i.v,j.v,x.v, P, Q,a,b))
 
 
 
-for(k in 1:10){
+for(k in 1:30){
   print(k)
   out <- netflix_gradiente(i, j, x, P, Q, a, b, 0.004, 0.01)
   P <- out[[1]]
