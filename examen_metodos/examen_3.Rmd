@@ -1,11 +1,19 @@
 ---
-title: "Examen 1, parte 3, Métodos análiticos"
+title: "Parte 3: Recomendación"
 output: html_document
 ---
 
+# Instrucciones
 
-### Parte 3: Recomendación
-
+```{r, echo=F, error=F, warning=F, message=F}
+library(dplyr)
+library(Matrix)
+options(digits=4)
+library(ggplot2)
+library(stringr)
+library(reshape2)
+library(tidyr)
+```
 
 https://movielens.org
 
@@ -22,18 +30,18 @@ rat$V4 <- NULL
 rat$V6 <- NULL
 head(rat)
 names(rat) <- c('user_id','movie_id','rating')
-rat.2 <- rat %>% group_by(user_id) %>%
-  mutate(media.usu = mean(rating)) %>%
-  group_by(movie_id) %>%
-  mutate(media.movie = mean(rating)) %>%
-  ungroup() %>%
-  mutate(media = mean(rating)) %>%
-  mutate(rating.adj = rating - (media.movie + media.usu - media))
-library(Matrix)
-i <- rat.2$user_id
-j <- rat.2$movie_id
-x <- rat.2$rating.adj
-X <- sparseMatrix(i=i,j=j,x=x)
+# rat.2 <- rat %>% group_by(user_id) %>%
+#   mutate(media.usu = mean(rating)) %>%
+#   group_by(movie_id) %>%
+#   mutate(media.movie = mean(rating)) %>%
+#   ungroup() %>%
+#   mutate(media = mean(rating)) %>%
+#   mutate(rating.adj = rating - (media.movie + media.usu - media))
+# 
+# i <- rat.2$user_id
+# j <- rat.2$movie_id
+# x <- rat.2$rating.adj
+# X <- sparseMatrix(i=i,j=j,x=x)
 ```
 
 
@@ -58,7 +66,7 @@ movies.df$movie_id <- as.integer(movies.df$movie_id)
 
 Nota: puedes intentar usar el código de clase para descenso en gradiente. También puedes usar este código simple que hace descomposición en valores singulares:
 
-```{r}
+```{r, eval=F}
 library("irlba")
 out <- irlba(X, nu=50, nv=50) # 50 factores latentes con svd, 
 factores.peliculas <- data.frame(out$v%*%diag(sqrt(out$d)), movie_id=1:nrow(out$v)) %>% 
@@ -67,4 +75,143 @@ factores.peliculas <- data.frame(out$v%*%diag(sqrt(out$d)), movie_id=1:nrow(out$
 factores.personas <- data.frame(out$u%*%diag(sqrt(out$d)), user_id=1:nrow(out$u))
 ```
 
+# Muestra de validacion y de entrenamiento
 
+```{r}
+#Cuantas pelis
+pelis <- length(unique(rat$movie_id))
+#Cuantos usuarios
+usuarios <- length(unique(rat$user_id))
+
+rat <-rat[,-4]
+# Usamos una muestra del 30% de peliculas, 30% de usuarios para validacion
+set.seed(28882)
+valida_usuarios <- sample(unique(rat$user_id), 0.1*usuarios) 
+valida_pelis <- sample(unique(rat$movie_id), 0.1*pelis)
+
+# con 0.3 salen PESIMO LOS RESULTADOS! pongo .1
+
+dat.2 <- rat %>%
+  dplyr::mutate(valida_usu= user_id %in% valida_usuarios) %>%
+  dplyr::mutate(valida_peli = movie_id %in% valida_pelis)
+
+## reescribimos ids:
+dat.2$movie_id_2 <- as.numeric(factor(dat.2$movie_id))
+
+dat.entrena <- dplyr::filter(dat.2, !valida_usu | !valida_peli)
+dat.valida <- dplyr::filter(dat.2, valida_usu & valida_peli)
+nrow(dat.entrena) + nrow(dat.valida)
+nrow(dat.2)
+
+
+```
+
+# Modelo base
+
+Si $x_{ij}$ es el gusto del usuario $i$ por la película $j$, entonces nuestra predicción
+es
+$$\hat{x}_{uj} = \hat{b}_j +  (\hat{a}_i-\hat{\mu} ) $$
+
+donde $a_i$ indica un nivel general de calificaciones del usuario $i$, y $b_j$ es el nivel general de gusto por la película. Usualmente ponemos:
+
+
+1. Media general
+$$\hat{\mu} =\frac{1}{T}\sum_{s,t} x_{st}$$
+2. Promedio de calificaciones de usuario $i$ 
+$$\hat{a}_i =\frac{1}{M_i}\sum_{t} x_{i,t} $$
+3. Promedio de calificaciones de la película $j$ 
+$$\hat{b}_j =\frac{1}{N_j}\sum_{s} x_{s,j}$$
+
+También podemos escribir, en términos de desviaciones:
+
+$$\hat{x}_{ij} = \hat{\mu}  +  \hat{c}_i +  \hat{d}_j $$
+donde
+
+. Media general
+$$\hat{\mu} =\frac{1}{T}\sum_{s,t} x_{st}$$
+2. Desviación de las calificaciones de usuario $i$ respecto a la media general
+$$\hat{c}_i =\frac{1}{M_i}\sum_{t} x_{it} - \hat{\mu} $$
+3. Desviación  de la película $j$ respecto a la media general
+$$\hat{b_j} =\frac{1}{N_j}\sum_{s} x_{sj}- \hat{\mu}$$
+
+
+Una vez que observamos una calificación $x_{ij}$, el residual del modelo de referencia es
+$$r_{ij} = x_{ij} - \hat{x_{ij}}$$
+
+```{r}
+dat.entrena.2 <- dat.entrena %>% group_by(user_id) %>%
+  mutate(media.usu = mean(rating)) %>% ungroup() %>%
+  group_by(movie_id) %>%
+  mutate(media.movie = mean(rating)) %>%
+  ungroup() %>%
+  mutate(media = mean(rating)) %>%
+  mutate(rating.adj = rating - (media.movie + media.usu - media))
+
+i <- dat.entrena.2$user_id
+j <- dat.entrena.2$movie_id_2
+x <- dat.entrena.2$rating.adj
+X <- sparseMatrix(i=i,j=j,x=x)
+
+dat.valida.2 <- dat.valida %>% group_by(user_id) %>%
+  mutate(media.usu = mean(rating)) %>% ungroup() %>%
+  group_by(movie_id) %>%
+  mutate(media.movie = mean(rating)) %>%
+  ungroup() %>%
+  mutate(media = mean(rating)) %>%
+  mutate(rating.adj = rating - (media.movie + media.usu - media))
+
+i.v <- dat.valida.2$user_id
+j.v <- dat.valida.2$movie_id_2
+x.v <- dat.valida.2$rating.adj
+X.v <- sparseMatrix(i=i,j=j,x=x)
+```
+
+```{r}
+library(Rcpp)
+Rcpp::sourceCpp('src/netflix_gradiente.cpp') 
+Rcpp::sourceCpp('src/calc_error_bias.cpp')
+```
+
+Primero, se debe inicializar los parametros
+
+```{r}
+#inicializar parámetros
+set.seed(2805)
+P <- matrix(rnorm(5*dim(X)[1],0,0.01), ncol=5, nrow=dim(X)[1]) # tantos renglones y columnas como personas
+Q <- matrix(rnorm(5*dim(X)[2],0,0.01), ncol=5, nrow=dim(X)[2]) # tantos renglones y columnas como peliculas
+a <- rep(0, dim(X)[1])
+b <- rep(0, dim(X)[2])
+
+## raíz de ecm:
+sqrt(calc_error(i,j,x, P, Q, a,b))
+sqrt(calc_error(i.v,j.v,x.v, P, Q,a,b))
+
+
+
+for(k in 1:10){
+  print(k)
+  out <- netflix_gradiente(i, j, x, P, Q, a, b, 0.004, 0.01)
+  P <- out[[1]]
+  Q <- out[[2]]
+  a <- out[[3]]
+  b <- out[[4]]
+  print(sqrt(calc_error(i, j, x, P, Q, a, b)))
+  print(sqrt(calc_error(i.v, j.v, x.v, P, Q, a, b)))
+}
+
+num_pelis <- dat.entrena.2 %>% group_by(movie_id) %>% summarise(num = length(rating))
+
+### Hay una bronca de base... los ids se saltan algunos numeros
+# faltan <- data.frame(movie_id=c(1:3952)[!c(1:3952) %in% movies.df$movie_id], movie_nom=NA, tipo=NA)
+# movies.df <- rbind(movies.df, faltan)
+movies.df.2 <- na.omit(dplyr::right_join(unique(dat.2[,c("movie_id","movie_id_2")]),movies.df, by="movie_id"))
+
+
+xx <- data.frame(movies.df.2 %>% arrange(movie_id_2), Q)
+
+
+arrange(xx, desc(X1)) %>% head(20)
+arrange(xx, desc(X1)) %>% tail(20)
+arrange(xx, desc(X2)) %>% head(20)
+arrange(xx, desc(X2)) %>% tail(20)
+```
