@@ -60,7 +60,7 @@ jaccard(filter(enron, doc==1), filter(enron, doc==2))
 jaccard(filter(enron, doc==1), filter(enron, doc==8000))
 ```
 
-## 1
+## Minhashing
 Construye una matriz de firmas de minhashing para esta colección. Utiliza la matriz de firmas para encontrar mails similares al 900 (más de 50% de similitud de Jaccard) ¿Qué palabras comparten estos documentos?
 
 Necesitamos generar $m$ funciones hash tales que
@@ -148,11 +148,85 @@ docs.sim <- which(sim_est>=0.5)
 lapply(docs.sim[-1], FUN=function(x){union(left_join(filter(enron, doc==900),vocab)$word, left_join(filter(enron, doc==x),vocab)$word)})
 ```
 
-2. (LSH) Utiliza 8 bandas de 2 hashes cada una para obtener pares candidatos para similitud. Devuelve los 20 mejores candidatos (si existen) para los documentos 100, 105,1400. Recuerda calcular la similitud exacta para los pares candidatos que consideres. 
+## LSH
+Utiliza 8 bandas de 2 hashes cada una para obtener pares candidatos para similitud. Devuelve los 20 mejores candidatos (si existen) para los documentos 100, 105,1400. Recuerda calcular la similitud exacta para los pares candidatos que consideres. 
+
+En el gráfico siguiente, se observa la probabilidad de que al menos coincida una banda de minhashes en función de la similitud.
+
+```{r}
+r=2
+b=8
+plot(s <- seq(0, 1, by = 0.01), 1 - (1 - s^r)^b, type = "l", ylab = "Probabilidad al menos una banda",
+     xlab = "Similitud (jaccard)")
+```
+
+Ahora dividimos la matriz de firmas en 8 bandas de 2 hashes cada uno. Después, calculamos un nuevo hash para extraer pares candidatos. Obtenemos una matriz de dimensión documentos por hashes.
+
+```{r}
+mat.split <- split(data.frame((firmas)), rep(1:8, each=2))
+
+# Agarro la firma y la sumo - asi tal cual! Ese es mi hash ahora. Obviamente, con la suma hay falsos positivos pero es muy eficiente. Si la suma es igual, digo que son paress candidatos (es decir, que caen en "la misma cubeta")
+mat.hashed <- sapply(mat.split, function(mat){
+    apply(mat, 2, function(x){   sum(x) })
+})
+dim(mat.hashed) # documentos x (hashes de la banda)
+
+# Le agregamos el numero del documento 
+mat.hashed <- data.frame(mat.hashed)
+mat.hashed$doc_no <- 1:nrow(mat.hashed)
+```
+
+Extraemos los pares que coinciden en la primera banda.
+
+```{r, eval=F}
+# Calculamos pares candidatos
+candidatos <- lapply(1:8, function(i){ #para cada banda
+    tab.1 <- table(mat.hashed[,i]) # extraemos el hash de la banda i
+    codigos <- as.integer(names(tab.1[tab.1 >= 2])) 
+   salida <- lapply(codigos, function(cod){ 
+        mat.hashed$doc_no[mat.hashed[,i] == cod]
+    })
+   Reduce('cbind',lapply(salida, function(i){combn(i,2)}))
+})
+candidatos.tot <- t(Reduce('cbind',candidatos))
+head(candidatos.tot)
+
+# Dimension de los candidatos calculados
+dim(candidatos.tot)
+
+candidatos.tot.2 <- unique(candidatos.tot)
+dim(candidatos.tot.2)
+
+save(candidatos.tot, candidatos.tot.2, file="output/candidatos.Rdata")
+```
+Los pares candidatos son `r dim(candidatos.tot.2)[1]` y están guardados en _candidatos.tot.2_. Ahora debemos calcular la similitud exacta para cada uno de esos pares para eliminar falsos positivos.
+
+Como vemos, son muchos los pares candidatos. Nos quedamos únicamente con los de interes y eliminamos de la matriz filtrada la coicidencia consigo mismo.
+
+```{r}
+load("output/candidatos.Rdata")
+# Nos quedamos los pares candidatos que incluyen los de interes
+interes <- c(100,105,1400)
+todos <- as.data.frame(candidatos.tot.2)
+docs.interes <- todos[which(todos$V1 %in% interes | todos$V2 %in% interes),] %>% arrange(V1)
+
+# Calculamos Jaccard exacto pa los candidatos
+docs.interes$jaccard <- apply(docs.interes, MARGIN=1, FUN=function(x){
+    jaccard(filter(enron, doc==x[1]), filter(enron, doc==x[2]))
+})
 
 
+# 
+por.doc <- lapply(interes, function(x){filter(docs.interes, V1==x | V2==x)})
+# Los primeros 20 documentos similares, en orden son
+lapply(por.doc, function(df){
+    simil <- df %>% arrange(-jaccard) %>% select(V2)
+    simil[!is.na(simil[1:20,]),]
+})
+```
 
-3. Describe la distribución de palabras para cada uno de los tres clusters que encontraste en el inciso anterior. 
+## LSH
+Describe la distribución de palabras para cada uno de los tres clusters que encontraste en el inciso anterior. 
 Describe los clusters en términos de las palabras más comunes. Utiliza código como el siguiente:
 
 ```{r}
