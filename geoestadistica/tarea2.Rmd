@@ -39,7 +39,7 @@ library(ggmap)
 
 # Introducción
 
-Las montañas Azules  (en inglés, Blue Mountains) son una cadena montañosa localizada en el noroeste de los Estados Unidos, que se extiende largamente por el este del estado de Oregón y el sudeste de Washington. Tiene una superficie muy accidentada  y seca de 10,500 km² que se extiende desde el este y sureste de Pendelton, Oregon hasta el rio Snake con la frontera de Idaho. 
+Las montañas Azules  (en inglés, *Blue Mountains*) son una cadena montañosa localizada en el noroeste de los Estados Unidos, que se extiende largamente por el este del estado de Oregón y el sudeste de Washington. Tiene una superficie muy accidentada  y seca de 10,500 km² que se extiende desde el este y sureste de Pendelton, Oregon hasta el rio Snake con la frontera de Idaho. 
 
 \begin{figure}[H]
 \centering
@@ -50,7 +50,7 @@ Las montañas Azules  (en inglés, Blue Mountains) son una cadena montañosa loc
 
 Las Montañas Azules contienen 3 parques nacionales y varias áreas naturales protegidas tales como el Malheur National Forest, Umatilla National Forest, Wallowa-Whitman National Forest, Umatilla Wilderness, North Fork John Day Wilderness, Strawberry Mountain Wilderness y la Monument Rock Wilderness^[Blue Mountains \url{http://geonames.usgs.gov/apex/f?p=gnispq:3:0::NO::P3_FID:1154280}.].
 
-Dada su georgafía y vegetación la zona de las Montañas Azules es propensa a incendios. La información que comprende este estudio  corresponde a incendios que comenzaron entre el 01 de abril de 1986 al 31 de julio de 1993 en los 3 estados que abarca la zona de las Montañas Azules (Oregon, Washington e Idaho).
+Dada su geografía y vegetación la zona de las Montañas Azules es propensa a incendios. La información que comprende este estudio  corresponde a incendios que comenzaron entre el 01 de abril de 1986 al 31 de julio de 1993 en los 3 estados que abarca la zona de las Montañas Azules (Oregon, Washington e Idaho).
 
 \begin{figure}[H]
 \centering
@@ -59,17 +59,22 @@ Dada su georgafía y vegetación la zona de las Montañas Azules es propensa a i
 
 \end{figure}
 
-# Descripción del Area de Estudio
+# Descripción del Área de Estudio
 
-El primer paso de este estudio es el Análisis Exploratorio de Datos. Los datos del estudio se muestran en el Cuadro 1.
-
-```{r, tabladatos, echo=FALSE, results='asis', message=FALSE}
+```{r, echo=FALSE, results='asis', message=FALSE}
 rayos <- read.csv('data/rayositam.csv')
 grid <- read.csv('data/bmgrid3.csv')
 pol <- read.table('data/poligono.txt')
 names(pol) <- c('lon', 'lat')
+```
 
+Se cuenta con tres fuentes de datos: información de incendios, información geográfica y los polígonos que definen el área. 
 
+De  `r dim(rayos)[1]` incendios en la zona se cuenta con la coordenada geográfica, la fecha (día, mes y año), tamaño, elevación, pendiente, orientación de la ladera donde ocurrió el incendio (*aspect*) y vegetación (*veg9*). A partir de esas variables se genera la variable de estación (*estac*) considerando como puntos de corte para los mismos el 21 de marzo, 21 de junio, 21 de septiembre y 21 de diciembre. Asimismo, se categorizan las variables de elevación y orientación de la ladera con 6 cortes equidistantes en el rango de su dominio. Los datos modificados se ejemplifican en el Cuadro 1.
+
+Toda la región se caracteriza en la información geográfica y poligonal adicional. En la primera se incluyen coordenadas (latitud, longitud y elevación), orientación de la ladera, pendiente y vegetación en `r dim(grid)[1]`. En la segunda se definen polígonos a partir de `r dim(pol)[1]` coordenadas.
+
+```{r, tabladatos, echo=FALSE, results='asis', message=FALSE}
 # dividimos por estaciones y por elevación 
 rayos$mo2[nchar(rayos$mo)==1]<-paste0(0,rayos$mo[nchar(rayos$mo)==1])
 rayos$mo2[nchar(rayos$mo)==2]<-rayos$mo[nchar(rayos$mo)==2]
@@ -87,20 +92,21 @@ tablilla <- xtable(head(rayos.2), type="latex", caption="Muestra de los datos a 
 print(tablilla, comment=F, include.rownames=F, size="tiny", table.placement="H")
 ```
 
-Veamos el mapa de elevación y tamaño de incendios.
+Para determinar las relaciones existentes entre las características geográficas y la ocurrencia de incendios, se realizaron una serie de exploraciones gráficas. En la Figura \ref{mapaincendios} se superponen los incendios (amarillo) en el terreno coloreado por altitud (se establece un rango de colores en el que el mínimo es verde claro y el máximo es café). El tamaño de los círculos amarillos refiere a la extensión del mismo. 
 
-```{r, message=FALSE, error=F, warning=F, echo=F, fig.cap="Mapa de elevación y tamaño de incendios de la zona.", fig.height=4, fig.width=6, fig.pos="H"}
+```{r mapaincendios, message=FALSE, error=F, warning=F, echo=F, fig.cap="Mapa de elevación y tamaño de incendios de la zona. $\\label{mapaincendios}$", fig.height=4, fig.width=6, fig.pos="H"}
 ggplot() + 
   geom_point(data=grid, aes(x=lon, y=lat, colour=elev),inherit.aes=FALSE) +
-  scale_colour_gradient(low = "dark green ", high = "brown", name='Elevación del\nterreno')+
+  scale_colour_gradient(low = "light green ", high = "brown", name='Elevación del\nterreno')+
   geom_point(data=rayos.2, aes(x=lon, y=lat, size=size), colour='orange', alpha=0.8, inherit.aes=FALSE) +
   guides(size=guide_legend('Tamaño del\nincendio')) + 
    labs( title="Blue Mountains" ) + theme_bw()
 ```
 
-Al parecer hay una relación entre elevación del terreno y los incendios.
+A partir de la Figura \ref{mapaincendios} se observa un indicativo claro de la existencia de una relación importante entre los incendios y la altitud. Aunque las únicas áreas libres de amarillo (incendios) son las de altitud baja, no es claro que los incendios se concentren en las zonas de mayor altitud. Al contrario, parece haber un rango de elevación a la baja y a la alta que inhibe la existencia de incendios. Para clarificar la relación entre estas dos variables, se grafica por año la elevación categorizada contra la proporción de incendios.
 
-```{r, echo=F, fig.cap="Proporción de incendios por nivel de elevación y año", fig.height=4, fig.width=6, fig.pos="H"}
+
+```{r, echo=F, fig.cap="Proporción de incendios por nivel de elevación y año $\\label{barraincendios}$", fig.height=4, fig.width=6, fig.pos="H"}
 # Issue 1: Comento la grafica original pero modifico porque está bien pinche raro... la grafica estaba dando 
 rayos_elev_temp <- rayos.2 %>% group_by(yr, elev_cat) %>% summarise(Número=n()) %>% mutate(Proporción=Número/sum(Número))
 
@@ -115,9 +121,9 @@ ggplot(rayos_elev_temp, aes(x=elev_cat, y=Proporción)) +
 
 ```
 
-Analicemos si esta relación se mantiene todos los años y por temporada.
+En la Figura \ref{barraincendios} se observa que la mayoría de los incendios se concentran en un rango de elevación de entre 1150 a 1920 (categorías 3 y 4 en la variable generada). Para otras altitudes, la cantidad de incendios es mucho menor. Al refinar la relación e introduciendo la estación, se observa que ésta se mantiene para las distintas estaciones. En la Figura \ref{estelev} se grafica a la variable categórica de elevación contra el número de incendios por estación y segmentado por año. 
 
-```{r, echo=F, fig.cap="Número de incendios por elevación, año y estación.", fig.height=4, fig.width=6, fig.pos="H"}
+```{r, echo=F, fig.cap="Número de incendios por elevación, año y estación. $\\label{estelev}$", fig.height=4, fig.width=6, fig.pos="H"}
 rayos_mensual.2 <- rayos.2 %>% 
                   group_by(yr, estac,elev_cat ) %>% 
                   summarise(Número=n())
@@ -144,7 +150,9 @@ ggplot(rayos_mensual.2, aes(x=elev_cat, y=Número, group=factor(estac), shape=fa
   
 ```
 
-Los incendios están asociados al tipo de vegetación y por ende a la altitud, fenómenos meteorológicos como las sequías también son un factor que favorecen los incendios. Existen diferentes maneras de medir la severidad de las sequías, para este estudio utilizamos el Índice de Severidad de Sequía de Palmer (PDSI), este mide la sequedad relativa o humedad que afectan a las economías sensibles al agua. 
+Lo primero que se rescata de la Figura \ref{estelev} es que en el invierno la cantidad de incendios es muy limitada y en el verano es considerablemente mayor que en el resto de las estaciones. Esto tiene que ver con las variaciones de temperatura a lo largo del año. Ahora bien, la asociación entre las categorías 3 y 4 de elevación y la cantidad de incendios se mantiene con algunas variaciones entre años. Para entender mejor la asociación observada, se estudia más a detalle las posibles causas de esta relación.
+
+Los incendios están asociados al tipo de vegetación y por ende a la altitud, fenómenos meteorológicos como las sequías también son un factor que favorecen los incendios. Existen diferentes maneras de medir la severidad de las sequías, para este estudio utilizamos el Índice de Severidad de Sequía de Palmer (PDSI) que mide la sequedad relativa o humedad que afectan a las economías sensibles al agua. 
  
 \begin{figure}[H]
 \centering

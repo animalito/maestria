@@ -150,12 +150,12 @@ citecolor = black,
 
 \section{Introducción}\label{introduccion}
 
-Las montañas Azules (en inglés, Blue Mountains) son una cadena montañosa
-localizada en el noroeste de los Estados Unidos, que se extiende
-largamente por el este del estado de Oregón y el sudeste de Washington.
-Tiene una superficie muy accidentada y seca de 10,500 km² que se
-extiende desde el este y sureste de Pendelton, Oregon hasta el rio Snake
-con la frontera de Idaho.
+Las montañas Azules (en inglés, \emph{Blue Mountains}) son una cadena
+montañosa localizada en el noroeste de los Estados Unidos, que se
+extiende largamente por el este del estado de Oregón y el sudeste de
+Washington. Tiene una superficie muy accidentada y seca de 10,500 km²
+que se extiende desde el este y sureste de Pendelton, Oregon hasta el
+rio Snake con la frontera de Idaho.
 
 \begin{figure}[H]
 \centering
@@ -171,7 +171,7 @@ North Fork John Day Wilderness, Strawberry Mountain Wilderness y la
 Monument Rock Wilderness\footnote{Blue Mountains
   \url{http://geonames.usgs.gov/apex/f?p=gnispq:3:0::NO::P3_FID:1154280}.}.
 
-Dada su georgafía y vegetación la zona de las Montañas Azules es
+Dada su geografía y vegetación la zona de las Montañas Azules es
 propensa a incendios. La información que comprende este estudio
 corresponde a incendios que comenzaron entre el 01 de abril de 1986 al
 31 de julio de 1993 en los 3 estados que abarca la zona de las Montañas
@@ -184,11 +184,26 @@ Azules (Oregon, Washington e Idaho).
 
 \end{figure}
 
-\section{Descripción del Area de
+\section{Descripción del Área de
 Estudio}\label{descripcion-del-area-de-estudio}
 
-El primer paso de este estudio es el Análisis Exploratorio de Datos. Los
-datos del estudio se muestran en el Cuadro 1.
+Se cuenta con tres fuentes de datos: información de incendios,
+información geográfica y los polígonos que definen el área.
+
+De 5834 incendios en la zona se cuenta con la coordenada geográfica, la
+fecha (día, mes y año), tamaño, elevación, pendiente, orientación de la
+ladera donde ocurrió el incendio (\emph{aspect}) y vegetación
+(\emph{veg9}). A partir de esas variables se genera la variable de
+estación (\emph{estac}) considerando como puntos de corte para los
+mismos el 21 de marzo, 21 de junio, 21 de septiembre y 21 de diciembre.
+Asimismo, se categorizan las variables de elevación y orientación de la
+ladera con 6 cortes equidistantes en el rango de su dominio. Los datos
+modificados se ejemplifican en el Cuadro 1.
+
+Toda la región se caracteriza en la información geográfica y poligonal
+adicional. En la primera se incluyen coordenadas (latitud, longitud y
+elevación), orientación de la ladera, pendiente y vegetación en 8089. En
+la segunda se definen polígonos a partir de 2130 coordenadas.
 
 \begin{table}[H]
 \centering
@@ -209,35 +224,67 @@ lon & lat & yr & mo & day & size & elev & slope & aspect & dia & veg9 & mo2 & da
 \caption{Muestra de los datos a utilizar.} 
 \end{table}
 
-Veamos el mapa de elevación y tamaño de incendios.
+Para determinar las relaciones existentes entre las características
+geográficas y la ocurrencia de incendios, se realizaron una serie de
+exploraciones gráficas. En la Figura \ref{mapaincendios} se superponen
+los incendios (amarillo) en el terreno coloreado por altitud (se
+establece un rango de colores en el que el mínimo es verde claro y el
+máximo es café). El tamaño de los círculos amarillos refiere a la
+extensión del mismo.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics{tarea2_files/figure-latex/unnamed-chunk-2-1.pdf}
-\caption{Mapa de elevación y tamaño de incendios de la zona.}
+\includegraphics{tarea2_files/figure-latex/mapaincendios-1.pdf}
+\caption{Mapa de elevación y tamaño de incendios de la zona.
+$\label{mapaincendios}$}
 \end{figure}
 
-Al parecer hay una relación entre elevación del terreno y los incendios.
+A partir de la Figura \ref{mapaincendios} se observa un indicativo claro
+de la existencia de una relación importante entre los incendios y la
+altitud. Aunque las únicas áreas libres de amarillo (incendios) son las
+de altitud baja, no es claro que los incendios se concentren en las
+zonas de mayor altitud. Al contrario, parece haber un rango de elevación
+a la baja y a la alta que inhibe la existencia de incendios. Para
+clarificar la relación entre estas dos variables, se grafica por año la
+elevación categorizada contra la proporción de incendios.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics{tarea2_files/figure-latex/unnamed-chunk-3-1.pdf}
-\caption{Proporción de incendios por nivel de elevación y año}
+\caption{Proporción de incendios por nivel de elevación y año
+$\label{barraincendios}$}
 \end{figure}
 
-Analicemos si esta relación se mantiene todos los años y por temporada.
+En la Figura \ref{barraincendios} se observa que la mayoría de los
+incendios se concentran en un rango de elevación de entre 1150 a 1920
+(categorías 3 y 4 en la variable generada). Para otras altitudes, la
+cantidad de incendios es mucho menor. Al refinar la relación e
+introduciendo la estación, se observa que ésta se mantiene para las
+distintas estaciones. En la Figura \ref{estelev} se grafica a la
+variable categórica de elevación contra el número de incendios por
+estación y segmentado por año.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics{tarea2_files/figure-latex/unnamed-chunk-4-1.pdf}
-\caption{Número de incendios por elevación, año y estación.}
+\caption{Número de incendios por elevación, año y estación.
+$\label{estelev}$}
 \end{figure}
+
+Lo primero que se rescata de la Figura \ref{estelev} es que en el
+invierno la cantidad de incendios es muy limitada y en el verano es
+considerablemente mayor que en el resto de las estaciones. Esto tiene
+que ver con las variaciones de temperatura a lo largo del año. Ahora
+bien, la asociación entre las categorías 3 y 4 de elevación y la
+cantidad de incendios se mantiene con algunas variaciones entre años.
+Para entender mejor la asociación observada, se estudia más a detalle
+las posibles causas de esta relación.
 
 Los incendios están asociados al tipo de vegetación y por ende a la
 altitud, fenómenos meteorológicos como las sequías también son un factor
 que favorecen los incendios. Existen diferentes maneras de medir la
 severidad de las sequías, para este estudio utilizamos el Índice de
-Severidad de Sequía de Palmer (PDSI), este mide la sequedad relativa o
+Severidad de Sequía de Palmer (PDSI) que mide la sequedad relativa o
 humedad que afectan a las economías sensibles al agua.
 
 \begin{figure}[H]
