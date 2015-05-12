@@ -1,0 +1,419 @@
+---
+title: "Instituto Tecnológico Autónomo de México"
+author: 'Andrea García Tapia cu 104050 & Edwin Cházaro Argueta cu 153848 '
+date: "29 de abril de 2015"
+output: html_document
+fontsize: 12pt
+---
+
+##Estadística Espacial
+###Tarea 2
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+options(digits=2)
+library(knitr)
+library(ggplot2)
+library(ggthemes)
+library(dplyr)
+library(tidyr)
+library(grid)
+library(kfigr)
+library(geoR)
+library(spatstat)
+library(xtable)
+library(ggmap)
+```
+
+
+####Introducción
+Las montañas Azules  (en inglés, Blue Mountains) son una cadena montañosa localizada en el noroeste de los Estados Unidos, que se extiende largamente por el este del estado de Oregón y el sudeste de Washington. Tiene una superficie muy accidentada  y seca de 10,500 km² que se extiende dede el este y sureste de Pendelton, Oregon hasta el rio Snake con la frontera de Idaho. 
+
+![](usa.png)
+
+Las Montañas Azules contienen 3 parques nacionales y varias áreas naturales protegidas tales como el Malheur National Forest, Umatilla National Forest, Wallowa-Whitman National Forest, Umatilla Wilderness, North Fork John Day Wilderness, Strawberry Mountain Wilderness y la Monument Rock Wilderness. \footnote{Blue Mountains http://geonames.usgs.gov/apex/f?p=gnispq:3:0::NO::P3_FID:1154280}
+
+Dada su georgafía y vegetación la zona de las Montañas Azules es propensa a incendios. La información que comprende este estudo  corresponde a incendios que comenzaron entre el 01 de abril de 1986 y el 31 de julio de 1993 en los 3 estados que abarca la zona de las Montañas Azules ( Oregon, Washington e Idaho)
+
+![](blueM.png)
+
+
+####Descripción del Area de Estudio
+El primer paso de este estudio es el Análisis Exploratorio de Datos
+Los datos del estudio son : 
+```{r, tabladatos, echo=FALSE, results='asis', message=FALSE}
+rayos <- read.csv('data/rayositam.csv')
+grid <- read.csv('data/bmgrid3.csv')
+pol <- read.table('data/poligono.txt')
+names(pol) <- c('lon', 'lat')
+
+
+# dividimos por estaciones y por elevación 
+rayos$mo2[nchar(rayos$mo)==1]<-paste0(0,rayos$mo[nchar(rayos$mo)==1])
+rayos$mo2[nchar(rayos$mo)==2]<-rayos$mo[nchar(rayos$mo)==2]
+rayos$day2[nchar(rayos$day)==1]<-paste0(0,rayos$day[nchar(rayos$day)==1])
+rayos$day2[nchar(rayos$day)==2]<-rayos$day[nchar(rayos$day)==2]
+
+rayos.2 <- rayos %>% mutate(estac=ifelse(paste0(mo2,day2)<'0621' & paste0(mo2,day2)>='0321', 'Primavera', 
+                            ifelse(paste0(mo2,day2)<'0921' & paste0(mo2,day2)>='0621', 'Verano', 
+                                   ifelse(paste0(mo2,day2)<'1221' & paste0(mo2,day2)>='0921', 'Otoño', 'Invierno'))))
+rayos.2$elev_cat <- cut(rayos.2$elev, breaks=6)
+rayos.2$aspect_cat <- cut(rayos.2$aspect, breaks=6)
+
+# no sé por que no quiere jalar la tabla 
+print(xtable(head(rayos.2)))
+```
+veamos el mapa de elevación y tamaño de inciendios
+```{r, message=FALSE}
+ggplot() + 
+  geom_point(data=grid, aes(x=lon, y=lat, colour=elev),inherit.aes=FALSE) +
+  scale_colour_gradient(low = "dark green ", high = "brown", name='Elevación del\nterreno')+
+  geom_point(data=rayos.2, aes(x=lon, y=lat, size=size), colour='orange', alpha=0.8, inherit.aes=FALSE) +
+  guides(size=guide_legend('Tamaño del\nincendio')) + 
+   labs( title="Blue Mountains" )
+```
+Al parecer hay una relación entre elevación del terreno y los inciendios 
+
+```{r}
+rayos_elev_temp <- rayos.2 %>% group_by(yr, elev_cat) %>% summarise(Número=n()) %>% mutate(Proporción=Número/sum(Número))
+
+ggplot(rayos_elev_temp, aes(x=elev_cat, y=Proporción)) + 
+  xlab('Elevación') + 
+  ylab('Proporción de incendios') + 
+  geom_bar(stat='identity', colour = 'purple', fill = 'purple') + 
+  guides(fill=guide_legend('hj')) + 
+  theme(axis.text.x = element_text(angle = 25, hjust = 1))+
+  labs( title= "Incendios por nivel de elevación")
+
+```
+analicemos si esta relación se mantiene todos los años y por temporada 
+```{r}
+rayos_mensual.2 <- rayos.2 %>% 
+                  group_by(yr, estac,elev_cat ) %>% 
+                  summarise(Número=n())
+
+ggplot(rayos_mensual.2, aes(x=elev_cat, y=Número, fill=factor(estac))) + 
+  xlab('Elevación') + 
+  ylab('Número de incendios') + 
+  geom_bar(stat='identity') +
+  facet_grid(yr ~ .) +
+  #guides(fill=guide_legend('Estación')) +
+  scale_fill_manual(values=c("#0099FF", "#663300", "#FF3399","#669966" ))+
+  labs (title = "Incendios por estación, elevación y año (1986-1993) ")
+  
+```
+ Los incendios estan asociados al tipo de vegetación y por ende a la altitud, fenómenos meteorológocos como las sequías tambien son un factor que favorecen los incendios. Existen diferentes maneras de medir la severidad d las sequías, para este estudio utilizamos el Índice de Severidad de Sequía de Palmer (PDSI), este mide la sequedad relativa o humedad que afectan a las economías sensibles al agua. 
+ ![](IP87.png)
+ ![](IP88.png)
+ ![](IP92.png)
+ \footnote{http://www.ncdc.noaa.gov/temp-and-precip/drought/historical-palmers/psi/198304-199307}
+ 
+ Podemos observar que en verano y primavera ocurren más incendios, y en el 4 y 5 corte de elevación. Si lo analizamos por año \footnote{http://www.ncdc.noaa.gov/temp-and-precip/drought/historical-palmers/phd/198304-199307}
+ en 1986 hubo más incendios en verano , esto se debe a que en ese año hubo fenómeno de El Niño de julio de 1886 a marzo de 1988 \footnote{http://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ensoyears.shtml}
+ El fenómeno de "El Niño"  es una oscilación del sistema océano-atmósfera en el Pacífico tropical que tiene consecuencias importantes para el clima en todo el mundo. \footnote {http://www.pmel.noaa.gov/tao/elnino/el-nino-story.html} mientras que en lugares cercanos al trópico genera tormetas tropicales en el norte genera sequías. 
+
+```{r}
+# por tipo de vegetación quitando invierno por que casi no hay incendios 
+rayos.estacion.veg <- rayos.2[rayos.2$estac!='Invierno',] %>% 
+                        group_by(estac, veg9, elev_cat) %>% 
+                        summarize(Número=n()) %>% 
+                        mutate(prop=Número/sum(Número))
+
+ggplot(rayos.estacion.veg, aes(x=elev_cat, y=prop, fill=factor(veg9))) + 
+  geom_bar(stat='identity') + 
+  xlab('Elevación ') + 
+  ylab('Proporción de incendios') + 
+  geom_bar(stat='identity') + 
+  facet_grid(estac~ .) +
+  guides(fill=guide_legend('Tipo de\nvegetación')) + 
+  scale_fill_brewer(palette="BrBG") +
+  labs( title = "Incendios por vegetación, estación y elevación")
+
+```
+Mapas por Estación y elevación 
+
+```{r}
+ggplot() +
+  geom_point(data=grid, aes(x=lon, y=lat, colour=elev),inherit.aes=FALSE) +
+  guides(size=guide_legend('Tamaño del\nincendio')) + 
+  scale_colour_gradient(low = "#CCFF00", high = "#336600", name='Elevación del\nterreno') +
+  geom_point(data=rayos, aes(x=lon, y=lat, size=size), colour='#333333', alpha=0.8, inherit.aes=FALSE) +
+  coord_fixed()  +
+  facet_wrap(~yr)
+
+# por tipo de vegetación 
+rayos_veg <- rayos.2 %>% 
+  group_by(veg9, elev_cat) %>% 
+  summarize(Número=n())
+
+ggplot(rayos_veg, aes(x=factor(veg9), y=Número)) + 
+  xlab('Tipo de vegetación') + 
+  ylab('Número de incendios') + 
+  geom_bar(stat='identity', colour= '#660066', fill= '#660066')+
+  facet_wrap(~elev_cat)+
+   scale_fill_hue(c=45, l=80) +
+  labs( title = "Incendios por vegetación y elevación")
+
+```
+
+
+####Metodología \footnote{esta sección se basó en las notas de clase "Procesos Puntuales" impartidas por el Dr. Carlos Díaz}
+En los procesos puntuales nos interesa saber si el conjunto de puntos distribuidos en una área fija fue generado por un proceso estocástico. Existen tres tipos de patrones (\textit{ regulares, aleatorios o clusters}). 
+Para poder determinar qué tipo de patrón siguen es necesario hacer pruebas de Aleatoriedad Espacial Completa (AEC o (\textit{ CSR en inglés}))
+
+
+La AEC  se puede definir como un proceso Poisson homogéneo (PPH) en $\mathbb{R}^n$, esto es, el número de puntos contenidos en cualquier región $A$, $N(A)$, sigue una distribución Poisson con media $lambda \vert A \vert$; donde $\vert A \vert$ es el área de la región $A$ y $\lambda$ es el parámetro de intensidad del proceso y además los puntos en la región $A$ se distribuyen de manera aleatoria e independiente con distribución uniforme en $A$. Esto significa que si esta hipótesis fuera cierta, entonces los eventos (incendios en este caso) ocurren totalmente al azar, de forma constante en la región y que no hay interacción entre eventos.
+
+Existen dos tres tipos  de estadísticos:  los basados en conteos,  los basados en proximidad con el vecino  y los basados en propiedades de la función de intensidad (primer y segundo orden). 
+El primer estadístico es el filtro para definir si existe AEC, si se rechaza la hipótesis de AEC se utilizan los otros dos para poder definir si es un patrón regular o un patron agregado (cluster)
+
+#####Estadísticos Basados en Conteos 
+
+
+Entre los estadísticos usados para probar AEC  estan los basados en conteos. Suponemos  una partición de la región de interés $A$  en $m$ cuadrantes y en cada uno hay $n_1, n_2, ..., n_m$ eventos. El estadístico más básico es la \textit{Razón Varianza Media} (VMR en inglés) $VMR = Varianza(y)/Media(y)$ , $y = N$ . Si $VMR < 1$ indica uniformidad en los eventos o puntos, $VAR(Y) = 0$ perfectamente uniforme , $VMR > 1$ indica culster y si
+$VMR = 1$ indica aleatoriedad
+
+ Exite otra medida basada en conteos  llamada \textit{índice de dispersión},  el índice se define como  $I = \sum\limits_{i=1}^m \dfrac{(n_i - \overline{n})^2}{(m-1) \overline{n}}$, que bajo AEC debe tomar valor igual a $1$.
+
+Otro estadístico que se usa es $I' =  \dfrac{(m-1)\sum\limits_{i=1}^m (c_i - \overline{c})^2}{\overline{c}} = (m-1)I$. Bajo AEC $I' \sim \chi^2_{(m-1)}$, por lo que se rechaza la hipótesis de AEC al nivel de significancia $\alpha$ si $I' > \chi^2_{(m-1)(1 - \alpha)}$.
+
+
+#####Estadísticos Basados en Distancias al Vecino Próximo
+
+También existen otros basados en distancias entre puntos o eventos, uno de ellos es el vecino más cercano, ya sea desde un punto $x$ del patrón observado, o desde un punto arbitrario.
+
+Por último la $K$ de Ripley,  se define como $K(h) = \dfrac{1}{\lambda} \mathbb{E}$[# extra de eventos dentro de una distancia $h$ a un evento arbitrario].
+Para el caso del método basado en distancias se define la variable aleatoria $D$ como la distancia de un evento arbitrario al evento más cercano, entonces, bajo AEC, 
+
+$$\mathbb{P}(D>d) = 1 - e^{- \lambda \pi d^2}.$$
+
+Entonces la media y la varianza de $D$ son $\mathbb{E}[D] = \dfrac{1}{2 \sqrt{\lambda}}$ y $Var[D] = \dfrac{4 - \pi}{4 \lambda \pi}$. Por esto, si se defina $\overline{D}$ como la media muestral de las distancias, asumiendo $n$ v.a.i.i.d., se tiene que
+$\mathbb{E}[\overline{D}] = \dfrac{1}{2 \sqrt{\lambda}}$ y 
+$Var[\overline{D}] = \dfrac{4 - \pi}{4 n \lambda \pi}$; por lo que centrando
+$$Z = \dfrac{\overline{D} - 1/ (2 \sqrt{\lambda})}{\sqrt{(4-\pi)/(4n\pi\lambda)}} \underset{n \to \infty}{\sim} N(0,1).$$
+
+Así, si $n$ es grande, el IC para AEC tendrá la forma $\overline{D} \pm Z_{1- \alpha / 2} \sqrt{(4-\pi)(4n\pi\lambda)}$.
+
+En el caso de la $K$ de Ripley, si hubiera AEC entonces $K(h) = \pi h^2$, pues el número de puntos dentro de un radio $h$ debe ser proporcional al área del círculo de radio $h$. Si los datos estuvieran en conglomerados, uno esperaría que $K(h) > \pi h^2$, mientras que si hubiera algún tipo de repulsión se esperaría que $K(h) < \pi h^2$. La versión muestral de la $K$ de Ripley es 
+$$\hat{K}(h) = \dfrac{\vert A \vert}{n^2} \sum\limits_{i=1}^{n} \sum\limits_{i \neq j}^{} \dfrac{I_h(d_{ij})}{w_{ij}} $$
+donde $m$ es el número de eventos en $A$, $w_{ij}$ es la proporción del círculo con centro en $i$ y que pasa por $j$ que está dentro de $A$, $d_{ij}$ es la distancia entre los puntos $i$ y $j$, $I$ es la función indicadora para la distancia $d_{ij}$.
+
+Muchas veces se usa la función $L(h) = \sqrt{\dfrac{K(h)}{\pi}} - h$, pues la varianza de $L$ es aproximadamente constante bajo AEC. En la práctica se grafica $t - \hat{L}(t)$ contra $t$, la cual, en el caso de AEC, deberá ser aproximadamente una línea horizontal en el cero.
+
+Si se rechaza la hipótesis de AEC, se deben considerar procesos no homogéneos. La extensión más simple es el Proceso Poisson no homogéneo (PPNH), el cual cumple los mismos principios de el PPH, excepto que la función de intensidad depende del sitio, $\lambda(x)$. Entonces, para un área $B \subset A$, se tiene que $\mathbb{E}[N(B)] = \int_{B} \lambda(u) du$ y $\mathbb{P}(N(b) = n) = \dfrac{[\int_{B} \lambda(u) du]^n \exp^{\int_{B} \lambda(u) du}}{n!}$. A este modelo se le pueden agregar más covariables referentes al sitio; por ejemplo, la elevación y la humedad del sitio.
+
+##### Función de Intensidad (primer y segundo orden)
+Tomado \textit{dx} como una pequea región que contiene el punto x la función de intensidad  de \textbf{primer orden} es $\lambda(x) = \displaystyle\lim_{dx \rightarrow 0} \dfrac{E[N(dx)]} {\textbar{dx}\textbar}$ y la de \textbf{segundo orden} es $\lambda_2(x,y) = \displaystyle\lim_{dx, dy \rightarrow 0} \dfrac{E[N(dx)N(dy)]} {\textbar{dx}\textbar \textbar{dy}\textbar}$ La intensidad de primer orden $\lambda$ se interpreta como  el número esperado de eventos por unidad de área mientras que la segunda tiene una interpretación más complicada.  Hay dos maneras de estimarla : métodos no paramétricos y métodos paraétricos, En el primero no hay ningun modelo involucrado y por lo general se usasn conteos de cuadrantes o estimación por kernel. Los segundos  utilizan un modelo paramétrico y de utiliza la Máxima Verosimilitud o Máxima Pseudoverosimilitud. 
+
+####Resultados y discusión
+
+```{r, eval=FALSE}
+pol.2 <- pol %>% 
+        arrange(-row_number())
+w <- owin(poly=as.matrix(pol.2))
+save(w, file='Out/window.Rdata')
+rayos.ppp <- as.ppp(cbind(rayos.2$lon,rayos.2$lat), w)
+save(rayos.ppp, file='Out/rayos.ppp.Rdata')
+qcount50 <- quadratcount(rayos.ppp,nx=50,ny=50)
+save(qcount50, file='./Out/qcount50.Rdata')
+qcount100 <- quadratcount(rayos.ppp, nx=100,ny=100)
+save(qcount100, file='./Out/qcount100.Rdata')
+```
+
+```{r}
+load('./Out/qcount50.Rdata')
+load('./Out/qcount100.Rdata')
+load('Out/rayos.ppp.Rdata')
+load('Out/window.Rdata')
+
+qcount50num <- as.numeric(qcount50)
+qcount100num <- as.numeric(qcount100)
+I50 <- var(qcount50num)/mean(qcount50num)
+I100 <- var(qcount100num)/mean(qcount100num)
+```
+La razon varianza-media (VMR) va depender del número de cuadrantes en los que se divida el área de estudio. Si dividimos el área de las Montañas Azules en cuadrantes de $50$ y de $100$    nos da un $VMR_{50} = `r I50`$ y $VMR_{100} = `r I100`$ ambos son mayor a 1 por lo cual rechazamos AEC, indicando que existe un patron de cluster par alos incendios de la region de las Montañas Azules . 
+
+Para corroborar este resultado elaboramos otra prueba (índice de dispersión)
+ $I'_{50} = `r (length(qcount50num)-1)*I50`$ y con 100 $I'_{100} = `r (length(qcount100num)-1)*I100`$, y para una $\alpha = 0.01$, se tiene que $\chi^2_{(m-1)(1 - \alpha)} = `r qchisq(.05, length(qcount50num)-1)`$,  con esta prueba también se rechaza AEC. 
+ 
+Como se pudo observar en la primera sección ,los incencdios varian por año, estación y altitud (relacionada con la vegetación). Si repetimos este análisis por año 
+
+```{r}
+# dividir por año para hacer la cuadrícula 
+rayos.ppp.89 <- as.ppp(cbind(rayos.2$lon[rayos.2$yr==89],rayos.2$lat[rayos.2$yr==89]), w)
+rayos.ppp.90 <- as.ppp(cbind(rayos.2$lon[rayos.2$yr==90],rayos.2$lat[rayos.2$yr==90]), w)
+rayos.ppp.91 <- as.ppp(cbind(rayos.2$lon[rayos.2$yr==91],rayos.2$lat[rayos.2$yr==91]), w)
+rayos.ppp.92 <- as.ppp(cbind(rayos.2$lon[rayos.2$yr==92],rayos.2$lat[rayos.2$yr==92]), w)
+rayos.ppp.93 <- as.ppp(cbind(rayos.2$lon[rayos.2$yr==93],rayos.2$lat[rayos.2$yr==93]), w)
+```
+
+```{r, eval=FALSE}
+
+qcount50.89 <- quadratcount(rayos.ppp.89,nx=50,ny=50)
+save(qcount50.89, file='./Out/qcount50.89.Rdata')
+qcount50.90 <- quadratcount(rayos.ppp.90,nx=50,ny=50)
+save(qcount50.90, file='./Out/qcount50.90.Rdata')
+qcount50.91 <- quadratcount(rayos.ppp.91,nx=50,ny=50)
+save(qcount50.91, file='./Out/qcount50.91.Rdata')
+qcount50.92 <- quadratcount(rayos.ppp.92,nx=50,ny=50)
+save(qcount50.92, file='./Out/qcount50.92.Rdata')
+qcount50.93 <- quadratcount(rayos.ppp.93,nx=50,ny=50)
+save(qcount50.93, file='./Out/qcount50.93.Rdata')
+
+```
+
+```{r}
+load('./Out/qcount50.89.Rdata')
+load('./Out/qcount50.90.Rdata')
+load('./Out/qcount50.91.Rdata')
+load('./Out/qcount50.92.Rdata')
+load('./Out/qcount50.93.Rdata')
+qcount50.89num <- as.numeric(qcount50.89)
+qcount50.90num <- as.numeric(qcount50.90)
+qcount50.91num <- as.numeric(qcount50.91)
+qcount50.92num <- as.numeric(qcount50.92)
+qcount50.93num <- as.numeric(qcount50.93)
+# razón varianza media
+I89 <- var(qcount50.89num)/mean(qcount50.89num)
+I90 <- var(qcount50.90num)/mean(qcount50.90num)
+I91 <- var(qcount50.91num)/mean(qcount50.91num)
+I92 <- var(qcount50.92num)/mean(qcount50.92num)
+I93 <- var(qcount50.93num)/mean(qcount50.93num)
+```
+
+Para cada año se tienen las siguientes razones varianza- media: $VMR_{89} = `r I89`$, $VMR_{90} = `r I90`$, $VMR_{91} = `r I91`$, $VMR_{92} = `r I92`$, $VMR_{93} = `r I93`$. Dado que todos son mayores a 1 se rechaza AEC.
+
+El siguiente paso es calcular la K de Ripley 
+```{r, eval=FALSE}
+# Calculamos la K estimada para cada año
+K.rayos.89 <- Kest(rayos.ppp.89)
+save(K.rayos.89, file='./Out/K.rayos.89.Rdata')
+K.rayos.90 <- Kest(rayos.ppp.90)
+save(K.rayos.90, file='./Out/K.rayos.90.Rdata')
+K.rayos.91 <- Kest(rayos.ppp.91)
+save(K.rayos.91, file='./Out/K.rayos.91.Rdata')
+K.rayos.92 <- Kest(rayos.ppp.92)
+save(K.rayos.92, file='./Out/K.rayos.92.Rdata')
+K.rayos.93 <- Kest(rayos.ppp.93)
+save(K.rayos.93, file='./Out/K.rayos.93.Rdata')
+```
+
+```{r}
+
+load('./Out/K.rayos.89.Rdata')
+load('./Out/K.rayos.90.Rdata')
+load('./Out/K.rayos.91.Rdata')
+load('./Out/K.rayos.92.Rdata')
+load('./Out/K.rayos.93.Rdata')
+
+Ripley <- data.frame(border = c(K.rayos.89$border, K.rayos.90$border, K.rayos.91$border, K.rayos.92$border, K.rayos.93$border), 
+                     r = c(K.rayos.89$r, K.rayos.90$r, K.rayos.91$r, K.rayos.92$r, K.rayos.93$r),
+                     year = c(rep(1989, nrow(K.rayos.89)), rep(1990, nrow(K.rayos.89)), rep(1991, nrow(K.rayos.89)), rep(1992, nrow(K.rayos.89)), rep(1993, nrow(K.rayos.89))))
+
+Ripley$border2 <- Ripley$border
+
+Ripley$border2[which(is.nan(Ripley$border))] <- Inf
+
+ggplot(Ripley) + 
+  geom_line(aes(x=r, y=sqrt(border/pi) - r)) + 
+  geom_hline(aes(yintercept=0), colour='purple') + 
+  facet_wrap(~year) + 
+  xlab('h') + 
+  ylab('L(h) - h')+
+  labs( title = "K de Ripley por año")
+```
+En esta prueba también se rechaza AEC pues las gráficas no representan una línea recta horizontal y la  $\hat{K}(h) > \pi h^2$ para la mayoría de los valores de $h$, por lo que podemos concluir que los incendios en la zona de la Montaña Azul tienden a estar conglomerados. El siguiente paso en usar  un modelo para los procesos poisson no homogeneos, dado que los incendios varian por estación se procede a hacer un modelo dividido por las estaciones \footnote{el invierno se excluyó por tener pocos inciendios}. 
+
+```{r, eval=FALSE}
+
+rayos.verano.ppp <- as.ppp(rayos.2[rayos.2$estac=='Verano',c(1,2)], w)
+rayos.otono.ppp <- as.ppp(rayos.2[rayos.2$estac=='Otoño',c(1,2)], w)
+rayos.primavera.ppp <- as.ppp(rayos.2[rayos.2$estac=='Primavera',c(1,2)], w)
+
+idx <- inside.owin(x=grid$lon, y=grid$lat, w=w)
+
+grid_puntos <- ppp(x = grid$lon[idx], y = grid$lat[idx], window=w)
+
+Q.verano <- quadscheme(data=rayos.verano.ppp, dummy=grid_puntos)
+#metemos covariables
+rayos.verano <- rayos.2[rayos.2$estac=='Verano', ]
+covariates.verano <- rbind(dplyr::select(rayos.verano, elev, slope,veg=veg9),
+                       dplyr::select(grid[idx,],elev,slope,veg)) %>%
+                       mutate(veg = factor(veg)) 
+
+mod.verano <- ppm(Q.verano,  ~ elev+veg+slope, Poisson(), covariates = covariates.verano)
+
+Q.otono <- quadscheme(data=rayos.otono.ppp, dummy=grid_puntos)
+rayos.otono <- rayos.2[rayos.2$estac=='Otoño', ]
+covariates.otono <- rbind(dplyr::select(rayos.otono,elev,slope,veg=veg9),
+                     dplyr::select(grid[idx,],elev,slope,veg)) %>%
+                     mutate(veg = factor(veg)) 
+
+mod.otono <- ppm(Q.otono,  ~ elev+veg+slope, Poisson(), covariates = covariates.otono)
+
+Q.primavera <- quadscheme(data=rayos.primavera.ppp, dummy=grid_puntos)
+
+rayos.primavera <- rayos.2[rayos.2$estac=='Primavera', ]
+covariates.primavera <- rbind(dplyr::select(rayos.primavera,elev,slope,veg=veg9),
+                               dplyr::select(grid[idx,],elev,slope,veg)) %>%
+                               mutate(veg = factor(veg)) 
+mod.primavera <- ppm(Q.primavera,  ~ elev+veg+slope, Poisson(), covariates = covariates.primavera)
+
+save(mod.primavera, file='./Out/mod.primavera.RData')
+save(mod.verano, file='./Out/mod.verano.RData')
+save(mod.otono, file='./Out/mod.otono.RData')
+
+```
+
+```{r, tablacoefs, results='asis'}
+load(file='./Out/mod.primavera.RData')
+load(file='./Out/mod.verano.RData')
+load(file='./Out/mod.otono.RData')
+CoefModelos <- data.frame(Variable = names(mod.verano$coef), 
+                          Primavera=mod.primavera$coef, 
+                          Verano=mod.verano$coef, 
+                          Otoño=mod.otono$coef, row.names=NULL)
+
+print(xtable(CoefModelos, caption='Coeficientes de los modelos ajustados', digits=4), comment=FALSE)
+
+
+CoefsGraf <- CoefModelos %>% 
+            gather(Estación, Coeficiente, Primavera, Verano, Otoño)
+
+ggplot(CoefsGraf, aes(x=Variable, y=Coeficiente, color=Estación)) +
+  geom_point(size=3) + 
+  theme(axis.text.x = element_text(angle = 35, hjust = 1))+
+  scale_colour_brewer(palette="RdPu") +
+  labs( title = "Coeficientes del Modelo ")
+
+```
+Para los tres modelos el coeficiente de elevación es cercano a cero por lo que podemos concluir que no incide mucho en los incendios, mientras que por el contrario el tipo de vegetación impacta positivamente.  Esto puede ser debido a que la vegetación y el nivel de elevación estan relacionados. Los coeficientes de vegetación varían por estación esto no indica que en otoño haya más incendios sino que en otoño ese tipo de vegetación es más propensa a incendios. Esto tiene sentido debido a que en la humedad en otoño es menor que en verano o primavera. 
+
+
+####Conclusiones
+
+En el analálisis exploratorio se detecto una relación entre tipo de vegetación la estación del año, la altitud y los incendios. Sin embargo en los modelos sólo se pudo corroborar la relación entre tipo de vegetación, estación y el riesgo de incendio. Uno podría creer que la altutud afectaba dado la saturación de oxígeno pero al parecer en los cortes que se realizaron par ala altitud no afectan al riesgo de incendio. 
+
+En la seguda parte del estudio se analizó qué tipo de proceso puntual siguen  los incendios por medio de pruebas de Aleatoriedad Espacial Completa (AEC). Se encontró que los incendios siguen un proceso de culster.
+
+Los procesos Cluster son una familia importante de los procesos puntuales y se definen como un modelo que genera pequeños cúmulos de eventos, con media local mayor a la de un Proceso Poisson No Homogéneo. Uno de los factores que apoyan este resultado es que la vegetación forma conglomerados por características del área tales como elevación y pendiente, el mayor número de incendios ocurre entre 1150 m y 1920 m de altura.
+
+
+
+
+
+####Bibliografía
+-Rogerson, P.A., 2006. Statistical Methods of Geography. 2nd ed. Sage. London. Chap. 2.6, 10.1,10.2
+
+-Fotherington, A.S., C. Brunsdon, and M. Charlton, 2000. Quantitative Geography. Sage, London. Chap. 2, Chap. 6.-6.3.
+
+-David O’Sullivan and David Unwin (2003) Geographical Information Analysis, Wiley, chapter 4, plus chapter 3 for the curious
+
+-Ian Smalley and David Unwin (1968) The formation and shape of drumlins and their distribution and orientation in drumlin fields, Journal of Glaciology, 7, pp. 377–390; -Alan R. Hill (1973) The distribution of drumlins in County Down, Ireland, Annals, AAG, 63 (2). pp. 226–240. 
+-Human geographers may also like Trevor Bailey and Anthony Gatrell (1995) Interactive spatial data analysis, Longman, chapter 3.
+
+-NOAA (National Oceanographic and Atmospheric Administration. n.d. North American drought:A paleo perspective. Online: http://www.ngdc.noaa.gov/paleo/drought/drght_history.html.
+
+-William M. Ciesla & Andrew C. Mason (2005), DISTURBANCE EVENTS IN AMERICA’S FORESTS: An Analysis of Criterion 3, Indicator 15 of the Montreal Process—Criteria and Indicators of Sustainable Forestry—2003 Unated States Department of Agriculture 
+
+-Conanp, Conafor, FMCN, USFS, CMF, GIZ 2012. Guía para la Elaboración de Programas de Manejo del Fuego en Áreas Naturales Protegidas y Sitios de Interés (Guía Rápida), México. 60 pp.
+
+
