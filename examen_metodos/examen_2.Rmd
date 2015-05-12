@@ -75,3 +75,7 @@ peli.scores <- data.frame(peli_id = as.integer(names(lista)), score= Reduce('c',
   left_join(pelis.nombres) %>% arrange(-score) 
 kable(head(peli.scores, n=15))
 ```
+
+__Nota__
+
+Una buena idea pa comparar, agarras todas las pelis en el top de los 3 periodos y pones el rank para cada una en cada uno de los t-s

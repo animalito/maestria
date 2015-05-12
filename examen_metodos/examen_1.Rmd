@@ -254,6 +254,9 @@ lapply(docs.similares, FUN=function(docs){filter(enron, doc %in% docs) %>% group
   summarise(n_tot= sum(n)) %>% arrange(desc(n_tot)) %>% left_join(vocab)})
 ```
 
+
+__Nota__ Se puede agregar un wordcloud para facilitar la interpretacion x cluster. Tambien se puede hacer unos graficos de barras o cosas asi.
+
 ### 
 
 Ayuda: puedes comenzar con el siguiente código si quieres
