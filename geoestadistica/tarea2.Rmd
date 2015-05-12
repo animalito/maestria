@@ -2,7 +2,15 @@
 title: "Instituto Tecnológico Autónomo de México"
 author: 'Andrea García Tapia cu 104050 & Edwin Cházaro Argueta cu 153848 '
 date: "29 de abril de 2015"
-output: html_document
+output: 
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: no
+    toc: no
+    toc_depth: 3
+    fig_caption: yes
+    includes:
+      in_header: mypackages.sty
 fontsize: 12pt
 ---
 
@@ -27,13 +35,13 @@ library(ggmap)
 ####Introducción
 Las montañas Azules  (en inglés, Blue Mountains) son una cadena montañosa localizada en el noroeste de los Estados Unidos, que se extiende largamente por el este del estado de Oregón y el sudeste de Washington. Tiene una superficie muy accidentada  y seca de 10,500 km² que se extiende dede el este y sureste de Pendelton, Oregon hasta el rio Snake con la frontera de Idaho. 
 
-![](usa.png)
+![](imagenes/usa.png)
 
-Las Montañas Azules contienen 3 parques nacionales y varias áreas naturales protegidas tales como el Malheur National Forest, Umatilla National Forest, Wallowa-Whitman National Forest, Umatilla Wilderness, North Fork John Day Wilderness, Strawberry Mountain Wilderness y la Monument Rock Wilderness. \footnote{Blue Mountains http://geonames.usgs.gov/apex/f?p=gnispq:3:0::NO::P3_FID:1154280}
+Las Montañas Azules contienen 3 parques nacionales y varias áreas naturales protegidas tales como el Malheur National Forest, Umatilla National Forest, Wallowa-Whitman National Forest, Umatilla Wilderness, North Fork John Day Wilderness, Strawberry Mountain Wilderness y la Monument Rock Wilderness. \footnote{Blue Mountains \url{http://geonames.usgs.gov/apex/f?p=gnispq:3:0::NO::P3_FID:1154280}}
 
 Dada su georgafía y vegetación la zona de las Montañas Azules es propensa a incendios. La información que comprende este estudo  corresponde a incendios que comenzaron entre el 01 de abril de 1986 y el 31 de julio de 1993 en los 3 estados que abarca la zona de las Montañas Azules ( Oregon, Washington e Idaho)
 
-![](blueM.png)
+![](imagenes/blueM.png)
 
 
 ####Descripción del Area de Estudio
@@ -101,14 +109,16 @@ ggplot(rayos_mensual.2, aes(x=elev_cat, y=Número, fill=factor(estac))) +
   
 ```
  Los incendios estan asociados al tipo de vegetación y por ende a la altitud, fenómenos meteorológocos como las sequías tambien son un factor que favorecen los incendios. Existen diferentes maneras de medir la severidad d las sequías, para este estudio utilizamos el Índice de Severidad de Sequía de Palmer (PDSI), este mide la sequedad relativa o humedad que afectan a las economías sensibles al agua. 
- ![](IP87.png)
- ![](IP88.png)
- ![](IP92.png)
- \footnote{http://www.ncdc.noaa.gov/temp-and-precip/drought/historical-palmers/psi/198304-199307}
  
- Podemos observar que en verano y primavera ocurren más incendios, y en el 4 y 5 corte de elevación. Si lo analizamos por año \footnote{http://www.ncdc.noaa.gov/temp-and-precip/drought/historical-palmers/phd/198304-199307}
- en 1986 hubo más incendios en verano , esto se debe a que en ese año hubo fenómeno de El Niño de julio de 1886 a marzo de 1988 \footnote{http://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ensoyears.shtml}
- El fenómeno de "El Niño"  es una oscilación del sistema océano-atmósfera en el Pacífico tropical que tiene consecuencias importantes para el clima en todo el mundo. \footnote {http://www.pmel.noaa.gov/tao/elnino/el-nino-story.html} mientras que en lugares cercanos al trópico genera tormetas tropicales en el norte genera sequías. 
+ ![](imagenes/IP87.png)
+ ![](imagenes/IP88.png)
+ ![](imagenes/IP92.png)
+ 
+ \footnote{\url{http://www.ncdc.noaa.gov/temp-and-precip/drought/historical-palmers/psi/198304-199307}}
+ 
+ Podemos observar que en verano y primavera ocurren más incendios, y en el 4 y 5 corte de elevación. Si lo analizamos por año \footnote{\url{http://www.ncdc.noaa.gov/temp-and-precip/drought/historical-palmers/phd/198304-199307}}
+ en 1986 hubo más incendios en verano , esto se debe a que en ese año hubo fenómeno de El Niño de julio de 1886 a marzo de 1988 \footnote{\url{http://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ensoyears.shtml}}
+ El fenómeno de "El Niño"  es una oscilación del sistema océano-atmósfera en el Pacífico tropical que tiene consecuencias importantes para el clima en todo el mundo. \footnote{\url{http://www.pmel.noaa.gov/tao/elnino/el-nino-story.html}} mientras que en lugares cercanos al trópico genera tormetas tropicales en el norte genera sequías. 
 
 ```{r}
 # por tipo de vegetación quitando invierno por que casi no hay incendios 
@@ -180,7 +190,7 @@ Otro estadístico que se usa es $I' =  \dfrac{(m-1)\sum\limits_{i=1}^m (c_i - \o
 
 También existen otros basados en distancias entre puntos o eventos, uno de ellos es el vecino más cercano, ya sea desde un punto $x$ del patrón observado, o desde un punto arbitrario.
 
-Por último la $K$ de Ripley,  se define como $K(h) = \dfrac{1}{\lambda} \mathbb{E}$[# extra de eventos dentro de una distancia $h$ a un evento arbitrario].
+Por último la $K$ de Ripley,  se define como^[\# extra de eventos dentro de una distancia $h$ a un evento arbitrario] $K(h) = \dfrac{1}{\lambda} \mathbb{E}$.
 Para el caso del método basado en distancias se define la variable aleatoria $D$ como la distancia de un evento arbitrario al evento más cercano, entonces, bajo AEC, 
 
 $$\mathbb{P}(D>d) = 1 - e^{- \lambda \pi d^2}.$$
@@ -410,7 +420,7 @@ Los procesos Cluster son una familia importante de los procesos puntuales y se d
 -Ian Smalley and David Unwin (1968) The formation and shape of drumlins and their distribution and orientation in drumlin fields, Journal of Glaciology, 7, pp. 377–390; -Alan R. Hill (1973) The distribution of drumlins in County Down, Ireland, Annals, AAG, 63 (2). pp. 226–240. 
 -Human geographers may also like Trevor Bailey and Anthony Gatrell (1995) Interactive spatial data analysis, Longman, chapter 3.
 
--NOAA (National Oceanographic and Atmospheric Administration. n.d. North American drought:A paleo perspective. Online: http://www.ngdc.noaa.gov/paleo/drought/drght_history.html.
+-NOAA (National Oceanographic and Atmospheric Administration. n.d. North American drought:A paleo perspective. Online: \url{http://www.ngdc.noaa.gov/paleo/drought/drght_history.html}
 
 -William M. Ciesla & Andrew C. Mason (2005), DISTURBANCE EVENTS IN AMERICA’S FORESTS: An Analysis of Criterion 3, Indicator 15 of the Montreal Process—Criteria and Indicators of Sustainable Forestry—2003 Unated States Department of Agriculture 
 
