@@ -2,9 +2,9 @@
 title: "Estadística Espacial: Tarea 2"
 author: 
 - Instituto Tecnológico Autónomo de México
-- Andrea García Tapia cu 104050 
 - Edwin Cházaro Argueta cu 153848
 - Andrea Fernández Conde cu 104499
+- Andrea García Tapia cu 104050 
 date: "29 de abril de 2015"
 output: 
   pdf_document:
@@ -121,7 +121,7 @@ ggplot(rayos_elev_temp, aes(x=elev_cat, y=Proporción)) +
 
 ```
 
-En la Figura \ref{barraincendios} se observa que la mayoría de los incendios se concentran en un rango de elevación de entre 1150 a 1920 (categorías 3 y 4 en la variable generada). Para otras altitudes, la cantidad de incendios es mucho menor. Al refinar la relación e introduciendo la estación, se observa que ésta se mantiene para las distintas estaciones. En la Figura \ref{estelev} se grafica a la variable categórica de elevación contra el número de incendios por estación y segmentado por año. 
+En la Figura \ref{barraincendios} se observa que la mayoría de los incendios se concentran en un rango de elevación de entre 1150 a 1920 (categorías 3 y 4 en la variable generada). Para otras altitudes, la cantidad de incendios es mucho menor. Al refinar la relación e introduciendo la estación, se observa que ésta se mantiene para las distintas estaciones. En la Figura \ref{estelev} se gráfica a la variable categórica de elevación contra el número de incendios por estación y segmentado por año. 
 
 ```{r, echo=F, fig.cap="Número de incendios por elevación, año y estación. $\\label{estelev}$", fig.height=4, fig.width=6, fig.pos="H"}
 rayos_mensual.2 <- rayos.2 %>% 
@@ -152,8 +152,10 @@ ggplot(rayos_mensual.2, aes(x=elev_cat, y=Número, group=factor(estac), shape=fa
 
 Lo primero que se rescata de la Figura \ref{estelev} es que en el invierno la cantidad de incendios es muy limitada y en el verano es considerablemente mayor que en el resto de las estaciones. Esto tiene que ver con las variaciones de temperatura a lo largo del año. Ahora bien, la asociación entre las categorías 3 y 4 de elevación y la cantidad de incendios se mantiene con algunas variaciones entre años. Para entender mejor la asociación observada, se estudia más a detalle las posibles causas de esta relación.
 
-Los incendios están asociados al tipo de vegetación y por ende a la altitud, fenómenos meteorológicos como las sequías también son un factor que favorecen los incendios. Existen diferentes maneras de medir la severidad de las sequías, para este estudio utilizamos el Índice de Severidad de Sequía de Palmer (PDSI) que mide la sequedad relativa o humedad que afectan a las economías sensibles al agua. 
- 
+Los incendios están asociados al tipo de vegetación y por ende a la altitud, fenómenos meteorológicos como las sequías también son un factor que favorecen los incendios. Existen diferentes maneras de medir la severidad de las sequías, para este estudio utilizamos el Índice de Severidad de Sequía de Palmer (PDSI) que mide el nivel de sequía a partir de la precipitación y temperatura reciente. 
+
+En la figura 5 se puede observar que en primavera de 1987, invierno de 1988 y verano de 1989 hubo mayores incendios. Si observamos el Índice de Palmer de la estación anterior a esas temporadas nos damos cuenta que hubo sequías severas en la zona de las Montañas Azules. 
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.5\textwidth]{imagenes/IP87.png}
@@ -231,7 +233,7 @@ ggplot(rayos_veg, aes(x=factor(veg9), y=Número)) +
   labs( title = "Incendios por vegetación y elevación")
 
 ```
-
+Podemos observar que el tipo de vegetación más propensa a incendios es la 5,6 y 7. 
 
 # Metodología^[Esta sección se basó en las notas de clase "Procesos Puntuales" impartidas por el Dr. Carlos Díaz]
 
@@ -353,7 +355,7 @@ I50 <- var(qcount50num)/mean(qcount50num)
 I100 <- var(qcount100num)/mean(qcount100num)
 ```
 
-La razón varianza-media (VMR) va  a depender del número de cuadrantes en los que se divida el área de estudio. Si dividimos el área de las Montañas Azules en cuadrantes de $50$ y de $100$    nos da un $VMR_{50} = `r I50`$ y $VMR_{100} = `r I100`$ ambos son mayor a 1 por lo cual rechazamos AEC, indicando que existe un patron de cluster par alos incendios de la region de las Montañas Azules . 
+La razón varianza-media (VMR) va  a depender del número de cuadrantes en los que se divida el área de estudio. Si dividimos el área de las Montañas Azules en cuadrantes de $50$ y de $100$    nos da un $VMR_{50} = `r I50`$ y $VMR_{100} = `r I100`$ ambos son mayor a 1 por lo cual rechazamos AEC, indicando que existe un patron de cluster para los incendios de la región de las Montañas Azules . 
 
 Para corroborar este resultado elaboramos otra prueba (índice de dispersión)
  $I'_{50} = `r (length(qcount50num)-1)*I50`$ y con 100 $I'_{100} = `r (length(qcount100num)-1)*I100`$, y para una $\alpha = 0.01$, se tiene que $\chi^2_{(m-1)(1 - \alpha)} = `r qchisq(.05, length(qcount50num)-1)`$,  con esta prueba también se rechaza AEC. 
@@ -518,7 +520,7 @@ Para los tres modelos el coeficiente de elevación es cercano a cero por lo que 
 
 # Conclusiones
 
-En el análisis exploratorio se detecto una relación entre tipo de vegetación la estación del año, la altitud y los incendios. Sin embargo en los modelos sólo se pudo corroborar la relación entre tipo de vegetación, estación y el riesgo de incendio. Uno podría creer que la altutud afectaba dado la saturación de oxígeno pero al parecer en los cortes que se realizaron par ala altitud no afectan al riesgo de incendio. 
+En el análisis exploratorio se detecto una relación entre tipo de vegetación la estación del año, la altitud y los incendios. Sin embargo en los modelos sólo se pudo corroborar la relación entre tipo de vegetación, estación y el riesgo de incendio. Uno podría creer que la altutud afectaba dado la saturación de oxígeno pero al parecer en los cortes que se realizaron para la altitud no afectan al riesgo de incendio. 
 
 En la seguda parte del estudio se analizó qué tipo de proceso puntual siguen  los incendios por medio de pruebas de Aleatoriedad Espacial Completa (AEC). Se encontró que los incendios siguen un proceso de culster.
 
