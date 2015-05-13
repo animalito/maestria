@@ -72,7 +72,7 @@ Se cuenta con tres fuentes de datos: información de incendios, información geo
 
 De  `r dim(rayos)[1]` incendios en la zona se cuenta con la coordenada geográfica, la fecha (día, mes y año), tamaño, elevación, pendiente, orientación de la ladera donde ocurrió el incendio (*aspect*) y vegetación (*veg9*). A partir de esas variables se genera la variable de estación (*estac*) considerando como puntos de corte para los mismos el 21 de marzo, 21 de junio, 21 de septiembre y 21 de diciembre. Asimismo, se categorizan las variables de elevación y orientación de la ladera con 6 cortes equidistantes en el rango de su dominio. Los datos modificados se ejemplifican en el Cuadro 1.
 
-Toda la región se caracteriza en la información geográfica y poligonal adicional. En la primera se incluyen coordenadas (latitud, longitud y elevación), orientación de la ladera, pendiente y vegetación en `r dim(grid)[1]`. En la segunda se definen polígonos a partir de `r dim(pol)[1]` coordenadas.
+Toda la región se caracteriza en la información geográfica y poligonal adicional. En la primera se incluyen coordenadas (latitud, longitud y elevación), orientación de la ladera, pendiente y vegetación en `r dim(grid)[1]` puntos. En la segunda se definen polígonos a partir de `r dim(pol)[1]` coordenadas.
 
 ```{r, tabladatos, echo=FALSE, results='asis', message=FALSE}
 # dividimos por estaciones y por elevación 
@@ -176,11 +176,11 @@ Los incendios están asociados al tipo de vegetación y por ende a la altitud, f
 \end{figure}
 
  
-Podemos observar que en verano y primavera ocurren más incendios, y en el 4 y 5 corte de elevación. Si lo analizamos por año^[\url{http://www.ncdc.noaa.gov/temp-and-precip/drought/historical-palmers/phd/198304-199307}] en 1986 hubo más incendios en verano , esto se debe a que en ese año hubo fenómeno de *El Niño* de julio de 1886 a marzo de 1988^[\url{http://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ensoyears.shtml}]. El fenómeno de "El Niño"  es una oscilación del sistema océano-atmósfera en el Pacífico tropical que tiene consecuencias importantes para el clima en todo el mundo^[\url{http://www.pmel.noaa.gov/tao/elnino/el-nino-story.html}] mientras que en lugares cercanos al trópico genera tormetas tropicales, en el norte genera sequías. 
+Podemos observar que en verano y primavera ocurren más incendios, y en el 4 y 5 corte de elevación. Si lo analizamos por año^[\url{http://www.ncdc.noaa.gov/temp-and-precip/drought/historical-palmers/phd/198304-199307}] en 1986 hubo más incendios en verano, esto se debe a que en ese año hubo fenómeno de *El Niño* de julio de 1886 a marzo de 1988^[\url{http://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ensoyears.shtml}]. El fenómeno de "El Niño"  es una oscilación del sistema océano-atmósfera en el Pacífico tropical que tiene consecuencias importantes para el clima en todo el mundo^[\url{http://www.pmel.noaa.gov/tao/elnino/el-nino-story.html}] mientras que en lugares cercanos al trópico genera tormetas tropicales, en el norte genera sequías. 
 
 ```{r, echo=F, fig.cap="Incendios por elevación, tipo de vegetación y estación."}
 # por tipo de vegetación quitando invierno por que casi no hay incendios 
-rayos.estacion.veg <- rayos.2[rayos.2$estac!='Invierno',] %>% 
+rayos.estacion.veg <- rayos.2[rayos.2$estac!='Invierno',] %>%
                         group_by(estac, veg9, elev_cat) %>% 
                         summarize(Número=n()) %>% 
                         mutate(prop=Número/sum(Número))
@@ -193,7 +193,14 @@ ggplot(rayos.estacion.veg, aes(x=elev_cat, y=prop, fill=factor(veg9))) +
   facet_grid(estac~ .) +
   guides(fill=guide_legend('Tipo de\nvegetación')) + 
   scale_fill_brewer(palette="BrBG") +
-  labs( title = "Incendios por vegetación, estación y elevación")
+  labs( title = "Incendios por vegetación, estación y elevación") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rayos.estacion.veg <- rayos.2[rayos.2$estac!='Invierno',] %>%
+                        group_by(veg9, elev_cat) %>% 
+                        mutate(Número=n()) %>% ungroup() %>% group_by(elev_cat) %>%
+                        mutate(den=n(), prop=Número/n())
 
 ```
 
