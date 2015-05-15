@@ -42,7 +42,7 @@
 \fi
 \hypersetup{breaklinks=true,
             bookmarks=true,
-            pdfauthor={Instituto Tecnológico Autónomo de México; Andrea García Tapia cu 104050; Edwin Cházaro Argueta cu 153848; Andrea Fernández Conde cu 104499},
+            pdfauthor={Instituto Tecnológico Autónomo de México; Edwin Cházaro Argueta cu 153848; Andrea Fernández Conde cu 104499; Andrea García Tapia cu 104050},
             pdftitle={Estadística Espacial: Tarea 2},
             colorlinks=true,
             citecolor=blue,
@@ -65,7 +65,7 @@
   \title{Estadística Espacial: Tarea 2}
   \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
-  \author{Instituto Tecnológico Autónomo de México \\ Andrea García Tapia cu 104050 \\ Edwin Cházaro Argueta cu 153848 \\ Andrea Fernández Conde cu 104499}
+  \author{Instituto Tecnológico Autónomo de México \\ Edwin Cházaro Argueta cu 153848 \\ Andrea Fernández Conde cu 104499 \\ Andrea García Tapia cu 104050}
   \preauthor{\centering\large\emph}
   \postauthor{\par}
   \predate{\centering\large\emph}
@@ -159,7 +159,7 @@ rio Snake con la frontera de Idaho.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{imagenes/usa.png}
+\includegraphics[width=0.55\textwidth]{imagenes/usa.png}
 \caption{Ubicación geográfica de las montañas azules.}
 
 \end{figure}
@@ -190,7 +190,7 @@ Estudio}\label{descripcion-del-area-de-estudio}
 Se cuenta con tres fuentes de datos: información de incendios,
 información geográfica y los polígonos que definen el área.
 
-De 5834 incendios en la zona se cuenta con la coordenada geográfica, la
+De 5778 incendios en la zona se cuenta con la coordenada geográfica, la
 fecha (día, mes y año), tamaño, elevación, pendiente, orientación de la
 ladera donde ocurrió el incendio (\emph{aspect}) y vegetación
 (\emph{veg9}). A partir de esas variables se genera la variable de
@@ -210,18 +210,18 @@ puntos. En la segunda se definen polígonos a partir de 2130 coordenadas.
 {\tiny
 \begin{tabular}{rrrrrrrrrrrlllll}
   \hline
-lon & lat & yr & mo & day & size & elev & slope & aspect & dia & veg9 & mo2 & day2 & estac & elev\_cat & aspect\_cat \\ 
+lon & lat & yr & mo & day & size & elev & slope & aspect & dia & veg9 & mo2 & day2 & estac & elev\_cat & aspect\_cat \\
   \hline
-764.49 & 816.11 &  86 &   4 &  14 & 0.10 & 1463 &   2 & 302.00 &  13 &   1 & 04 & 14 & Primavera & (1.15e+03,1.53e+03] & (299,359] \\ 
-  569.35 & 747.68 &  86 &   5 &  20 & 0.20 & 1310 &   3 & 26.00 &  49 &   5 & 05 & 20 & Primavera & (1.15e+03,1.53e+03] & (-1.36,59] \\ 
-  542.17 & 700.37 &  86 &   5 &  26 & 0.10 & 1707 &   2 & 168.00 &  55 &   6 & 05 & 26 & Primavera & (1.53e+03,1.92e+03] & (119,179] \\ 
-  640.66 & 753.46 &  86 &   5 &  28 & 5.00 & 1400 &   8 & 228.00 &  57 &   5 & 05 & 28 & Primavera & (1.15e+03,1.53e+03] & (179,239] \\ 
-  510.35 & 646.56 &  86 &   5 &  29 & 11.00 & 1405 &   2 & 43.00 &  58 &   8 & 05 & 29 & Primavera & (1.15e+03,1.53e+03] & (-1.36,59] \\ 
-  538.01 & 741.06 &  86 &   5 &  30 & 0.10 & 1404 &   2 & 252.00 &  59 &   1 & 05 & 30 & Primavera & (1.15e+03,1.53e+03] & (239,299] \\ 
+764.49 & 816.11 &  86 &   4 &  14 & 0.10 & 1463 &   2 & 302.00 &  13 &   1 & 04 & 14 & Primavera & (1.15e+03,1.53e+03] & oeste \\
+  569.35 & 747.68 &  86 &   5 &  20 & 0.20 & 1310 &   3 & 26.00 &  49 &   5 & 05 & 20 & Primavera & (1.15e+03,1.53e+03] & norte \\
+  542.17 & 700.37 &  86 &   5 &  26 & 0.10 & 1707 &   2 & 168.00 &  55 &   6 & 05 & 26 & Primavera & (1.53e+03,1.92e+03] & sur \\
+  640.66 & 753.46 &  86 &   5 &  28 & 5.00 & 1400 &   8 & 228.00 &  57 &   5 & 05 & 28 & Primavera & (1.15e+03,1.53e+03] & oeste \\
+  510.35 & 646.56 &  86 &   5 &  29 & 11.00 & 1405 &   2 & 43.00 &  58 &   8 & 05 & 29 & Primavera & (1.15e+03,1.53e+03] & norte \\
+  538.01 & 741.06 &  86 &   5 &  30 & 0.10 & 1404 &   2 & 252.00 &  59 &   1 & 05 & 30 & Primavera & (1.15e+03,1.53e+03] & oeste \\
    \hline
 \end{tabular}
 }
-\caption{Muestra de los datos a utilizar.} 
+\caption{Muestra de los datos a utilizar.}
 \end{table}
 
 Para determinar las relaciones existentes entre las características
@@ -232,11 +232,11 @@ establece un rango de colores en el que el mínimo es verde claro y el
 máximo es café). El tamaño de los círculos amarillos refiere a la
 extensión del mismo.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics{tarea2_files/figure-latex/mapaincendios-1.pdf}
-\caption{Mapa de elevación y tamaño de incendios de la zona.
-$\label{mapaincendios}$}
+\caption{Mapa de elevación y tamaño de incendios de la zona.}
+\label{mapaincendios}
 \end{figure}
 
 A partir de la Figura \ref{mapaincendios} se observa un indicativo claro
@@ -244,31 +244,40 @@ de la existencia de una relación importante entre los incendios y la
 altitud. Aunque las únicas áreas libres de amarillo (incendios) son las
 de altitud baja, no es claro que los incendios se concentren en las
 zonas de mayor altitud. Al contrario, parece haber un rango de elevación
-a la baja y a la alta que inhibe la existencia de incendios. Para
-clarificar la relación entre estas dos variables, se grafica por año la
-elevación categorizada contra la proporción de incendios.
+a la baja y a la alta que inhibe la existencia de incendios. Al revisar
+los mapas anuales en la figura \ref{mapaincendiosanio}, se observa que
+se mantiene la relación entre la elevación y el tamaño de los incendios.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
-\includegraphics{tarea2_files/figure-latex/unnamed-chunk-3-1.pdf}
-\caption{Proporción de incendios por nivel de elevación y año
-$\label{barraincendios}$}
+\includegraphics[width=0.7\textwidth]{tarea2_files/figure-latex/unnamed-chunk-3-1.pdf}
+\caption{Mapa del tamaño de incendios por terreno y año.}
+\label{mapaincendiosanio}
 \end{figure}
 
-En la Figura \ref{barraincendios} se observa que la mayoría de los
-incendios se concentran en un rango de elevación de entre 1150 a 1920
-(categorías 3 y 4 en la variable generada). Para otras altitudes, la
-cantidad de incendios es mucho menor. Al refinar la relación e
-introduciendo la estación, se observa que ésta se mantiene para las
-distintas estaciones. En la Figura \ref{estelev} se grafica a la
-variable categórica de elevación contra el número de incendios por
-estación y segmentado por año.
-
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
-\includegraphics{tarea2_files/figure-latex/unnamed-chunk-4-1.pdf}
-\caption{Número de incendios por elevación, año y estación.
-$\label{estelev}$}
+\includegraphics[width=0.7\textwidth]{tarea2_files/figure-latex/unnamed-chunk-4-1.pdf}
+\caption{Proporción de incendios por nivel de elevación y año.}
+\label{barraincendios}
+\end{figure}
+
+Para clarificar la relación entre estas dos variables, se grafica por
+año la elevación categorizada contra la proporción de incendios. En la
+Figura \ref{barraincendios} se observa que la mayoría de los incendios
+se concentran en un rango de elevación de entre 1150 a 1920 (categorías
+3 y 4 en la variable generada). Para otras altitudes, la cantidad de
+incendios es mucho menor. Al refinar la relación e introduciendo la
+estación, se observa que ésta se mantiene para las distintas estaciones.
+En la Figura \ref{estelev} se gráfica a la variable categórica de
+elevación contra el número de incendios por estación y segmentado por
+año.
+
+\begin{figure}[H]
+\centering
+\includegraphics{tarea2_files/figure-latex/unnamed-chunk-5-1.pdf}
+\caption{Número de incendios por elevación, año y estación.}
+\label{estelev}
 \end{figure}
 
 Lo primero que se rescata de la Figura \ref{estelev} es que en el
@@ -284,8 +293,13 @@ Los incendios están asociados al tipo de vegetación y por ende a la
 altitud, fenómenos meteorológicos como las sequías también son un factor
 que favorecen los incendios. Existen diferentes maneras de medir la
 severidad de las sequías, para este estudio utilizamos el Índice de
-Severidad de Sequía de Palmer (PDSI) que mide la sequedad relativa o
-humedad que afectan a las economías sensibles al agua.
+Severidad de Sequía de Palmer (PDSI) que mide el nivel de sequía a
+partir de la precipitación y temperatura reciente.
+
+En la figura 5 se puede observar que en primavera de 1987, invierno de
+1988 y verano de 1989 hubo mayores incendios. Si observamos el Índice de
+Palmer de la estación anterior a esas temporadas nos damos cuenta que
+hubo sequías severas en la zona de las Montañas Azules.
 
 \begin{figure}[H]
 \centering
@@ -318,24 +332,51 @@ importantes para el clima en todo el mundo\footnote{\url{http://www.pmel.noaa.go
 mientras que en lugares cercanos al trópico genera tormetas tropicales,
 en el norte genera sequías.
 
-\begin{figure}[htbp]
-\centering
-\includegraphics{tarea2_files/figure-latex/unnamed-chunk-5-1.pdf}
-\caption{Incendios por elevación, tipo de vegetación y estación.}
-\end{figure}
+Ahora, el objetivo es explorar la composición de la vegetación según
+elevación y la proporción de incendios. En la figura \ref{vegetacion} se
+exhiben, para diferentes niveles de elevación, las proporciones de
+incendios coloreadas por el tipo de vegetación. Recordemos que las
+elevaciones con mayor número de incendios eran la 3 y la 4. Este
+gráfico, aunado a lo observado anteriormente, nos permite distinguir que
+son las vegetaciones 6, 7 y 8 las que caracterizan a las elevaciones 3 y
+4 en cuanto a la proporción de incendios. Las demás categorías de
+asociación tienen asociadas otras vegetaciones con mayor proporción de
+incendios.
 
-Mapas por Estación y elevación
-
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics{tarea2_files/figure-latex/unnamed-chunk-6-1.pdf}
-\caption{Mapa del tamaño de incendios por terreno.}
+\caption{Incendios por elevación, tipo de vegetación y estación.}
+\label{vegetacion}
 \end{figure}
 
-\begin{figure}[htbp]
+Ahora bien, buscamos entender la relación que existe entre la vegetación
+y los incendios. Para esto, en la figura \ref{elevveg} se muestra un
+gráfico de barras para cada categoría de elevación con el número de
+incendios por cada tipo de vegetación. Los tipos de vegetación más
+propensos a incendios son el 5, 6 y 7.
+
+\begin{figure}[H]
 \centering
-\includegraphics{tarea2_files/figure-latex/unnamed-chunk-7-1.pdf}
+\includegraphics[width=0.7\textwidth]{tarea2_files/figure-latex/unnamed-chunk-7-1.pdf}
 \caption{Incendios por elevación, vegetación y estación.}
+\label{elevveg}
+\end{figure}
+
+En cuanto a la variable de \emph{aspect} u orientación de la ladera
+donde ocurrió el incendio, se utilizó la variable recategorizada para
+explorar las relaciones con el número de incendios y el tamaño de los
+mismos. Sin embargo, ninguna de los análisis realizados mostró alguna
+relación importante entre éstas. Por ende, no se incluye esta variable
+en los modelos realizados. Contra el tamaño de incendios, se probó la
+media y la mediana sin ninguna diferencia. En la siguiente figura, se
+muestra el número de incendios según la orientación de la ladera para
+cada año. Sin embargo, en este caso tampoco hay relación.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{tarea2_files/figure-latex/unnamed-chunk-8-1.pdf}
+\caption{Número de incendios por orientación de la ladera por año.}
 \end{figure}
 
 \section[Metodología]{Metodología\footnote{Esta sección se basó en las
@@ -492,8 +533,8 @@ La razón varianza-media (VMR) va a depender del número de cuadrantes en
 los que se divida el área de estudio. Si dividimos el área de las
 Montañas Azules en cuadrantes de $50$ y de $100$ nos da un
 $VMR_{50} = 5.85$ y $VMR_{100} = 2.49$ ambos son mayor a 1 por lo cual
-rechazamos AEC, indicando que existe un patron de cluster par alos
-incendios de la region de las Montañas Azules .
+rechazamos AEC, indicando que existe un patron de cluster para los
+incendios de la región de las Montañas Azules .
 
 Para corroborar este resultado elaboramos otra prueba (índice de
 dispersión) $I'_{50} = 7217.54$ y con 100
@@ -512,9 +553,9 @@ rechaza AEC.
 
 El siguiente paso es calcular la K de Ripley
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
-\includegraphics{tarea2_files/figure-latex/unnamed-chunk-14-1.pdf}
+\includegraphics{tarea2_files/figure-latex/unnamed-chunk-15-1.pdf}
 \caption{K de Ripley por año.}
 \end{figure}
 
@@ -531,27 +572,27 @@ por las estaciones\footnote{El invierno se excluyó por tener pocos
 \centering
 \begin{tabular}{rlrrr}
   \hline
- & Variable & Primavera & Verano & Otoño \\ 
+ & Variable & Primavera & Verano & Otoño \\
   \hline
-1 & (Intercept) & -6.0455 & -4.5907 & -6.4547 \\ 
-  2 & elev & 0.0008 & 0.0011 & 0.0005 \\ 
-  3 & veg2 & 0.3144 & 0.9371 & 1.5863 \\ 
-  4 & veg3 & -2.1611 & 0.3994 & 1.4133 \\ 
-  5 & veg4 & 0.0490 & 0.9965 & 2.1328 \\ 
-  6 & veg5 & 1.0946 & 1.1414 & 2.2086 \\ 
-  7 & veg6 & 0.9322 & 1.1416 & 2.2091 \\ 
-  8 & veg7 & 1.0725 & 0.8351 & 1.9053 \\ 
-  9 & veg8 & 0.8040 & 0.8122 & 1.8772 \\ 
-  10 & veg9 & -0.4654 & -0.2850 & -0.1966 \\ 
-  11 & slope & -0.0837 & -0.0517 & -0.0886 \\ 
+1 & (Intercept) & -6.0455 & -4.5907 & -6.4547 \\
+  2 & elev & 0.0008 & 0.0011 & 0.0005 \\
+  3 & veg2 & 0.3144 & 0.9371 & 1.5863 \\
+  4 & veg3 & -2.1611 & 0.3994 & 1.4133 \\
+  5 & veg4 & 0.0490 & 0.9965 & 2.1328 \\
+  6 & veg5 & 1.0946 & 1.1414 & 2.2086 \\
+  7 & veg6 & 0.9322 & 1.1416 & 2.2091 \\
+  8 & veg7 & 1.0725 & 0.8351 & 1.9053 \\
+  9 & veg8 & 0.8040 & 0.8122 & 1.8772 \\
+  10 & veg9 & -0.4654 & -0.2850 & -0.1966 \\
+  11 & slope & -0.0837 & -0.0517 & -0.0886 \\
    \hline
 \end{tabular}
-\caption{Coeficientes de los modelos ajustados} 
+\caption{Coeficientes de los modelos ajustados}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
-\includegraphics{tarea2_files/figure-latex/unnamed-chunk-16-1.pdf}
+\includegraphics{tarea2_files/figure-latex/unnamed-chunk-17-1.pdf}
 \caption{Coeficientes de los modelos ajustados por estación.}
 \end{figure}
 
@@ -571,7 +612,7 @@ vegetación la estación del año, la altitud y los incendios. Sin embargo
 en los modelos sólo se pudo corroborar la relación entre tipo de
 vegetación, estación y el riesgo de incendio. Uno podría creer que la
 altutud afectaba dado la saturación de oxígeno pero al parecer en los
-cortes que se realizaron par ala altitud no afectan al riesgo de
+cortes que se realizaron para la altitud no afectan al riesgo de
 incendio.
 
 En la seguda parte del estudio se analizó qué tipo de proceso puntual
@@ -587,7 +628,11 @@ conglomerados por características del área tales como elevación y
 pendiente, el mayor número de incendios ocurre entre 1150 m y 1920 m de
 altura.
 
+\pagebreak
+
 \section{Bibliografía}\label{bibliografia}
+
+-Cressie, N., 1993. Statistics for Spacial Data. Wiley Classic Library
 
 -Rogerson, P.A., 2006. Statistical Methods of Geography. 2nd ed. Sage.
 London. Chap. 2.6, 10.1,10.2

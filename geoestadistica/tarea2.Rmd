@@ -33,6 +33,7 @@ library(geoR)
 library(spatstat)
 library(xtable)
 library(ggmap)
+library(texreg)
 ```
 
 \pagebreak
@@ -63,6 +64,7 @@ Dada su geografía y vegetación la zona de las Montañas Azules es propensa a i
 
 ```{r, echo=FALSE, results='asis', message=FALSE}
 rayos <- read.csv('data/rayositam.csv')
+rayos <- unique(rayos)
 grid <- read.csv('data/bmgrid3.csv')
 pol <- read.table('data/poligono.txt')
 names(pol) <- c('lon', 'lat')
@@ -85,7 +87,12 @@ rayos.2 <- rayos %>% mutate(estac=ifelse(paste0(mo2,day2)<'0621' & paste0(mo2,da
                             ifelse(paste0(mo2,day2)<'0921' & paste0(mo2,day2)>='0621', 'Verano', 
                                    ifelse(paste0(mo2,day2)<'1221' & paste0(mo2,day2)>='0921', 'Otoño', 'Invierno'))))
 rayos.2$elev_cat <- cut(rayos.2$elev, breaks=6)
-rayos.2$aspect_cat <- cut(rayos.2$aspect, breaks=6)
+# aspect categorica: 0 es el norte, 90 este, 180 sur, 270 oeste
+# rayos.2$aspect_cat <- cut(rayos.2$aspect, breaks=6)
+cat.esp <- function(x){
+    ifelse(x > 315 | x <=45, 'norte', ifelse(x <= 135, 'este', ifelse(x <= 225, 'sur', 'oeste')))
+}
+rayos.2$aspect_cat <- sapply(rayos.2$aspect, FUN=function(x){cat.esp(x)})
 
 # no sé por que no quiere jalar la tabla 
 tablilla <- xtable(head(rayos.2), type="latex", caption="Muestra de los datos a utilizar.", caption.placement="bottom")
@@ -103,8 +110,17 @@ ggplot() +
    labs( title="Blue Mountains" ) + theme_bw()
 ```
 
-A partir de la Figura \ref{mapaincendios} se observa un indicativo claro de la existencia de una relación importante entre los incendios y la altitud. Aunque las únicas áreas libres de amarillo (incendios) son las de altitud baja, no es claro que los incendios se concentren en las zonas de mayor altitud. Al contrario, parece haber un rango de elevación a la baja y a la alta que inhibe la existencia de incendios. Para clarificar la relación entre estas dos variables, se grafica por año la elevación categorizada contra la proporción de incendios.
+A partir de la Figura \ref{mapaincendios} se observa un indicativo claro de la existencia de una relación importante entre los incendios y la altitud. Aunque las únicas áreas libres de amarillo (incendios) son las de altitud baja, no es claro que los incendios se concentren en las zonas de mayor altitud. Al contrario, parece haber un rango de elevación a la baja y a la alta que inhibe la existencia de incendios. Al revisar los mapas anuales en la figura \ref{mapaincendiosanio}, se observa que se mantiene la relación entre la elevación y el tamaño de los incendios.
 
+```{r, echo=F, fig.cap="Mapa del tamaño de incendios por terreno y año. $\\label{mapaincendiosanio}$", fig.height=4, fig.width=6, fig.pos="H"}
+ggplot() +
+  geom_point(data=grid, aes(x=lon, y=lat, colour=elev),inherit.aes=FALSE) +
+  guides(size=guide_legend('Tamaño del\nincendio')) + 
+  scale_colour_gradient(low = "light green", high = "brown", name='Elevación del\nterreno') +
+  geom_point(data=rayos, aes(x=lon, y=lat, size=size), colour='orange', alpha=0.8, inherit.aes=FALSE) +
+  coord_fixed()  +
+  facet_wrap(~yr)
+```
 
 ```{r, echo=F, fig.cap="Proporción de incendios por nivel de elevación y año $\\label{barraincendios}$", fig.height=4, fig.width=6, fig.pos="H"}
 # Issue 1: Comento la grafica original pero modifico porque está bien pinche raro... la grafica estaba dando 
@@ -121,7 +137,7 @@ ggplot(rayos_elev_temp, aes(x=elev_cat, y=Proporción)) +
 
 ```
 
-En la Figura \ref{barraincendios} se observa que la mayoría de los incendios se concentran en un rango de elevación de entre 1150 a 1920 (categorías 3 y 4 en la variable generada). Para otras altitudes, la cantidad de incendios es mucho menor. Al refinar la relación e introduciendo la estación, se observa que ésta se mantiene para las distintas estaciones. En la Figura \ref{estelev} se gráfica a la variable categórica de elevación contra el número de incendios por estación y segmentado por año. 
+Para clarificar la relación entre estas dos variables, se grafica por año la elevación categorizada contra la proporción de incendios. En la Figura \ref{barraincendios} se observa que la mayoría de los incendios se concentran en un rango de elevación de entre 1150 a 1920 (categorías 3 y 4 en la variable generada). Para otras altitudes, la cantidad de incendios es mucho menor. Al refinar la relación e introduciendo la estación, se observa que ésta se mantiene para las distintas estaciones. En la Figura \ref{estelev} se gráfica a la variable categórica de elevación contra el número de incendios por estación y segmentado por año. 
 
 ```{r, echo=F, fig.cap="Número de incendios por elevación, año y estación. $\\label{estelev}$", fig.height=4, fig.width=6, fig.pos="H"}
 rayos_mensual.2 <- rayos.2 %>% 
@@ -180,10 +196,12 @@ En la figura 5 se puede observar que en primavera de 1987, invierno de 1988 y ve
  
 Podemos observar que en verano y primavera ocurren más incendios, y en el 4 y 5 corte de elevación. Si lo analizamos por año^[\url{http://www.ncdc.noaa.gov/temp-and-precip/drought/historical-palmers/phd/198304-199307}] en 1986 hubo más incendios en verano, esto se debe a que en ese año hubo fenómeno de *El Niño* de julio de 1886 a marzo de 1988^[\url{http://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ensoyears.shtml}]. El fenómeno de "El Niño"  es una oscilación del sistema océano-atmósfera en el Pacífico tropical que tiene consecuencias importantes para el clima en todo el mundo^[\url{http://www.pmel.noaa.gov/tao/elnino/el-nino-story.html}] mientras que en lugares cercanos al trópico genera tormetas tropicales, en el norte genera sequías. 
 
-```{r, echo=F, fig.cap="Incendios por elevación, tipo de vegetación y estación."}
+Ahora, el objetivo es explorar la composición de la vegetación según elevación y la proporción de incendios. En la figura \ref{vegetacion} se exhiben, para diferentes niveles de elevación, las proporciones de incendios coloreadas por el tipo de vegetación. Recordemos que las elevaciones con mayor número de incendios eran la 3 y la 4. Este gráfico, aunado a lo observado anteriormente, nos permite distinguir que son las vegetaciones 6, 7 y 8 las que caracterizan a las elevaciones 3 y 4 en cuanto a la proporción de incendios. Las demás categorías de asociación tienen asociadas otras vegetaciones con mayor proporción de incendios.
+
+```{r, echo=F, fig.cap="Incendios por elevación, tipo de vegetación y estación. $\\label{vegetacion}$"}
 # por tipo de vegetación quitando invierno por que casi no hay incendios 
 rayos.estacion.veg <- rayos.2[rayos.2$estac!='Invierno',] %>%
-                        group_by(estac, veg9, elev_cat) %>% 
+                        group_by( elev_cat, veg9) %>% 
                         summarize(Número=n()) %>% 
                         mutate(prop=Número/sum(Número))
 
@@ -192,12 +210,14 @@ ggplot(rayos.estacion.veg, aes(x=elev_cat, y=prop, fill=factor(veg9))) +
   xlab('Elevación ') + 
   ylab('Proporción de incendios') + 
   geom_bar(stat='identity') + 
-  facet_grid(estac~ .) +
+  #facet_grid(estac~ .) +
   guides(fill=guide_legend('Tipo de\nvegetación')) + 
   scale_fill_brewer(palette="BrBG") +
   labs( title = "Incendios por vegetación, estación y elevación") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+
 
 rayos.estacion.veg <- rayos.2[rayos.2$estac!='Invierno',] %>%
                         group_by(veg9, elev_cat) %>% 
@@ -206,19 +226,9 @@ rayos.estacion.veg <- rayos.2[rayos.2$estac!='Invierno',] %>%
 
 ```
 
-Mapas por Estación y elevación 
+Ahora bien, buscamos entender la relación que existe entre la vegetación y los incendios. Para esto, en la figura \ref{elevveg} se muestra un gráfico de barras para cada categoría de elevación con el número de incendios por cada tipo de vegetación. Los tipos de vegetación más propensos a incendios son el 5, 6 y 7.
 
-```{r, echo=F, fig.cap="Mapa del tamaño de incendios por terreno.", fig.height=4, fig.width=6, fig.pos="H"}
-ggplot() +
-  geom_point(data=grid, aes(x=lon, y=lat, colour=elev),inherit.aes=FALSE) +
-  guides(size=guide_legend('Tamaño del\nincendio')) + 
-  scale_colour_gradient(low = "#CCFF00", high = "#336600", name='Elevación del\nterreno') +
-  geom_point(data=rayos, aes(x=lon, y=lat, size=size), colour='#333333', alpha=0.8, inherit.aes=FALSE) +
-  coord_fixed()  +
-  facet_wrap(~yr)
-```
-
-```{r, echo=F, fig.cap="Incendios por elevación, vegetación y estación.", fig.height=4, fig.width=6, fig.pos="H"}
+```{r, echo=F, fig.cap="Incendios por elevación, vegetación y estación. $\\label{elevveg}$", fig.height=4, fig.width=6, fig.pos="H"}
 # por tipo de vegetación 
 rayos_veg <- rayos.2 %>% 
   group_by(veg9, elev_cat) %>% 
@@ -233,7 +243,24 @@ ggplot(rayos_veg, aes(x=factor(veg9), y=Número)) +
   labs( title = "Incendios por vegetación y elevación")
 
 ```
-Podemos observar que el tipo de vegetación más propensa a incendios es la 5,6 y 7. 
+
+En cuanto a la variable de *aspect* u orientación de la ladera donde ocurrió el incendio, se utilizó la variable recategorizada para explorar las relaciones con el número de incendios y el tamaño de los mismos. Sin embargo, ninguna de los análisis realizados mostró alguna relación importante entre éstas. Por ende, no se incluye esta variable en los modelos realizados. Contra el tamaño de incendios, se probó la media y la mediana sin ninguna diferencia. En la siguiente figura, se muestra el número de incendios según la orientación de la ladera para cada año. Sin embargo, en este caso tampoco hay relación.
+
+```{r, echo=F, fig.cap="Número de incendios por orientación de la ladera por año.", fig.height=4, fig.width=6, fig.pos="H"}
+
+rayos_elev_temp <- rayos.2 %>% group_by(yr, aspect_cat) %>% summarise(Número=n())
+
+ggplot(rayos_elev_temp, aes(x=aspect_cat, y=Número)) + 
+  xlab('Dirección') + 
+  ylab('Número de incendios') + 
+  geom_bar(stat='identity', colour = 'purple', fill = 'purple') + 
+  guides(fill=guide_legend('hj')) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 25, hjust = 1))+
+  labs( title= "Incendios por orientación") + facet_wrap(~yr)
+
+```
+
 
 # Metodología^[Esta sección se basó en las notas de clase "Procesos Puntuales" impartidas por el Dr. Carlos Díaz]
 
@@ -500,6 +527,7 @@ CoefModelos <- data.frame(Variable = names(mod.verano$coef),
                           Otoño=mod.otono$coef, row.names=NULL)
 
 print(xtable(CoefModelos, caption='Coeficientes de los modelos ajustados', digits=4), comment=FALSE)
+
 ```
 
 ```{r, echo=F, fig.cap="Coeficientes de los modelos ajustados por estación.", fig.height=4, fig.width=6, fig.pos="H"}
@@ -528,6 +556,8 @@ Los procesos Cluster son una familia importante de los procesos puntuales y se d
 
 
 # Bibliografía
+
+-Cressie, N., 1993. Statistics for Spacial Data. Wiley Classic Library
 
 -Rogerson, P.A., 2006. Statistical Methods of Geography. 2nd ed. Sage. London. Chap. 2.6, 10.1,10.2
 
