@@ -1,0 +1,35 @@
+---
+title: "Regresión Logística"
+author: "Mario Becerra C"
+date: "24/05/2015"
+output: html_document
+---
+
+```{r}
+library(glmnet)
+```
+
+
+```{r, eval=FALSE}
+load('../data/TF_Erick.RData')
+write.csv(data_train, file='../data/data_train.csv', row.names=FALSE)
+write.csv(data_test, file='../data/data_test.csv', row.names=FALSE)
+```
+```{r}
+colTypes <- c('factor', 'factor', 'factor', 'integer', 'integer', 'numeric', 'numeric', 'numeric', 'numeric', 'numeric', 'numeric', 'numeric', 'numeric', 'numeric', 'numeric', 'factor', 'numeric', 'integer', 'factor', 'factor', 'factor', 'factor', 'factor', 'factor', 'character', 'character', 'factor', 'factor', 'factor', 'factor', 'factor', 'factor')
+train <- read.csv('../data/data_train.csv', colClasses=colTypes)
+test <- read.csv('../data/data_test.csv', colClasses=colTypes)
+```
+
+
+```{r, eval=FALSE}
+xfactors <- model.matrix(Dependiente ~Dependiente+Tipo.de.declaratoria+Tipo.de.fenomeno+GM+R_Inun+R_Hur+R_Des+R_Seq+R_IF+R_Den+Fecha.de.Fin+a_o+Clave.del.Estado+Folio+Municipio+Clave.completa.TEXTO.+Clasificacion, data=train)[,-1]
+x <- as.matrix(data.frame(train_5$v2, train_5$v3, train_5$v8, train_5$v15, xfactors))
+mod.1 <- cv.glmnet(x = x, y = as.factor(train_5[,16]), alpha=0.5, family='binomial')
+save(mod.1, file='./RData/mod.1.RData')
+```
+```{r}
+load('./RData/mod.1.RData')
+plot(mod.1)
+mat.coefs <- data.frame(as.matrix(coef(mod.1, s = 'lambda.1se')))[-1,,drop = FALSE]
+```
