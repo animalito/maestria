@@ -44,14 +44,14 @@ La base se conforma de 25 variables, entre las cuales hay  características geog
 
 ![](./img/var.png)
 
-```{r}
+```{r, echo=F, error=F}
 #tbl_df(data)
 #sapply(data, class)
 ```
 
 Se dividió el conjunto de datos (4750 observaciones con 25 variables) en datos de entrenamiento (70%) y de prueba (30%). 
 
-```{r}
+```{r, echo=F}
 #summary(data)
 ```
 
@@ -64,7 +64,7 @@ En cuanto al tipo de fenómeno  la mayor parte de las declaratorias se concentra
 
 ![](./img/tipo.png)
 
-```{r}
+```{r, echo=F, error=F, message=F, fig.cap="Municipios con desastres."}
 ggplot(data=data, aes(x=a_o, y=Dependiente)) +
     geom_bar(colour="blue", stat="identity")+
   labs( title="No. Municipios con Desastres" )+
@@ -115,11 +115,63 @@ ggplot(monitoreo) + geom_point(aes(x=i, y=cond)) + xlab('Iteración') + ylab('N�
 ```
 
 
-###Problemas 
+# Problemas 
 
 Durante la elaboración de este proyecto nos enfrentamos a diversos problemas. 
 
-####Implementación del Cluster 
-No teníamos cómo funcionaba el NFS server: al utilizar dos carpetas con nombres distintos , es decir mirrorNFS y carpetaNodo olvidamos cerrar el loop del servidor NFS 
+## Implementación del Cluster 
 
-![](./img/paralelo.jpg)
+No entendíamos cómo funcionaba el NFS server: 
+
+- Al utilizar dos carpetas con nombres distintos, es decir `mirrorNFS` y `carpetaNodo`, no sabíamos que era necesario cerrar el loop y correr `mpirun` en el master desde `carpetaNodo`.
+- Cuando intentamos tener un cluster en nuestras computadoras, con las diferentes versiones y distribuciones de Linux y una computadora MAC, había muchos errores. 
+- La versión de MPI se actualizó mientras hacíamos las tareas y con un `update` tuvimos que desinstalar y reinstalar todo de nuevo.
+- En realidad, todos los problemas por el NFS se solucionaron cuando entendimos que éste era solamente una manera de pegarle al master los esclavos pero que master siempre considera que está corriendo todo en sus versiones.
+
+Compilación de archivos:
+
+- Las librerías de Lapack, ATLAS, BLAS y las librerías de matemáticas no se cargan en `mpicc` automáticamente para la distribución de Linux que usamos (Ubuntu, 14.04, unity). Nos tardamos mucho en entender los mensajes de compilación.
+- En general, aprender a utilizar `c` para adaptar los códigos en la tarea 3 fue muy problemático.
+
+## Paralelización de SVM
+
+- Nos pasó lo mismo que con `mpi`: la versión y localización de `R` en `master` y en cada uno de los `nodos` debe ser exactamente la misma para todas las computadoras en el cluster.
+- La instalación de `rmpi` es muy problemática. Debes de realizar:
+
+```
+sudo apt-get install libcr-dev mpich2 mpich2-doc
+R
+install.packages('Rmpi')
+install.packages('snow')
+```
+
+- Primero, intentamos con `Rmpi`. Sin embargo, fue muy difícil debuggear e intentar paralelizar el proceso. Lo que nos pasaba es que podíamos prender el cluster en el master pero freezeaba. Cuando leimos diferentes foros de ayuda, resultó que este es uno de los errores más comunes pero puede tener muchas causas. Eventualmente, al poner la bandera de `manual=T` en el comando para iniciar el cluster, si se podía pero teníamos que ir a cada nodo y ejecutar el `script` de `R` generado en cada uno. Esto no escala.
+- Lo que nos funcionó mejor fue utilizar `snow` directo y mejor controlar el cluster desde ahí. Un ejemplo funcional para prenderlo de manera interactiva fue:
+
+```{r, eval=F}
+library(snow)
+# Prendes el cluster
+cl <- makeSOCKcluster(c("slave05","localhost"))
+# clusterApply funciona como apply pero mandas el objeto cluster, 
+# x *para iterar*, la funcion(suma, para ejemplificar) y parametros adicionales
+clusterApply(cl, 1:2, get("+"), 3)
+# clusterEvalQ permite enviar comandos a ejecutar en cada nodo para la 
+# sesion de R abierta en cada uno
+clusterEvalQ(cl, library(boot))
+# detenemos el cluster
+stopCluster(cl)
+```
+
+- Esta forma nos permitió dejar de utilizar `mpirun` y poder manipular el cluster desde `R`. Por esto, al final el llamado a svm en paralelo es vía `Rscript`, desde el master y en `carpetaNodo`:
+
+```
+Rscript Script.R
+```
+
+Los resultados se muestran a continuación
+
+![](./img/svm_paralelo_bien.png)
+
+Para revisar que el trabajo se estaba realizando en master y en nodos, prendimos un `htop` en el master y el esclavo:
+
+![](./img/paralelo.png)
