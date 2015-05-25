@@ -23,13 +23,30 @@ test <- read.csv('../data/data_test.csv', colClasses=colTypes)
 
 
 ```{r, eval=FALSE}
-xfactors <- model.matrix(Dependiente ~Dependiente+Tipo.de.declaratoria+Tipo.de.fenomeno+GM+R_Inun+R_Hur+R_Des+R_Seq+R_IF+R_Den+Fecha.de.Fin+a_o+Clave.del.Estado+Folio+Municipio+Clave.completa.TEXTO.+Clasificacion, data=train)[,-1]
-x <- as.matrix(data.frame(train_5$v2, train_5$v3, train_5$v8, train_5$v15, xfactors))
-mod.1 <- cv.glmnet(x = x, y = as.factor(train_5[,16]), alpha=0.5, family='binomial')
-save(mod.1, file='./RData/mod.1.RData')
+xfactors <- model.matrix(Dependiente ~ Tipo.de.declaratoria + Tipo.de.fenomeno + GM + R_Inun + R_Hur + R_Des + R_Seq + R_IF + R_Den +  a_o + Clave.del.Estado + Municipio, data=train)[,-1]
+
+x <- cbind(data.frame(train$ANAL, train$SPRI, train$OVSDS, train$OVSEE, train$OVSAE, train$VHAC, train$OVPT, train$PL.5000, train$PO2SM, train$IM, train$area_mun..ha.), xfactors)
+
+x_m <- as.matrix(x[complete.cases(x),])
+
+mod.1 <- cv.glmnet(x = x_m, y = train$Dependiente[complete.cases(x)], alpha=0.5, family='binomial')
+save(mod.1, file='../data/mod.1.RData')
 ```
+
 ```{r}
-load('./RData/mod.1.RData')
-plot(mod.1)
-mat.coefs <- data.frame(as.matrix(coef(mod.1, s = 'lambda.1se')))[-1,,drop = FALSE]
+levels(test$Tipo.de.declaratoria) <- levels(train$Tipo.de.declaratoria)
+levels(test$Tipo.de.fenomeno) <- levels(train$Tipo.de.fenomeno)
+levels(test$GM) <- levels(train$GM)
+levels(test$R_Inun) <- levels(train$R_Inun)
+levels(test$R_Hur) <- levels(train$R_Hur)
+levels(test$R_Des) <- levels(train$R_Des)
+levels(test$R_Seq) <- levels(train$R_Seq)
+levels(test$R_IF) <- levels(train$R_IF)
+levels(test$R_Den) <- levels(train$R_Den)
+levels(test$a_o) <- levels(train$a_o)
+levels(test$Clave.del.Estado) <- levels(train$Clave.del.Estado)
+levels(test$Municipio) <- levels(train$Municipio)
+
+xfactors_test <- model.matrix(Dependiente ~ Tipo.de.declaratoria + Tipo.de.fenomeno + GM + R_Inun + R_Hur + R_Des + R_Seq + R_IF + R_Den +  a_o + Clave.del.Estado + Municipio, data=test)[,-1]
 ```
+
