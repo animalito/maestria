@@ -17,7 +17,7 @@ library(stringr)
 
 
 ```{r}
-data <- read.csv("~/Desktop/EDA.csv", stringsAsFactors=FALSE)
+data <- read.csv("~data/EDA.csv", stringsAsFactors=FALSE)
 
 tamaño_m <- 4750*.7
 set.seed(130888)
@@ -67,5 +67,17 @@ ggplot(data=data, aes(x=a_o, y=Dependiente)) +
   xlab('Año')
 
 
+
+
+#NO HACER caso estaba jugando 
+#dependiente 
+m <- ggplot(data, aes(x = Dependiente))
+m + geom_histogram(colour = "darkgreen", fill = "green", binwidth = 0.5)
+
+# duración 
+n <- ggplot(data, aes(x = Duracion))
+n + geom_histogram(colour = "darkgreen", fill = "green", binwidth = 0.5)
+
+j <- ggplot(data, aes( x = a_o))
 ```
 
