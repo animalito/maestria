@@ -68,10 +68,7 @@ print(w0)
   for(j in 1:m){
     y_ent[j]=sign(sum(xaux*baux1*(t(X_est_aux1)%*%X_est[,j]))+w0);
   }
-   
-#Tasa de clasificaci?n incorrecta:
-print('Tasa de clasificación incorrecta en entrenamiento')
-print(mean(b!=y_ent))
+  
 
 #Clasificaci?n en el conjunto de prueba
 
@@ -89,8 +86,3 @@ y_prueba=Matrix(0,mprueba,1)
  for(j in 1:mprueba){
    y_prueba[j]=sign(sum(xaux*baux1*(t(X_est_aux1)%*%X_prueba[,j]))+w0);
 }
-
-#Tasa de clasificaci?n incorrecta:
-print('Tasa de clasificación incorrecta en prueba')
-print(mean(b_prueba!=y_prueba))
-   

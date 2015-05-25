@@ -93,22 +93,25 @@ predicted.class <- as.factor(predicted.glm>0.5)
 levels(predicted.class) <- c(0,1)
 cm <- confusionMatrix(predicted.class, test$Dependiente)
 kable(cm$table, caption = 'Matriz de confusión de regresión logística')
+kable(as.data.frame(cm$byClass))
 ```
 
 ##Máquina de Soporte Vectorial en Paralelo
 
+Los resultados de clasificación con la máquina de soporte vectorial fueron mejores que con la
+
 ```{r}
 source('./src/Script_Desastres.R')
+
+cm2 <- confusionMatrix(as.numeric(y_prueba), b_prueba)
+kable(cm2$table, caption = 'Matriz de confusión de SVM')
+
+kable(as.data.frame(cm2$byClass))
 
 monitoreo <- resPI[[7]]
 monitoreo$i <- as.integer(monitoreo$i)
 monitoreo$cond <- as.numeric(monitoreo$cond)
 ggplot(monitoreo) + geom_point(aes(x=i, y=cond)) + xlab('Iteración') + ylab('Número de condición')
-```
-
-```{r}
-cm2 <- confusionMatrix(as.numeric(y_prueba), b_prueba)
-kable(cm2$table, caption = 'Matriz de confusión de SVM')
 ```
 
 
