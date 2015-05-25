@@ -7,6 +7,7 @@ output: html_document
 
 ```{r}
 library(glmnet)
+library(caret)
 ```
 
 
@@ -34,6 +35,7 @@ save(mod.1, file='../data/mod.1.RData')
 ```
 
 ```{r}
+load('../data/mod.1.RData')
 levels(test$Tipo.de.declaratoria) <- levels(train$Tipo.de.declaratoria)
 levels(test$Tipo.de.fenomeno) <- levels(train$Tipo.de.fenomeno)
 levels(test$GM) <- levels(train$GM)
@@ -47,6 +49,17 @@ levels(test$a_o) <- levels(train$a_o)
 levels(test$Clave.del.Estado) <- levels(train$Clave.del.Estado)
 levels(test$Municipio) <- levels(train$Municipio)
 
-xfactors_test <- model.matrix(Dependiente ~ Tipo.de.declaratoria + Tipo.de.fenomeno + GM + R_Inun + R_Hur + R_Des + R_Seq + R_IF + R_Den +  a_o + Clave.del.Estado + Municipio, data=test)[,-1]
+test2 <- test[complete.cases(test),]
+
+xfactors_test <- model.matrix(Dependiente ~ Tipo.de.declaratoria + Tipo.de.fenomeno + GM + R_Inun + R_Hur + R_Des + R_Seq + R_IF + R_Den +  a_o + Clave.del.Estado + Municipio, data=test2)[,-1]
+
+x_num <- data.frame(test2$ANAL, test2$SPRI, test2$OVSDS, test2$OVSEE, test2$OVSAE, test2$VHAC, test2$OVPT, test2$PL.5000, test2$PO2SM, test2$IM, test2$area_mun..ha.)
+
+xnew<- as.matrix(cbind(x_num, xfactors_test))
+
+predicted.1 <- predict(mod.1, xnew, type="response")
+predicted.class <- as.factor(predicted.1>0.1)
+levels(predicted.class) <- c(0,1)
+confusionMatrix(predicted.class, test2$Dependiente)
 ```
 
