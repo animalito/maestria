@@ -148,7 +148,7 @@ install.packages('snow')
 - Primero, intentamos con `Rmpi`. Sin embargo, fue muy difícil debuggear e intentar paralelizar el proceso. Lo que nos pasaba es que podíamos prender el cluster en el master pero freezeaba. Cuando leimos diferentes foros de ayuda, resultó que este es uno de los errores más comunes pero puede tener muchas causas. Eventualmente, al poner la bandera de `manual=T` en el comando para iniciar el cluster, si se podía pero teníamos que ir a cada nodo y ejecutar el `script` de `R` generado en cada uno. Esto no escala.
 - Lo que nos funcionó mejor fue utilizar `snow` directo y mejor controlar el cluster desde ahí. Un ejemplo funcional para prenderlo de manera interactiva fue:
 
-```{r, eval=F}
+```{r, eval=F, echo=TRUE}
 library(snow)
 # Prendes el cluster
 cl <- makeSOCKcluster(c("slave05","localhost"))
