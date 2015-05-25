@@ -1,0 +1,56 @@
+---
+title: "Algoritmos de Gran Escala"
+author: "Mario Becerra / Andrea Fernández Conde / Andrea García Tapia"
+date: "24/05/2015"
+output: html_document
+---
+
+```{r}
+library(glmnet)
+library(caret)
+```
+
+```{r, eval=FALSE}
+train <- data_train[,c("Dependiente", "ANAL", "SPRI", "OVSDS", "OVSEE", "OVSAE", "VHAC", "OVPT", "PL.5000", "PO2SM", "IM", "area_mun..ha.", "Sum_POBTOT", "R_Inun", "R_Hur", "R_Des", "R_Seq", "R_IF", "R_Den")]
+
+test <- data_test[,c("Dependiente", "ANAL", "SPRI", "OVSDS", "OVSEE", "OVSAE", "VHAC", "OVPT", "PL.5000", "PO2SM", "IM", "area_mun..ha.", "Sum_POBTOT", "R_Inun", "R_Hur", "R_Des", "R_Seq", "R_IF", "R_Den")]
+
+write.csv(train[complete.cases(train),], file='./data/desastres_train.csv', row.names=FALSE)
+write.csv(test[complete.cases(test),], file='./data/desastres_test.csv', row.names=FALSE)
+```
+
+
+```{r}
+train <- read.csv('./data/desastres_train.csv', colClasses=c('factor', rep('numeric', 18)))
+test <- read.csv('./data/desastres_test.csv', colClasses=c('factor', rep('numeric', 18)))
+```
+
+#Regresión Logística Regularizada
+
+```{r, eval=FALSE}
+mod.1 <- cv.glmnet(x = as.matrix(train[,-1]), y = train$Dependiente, alpha=0.5, family='binomial')
+save(mod.1, file='./data/mod.1.RData')
+```
+
+```{r}
+load('./data/mod.1.RData')
+predicted.glm <- predict(mod.1, as.matrix(test[,-1]), type="response")
+predicted.class <- as.factor(predicted.glm>0.5)
+levels(predicted.class) <- c(0,1)
+confusionMatrix(predicted.class, test$Dependiente)
+```
+
+#Máquina de Soporte Vectorial en Paralelo
+
+```{r}
+source('./src/Script_Desastres.R')
+
+monitoreo <- resPI[[7]]
+monitoreo$i <- as.integer(monitoreo$i)
+monitoreo$cond <- as.numeric(monitoreo$cond)
+ggplot(monitoreo) + geom_point(aes(x=i, y=cond)) + xlab('Iteración') + ylab('Número de condición')
+```
+
+
+
+
