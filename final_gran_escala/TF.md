@@ -15,7 +15,7 @@ Para las covariabes utilizamos variables geográficas (como nivel de riesgo a in
 
 EDA
 ========================================================
-La distribución por Grado de Marginación nos muestra que los grados altos tienen mas declaratorias. 
+La distribución por Grado de Marginación nos muestra que los grados altos tienen más declaratorias. 
 
 ![](/img/dec_GM.png)
 
@@ -45,10 +45,43 @@ Regresión Logística
 ========================================================
 
 
+```r
+confusionMatrix(predicted.class, test$Dependiente)
+```
+
+```
+Confusion Matrix and Statistics
+
+          Reference
+Prediction   0   1
+         0 254 158
+         1 354 592
+                                          
+               Accuracy : 0.623           
+                 95% CI : (0.5966, 0.6488)
+    No Information Rate : 0.5523          
+    P-Value [Acc > NIR] : 7.793e-08       
+                                          
+                  Kappa : 0.2136          
+ Mcnemar's Test P-Value : < 2.2e-16       
+                                          
+            Sensitivity : 0.4178          
+            Specificity : 0.7893          
+         Pos Pred Value : 0.6165          
+         Neg Pred Value : 0.6258          
+             Prevalence : 0.4477          
+         Detection Rate : 0.1870          
+   Detection Prevalence : 0.3034          
+      Balanced Accuracy : 0.6035          
+                                          
+       'Positive' Class : 0               
+                                          
+```
+
 
 Problemas 
 ========================================================
-El principal problema fue que  noentendiamos cóm funcionaba MPI , además la última versión de MPI cambió sus comandos 
+El principal problema fue que no entendiamos cómo funcionaba MPI, además la última versión de MPI cambió sus comandos 
 
 ![](/img/esquema_mpi.png)
 
