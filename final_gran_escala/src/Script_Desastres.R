@@ -5,7 +5,7 @@ options(digits=16)
 
 #lectura de datos de entrenamiento
 
-Train=read.csv('./data/desastres_train.csv',stringsAsFactors=F,header=T, colClasses=c('integer', rep('numeric', 18)), nrows=100)
+Train=read.csv('./data/desastres_train.csv',stringsAsFactors=F,header=T, colClasses=c('integer', rep('numeric', 18)))
 
 #Asignación de variables de acuerdo a la nomenclatura de Puntos Interiores (2a versión)
 

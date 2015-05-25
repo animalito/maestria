@@ -46,15 +46,15 @@ Regresión Logística
 ```{r, echo=FALSE}
 library(glmnet)
 library(caret)
+library(knitr)
 load('./data/mod.1.RData')
 train <- read.csv('./data/desastres_train.csv', colClasses=c('factor', rep('numeric', 18)))
 test <- read.csv('./data/desastres_test.csv', colClasses=c('factor', rep('numeric', 18)))
 predicted.glm <- predict(mod.1, as.matrix(test[,-1]), type="response")
 predicted.class <- as.factor(predicted.glm>0.5)
 levels(predicted.class) <- c(0,1)
-```
-```{r}
-confusionMatrix(predicted.class, test$Dependiente)
+cm <- confusionMatrix(predicted.class, test$Dependiente)
+kable(cm$table)
 ```
 
 

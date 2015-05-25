@@ -6,7 +6,7 @@ output: pdf_document
 ---
 
 
-```{r}
+```{r, echo=FALSE, message=FALSE}
 library(glmnet)
 library(caret)
 library(knitr)
@@ -20,7 +20,7 @@ knitr::opts_chunk$set(warning=FALSE, cache=TRUE, echo=FALSE)
 
 #Análisis Exploratorio de Datos
 
-```{r}
+```{r, message=FALSE}
 data <- read.csv("./data/EDA.csv", stringsAsFactors=FALSE)
 
 tamaño_m <- 4750*.7
@@ -45,14 +45,14 @@ La base se conforma de 25 variables, entre las cuales hay  características geog
 ![](./img/var.png)
 
 ```{r}
-tbl_df(data)
-sapply(data, class)
+#tbl_df(data)
+#sapply(data, class)
 ```
 
 Se dividió el conjunto de datos (4750 observaciones con 25 variables) en datos de entrenamiento (70%) y de prueba (30%). 
 
 ```{r}
-summary(data)
+#summary(data)
 ```
 
 La distribución por Grado de Marginación nos muestra que los grados altos tienen mas declaratorias. 
@@ -91,10 +91,11 @@ load('./data/mod.1.RData')
 predicted.glm <- predict(mod.1, as.matrix(test[,-1]), type="response")
 predicted.class <- as.factor(predicted.glm>0.5)
 levels(predicted.class) <- c(0,1)
-confusionMatrix(predicted.class, test$Dependiente)
+cm <- confusionMatrix(predicted.class, test$Dependiente)
+kable(cm$table, caption = 'Matriz de confusión de regresión logística')
 ```
 
-#Máquina de Soporte Vectorial en Paralelo
+##Máquina de Soporte Vectorial en Paralelo
 
 ```{r}
 source('./src/Script_Desastres.R')
@@ -105,6 +106,10 @@ monitoreo$cond <- as.numeric(monitoreo$cond)
 ggplot(monitoreo) + geom_point(aes(x=i, y=cond)) + xlab('Iteración') + ylab('Número de condición')
 ```
 
+```{r}
+cm2 <- confusionMatrix(as.numeric(y_prueba), b_prueba)
+kable(cm2$table, caption = 'Matriz de confusión de SVM')
+```
 
 
 

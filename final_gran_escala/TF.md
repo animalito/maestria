@@ -44,39 +44,10 @@ Puntos Interiores
 Regresión Logística
 ========================================================
 
-
-```r
-confusionMatrix(predicted.class, test$Dependiente)
-```
-
-```
-Confusion Matrix and Statistics
-
-          Reference
-Prediction   0   1
-         0 254 158
-         1 354 592
-                                          
-               Accuracy : 0.623           
-                 95% CI : (0.5966, 0.6488)
-    No Information Rate : 0.5523          
-    P-Value [Acc > NIR] : 7.793e-08       
-                                          
-                  Kappa : 0.2136          
- Mcnemar's Test P-Value : < 2.2e-16       
-                                          
-            Sensitivity : 0.4178          
-            Specificity : 0.7893          
-         Pos Pred Value : 0.6165          
-         Neg Pred Value : 0.6258          
-             Prevalence : 0.4477          
-         Detection Rate : 0.1870          
-   Detection Prevalence : 0.3034          
-      Balanced Accuracy : 0.6035          
-                                          
-       'Positive' Class : 0               
-                                          
-```
+|   |   0|   1|
+|:--|---:|---:|
+|0  | 254| 158|
+|1  | 354| 592|
 
 
 Problemas 
