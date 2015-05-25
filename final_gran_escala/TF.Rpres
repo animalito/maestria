@@ -15,7 +15,7 @@ Para las covariabes utilizamos variables geográficas (como nivel de riesgo a in
 
 EDA
 ========================================================
-La distribución por Grado de Marginación nos muestra que los grados altos tienen mas declaratorias. 
+La distribución por Grado de Marginación nos muestra que los grados altos tienen más declaratorias. 
 
 ![](/img/dec_GM.png)
 
@@ -43,12 +43,24 @@ Puntos Interiores
 
 Regresión Logística
 ========================================================
-
+```{r, echo=FALSE}
+library(glmnet)
+library(caret)
+load('./data/mod.1.RData')
+train <- read.csv('./data/desastres_train.csv', colClasses=c('factor', rep('numeric', 18)))
+test <- read.csv('./data/desastres_test.csv', colClasses=c('factor', rep('numeric', 18)))
+predicted.glm <- predict(mod.1, as.matrix(test[,-1]), type="response")
+predicted.class <- as.factor(predicted.glm>0.5)
+levels(predicted.class) <- c(0,1)
+```
+```{r}
+confusionMatrix(predicted.class, test$Dependiente)
+```
 
 
 Problemas 
 ========================================================
-El principal problema fue que  noentendiamos cóm funcionaba MPI , además la última versión de MPI cambió sus comandos 
+El principal problema fue que no entendiamos cómo funcionaba MPI, además la última versión de MPI cambió sus comandos 
 
 ![](/img/esquema_mpi.png)
 
