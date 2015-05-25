@@ -15,29 +15,36 @@ Para las covariabes utilizamos variables geográficas (como nivel de riesgo a in
 
 EDA
 ========================================================
+
 La distribución por Grado de Marginación nos muestra que los grados altos tienen más declaratorias. 
 
-![](/img/dec_GM.png)
+![](./img/dec_GM.png)
 
 
 EDA
 ========================================================
+
 En cuanto al tipo de fenómeno  la mayor parte de las declaratorias se concentran en lluvias y sequías.
 
 
-![](/img/tipo.png)
+![](./img/tipo.png)
 
 
 
 Adaptar el código de SVM para el clúster 
 ========================================================
-Para el Cluster ......
+
+
+Para el Cluster actualizamos las versiones de R y snow para las 2 computadoras del Laboratorio de Ciencia d Datos. 
+Ya no utilizamos MPI dado que los comandos en la ultima versión cambiaron y  después de intentarlo por varios días decidimos solo usar snow 
 
 
 
 Puntos Interiores 
 ========================================================
 
+
+En el script de "solsistparalelo.R" en la función MakeCluster se cambia MakeSOCKcluster donde esta el master y el escalvo. 
 
 
 
@@ -60,8 +67,19 @@ kable(cm$table)
 
 Problemas 
 ========================================================
+
+**Implementación del cluster**
+
 El principal problema fue que no entendiamos cómo funcionaba MPI, además la última versión de MPI cambió sus comandos 
 
-![](/img/esquema_mpi.png)
+![](./img/esquema_mpi.png)
 
 
+Paralelización  
+========================================================
+
+**SNOW**
+
+Al final preferimos usar SNOW en lugar de Open_MPI
+
+![](./img/paralelo.jpg)
