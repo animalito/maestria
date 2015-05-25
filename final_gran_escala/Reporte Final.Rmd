@@ -6,7 +6,7 @@ output: pdf_document
 ---
 
 
-```{r, echo=FALSE, message=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 library(glmnet)
 library(caret)
 library(knitr)
@@ -115,4 +115,11 @@ ggplot(monitoreo) + geom_point(aes(x=i, y=cond)) + xlab('Iteración') + ylab('N�
 ```
 
 
+###Problemas 
 
+Durante la elaboración de este proyecto nos enfrentamos a diversos problemas. 
+
+####Implementación del Cluster 
+No teníamos cómo funcionaba el NFS server: al utilizar dos carpetas con nombres distintos , es decir mirrorNFS y carpetaNodo olvidamos cerrar el loop del servidor NFS 
+
+![](./img/paralelo.jpg)
