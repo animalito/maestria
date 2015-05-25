@@ -17,7 +17,7 @@ library(stringr)
 
 
 ```{r}
-data <- read.csv("~data/EDA.csv", stringsAsFactors=FALSE)
+data <- read.csv("./data/EDA.csv", stringsAsFactors=FALSE)
 
 tamaño_m <- 4750*.7
 set.seed(130888)
@@ -38,7 +38,7 @@ Los datos fueron obtenidos del Centro Nacional de Prevención de Desastres (CENA
 
 La base se conforma de 25 variables, entre las cuales hay  características geográficas (riesgos), características socioeconómicas de la población y características del evento.
 
-![](/img/var.png)
+![](./img/var.png)
 
 ```{r}
 tbl_df(data)
@@ -53,12 +53,12 @@ summary(data)
 
 La distribución por Grado de Marginación nos muestra que los grados altos tienen mas declaratorias. 
 
-![](/img/dec_GM.png)
+![](./img/dec_GM.png)
 
 En cuanto al tipo de fenómeno  la mayor parte de las declaratorias se concentran en lluvias y sequías.
 
 
-![](/img/tipo.png)
+![](./img/tipo.png)
 
 ```{r}
 ggplot(data=data, aes(x=a_o, y=Dependiente)) +
