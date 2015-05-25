@@ -2,7 +2,20 @@
 title: "Algoritmos de Gran Escala"
 author: "Andrea García Tapia, Andrea Frenández , Mario Becerra"
 date: "24 de mayo de 2015"
-output: pdf_document
+output: 
+  pdf_document:
+    fig_caption: yes
+    includes:
+      in_header: mypackages.sty
+    keep_tex: yes
+    latex_engine: xelatex
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+  html_document:
+    css: estilos.css
+    fig_caption: yes
+    number_sections: yes
 ---
 
 
@@ -42,29 +55,37 @@ Los datos fueron obtenidos del Centro Nacional de Prevención de Desastres (CENA
 
 La base se conforma de 25 variables, entre las cuales hay  características geográficas (riesgos), características socioeconómicas de la población y características del evento.
 
-![](./img/var.png)
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.45\textwidth]{img/var.png}
+\caption{Descripción de variables en la base de datos.}
+
+\end{figure}
 
 ```{r, echo=F, error=F}
 #tbl_df(data)
 #sapply(data, class)
 ```
 
-Se dividió el conjunto de datos (4750 observaciones con 25 variables) en datos de entrenamiento (70%) y de prueba (30%). 
+Se dividió el conjunto de datos (4750 observaciones con 25 variables) en datos de entrenamiento (70%) y de prueba (30%).  La distribución por Grado de Marginación nos muestra que los grados altos tienen mas declaratorias. 
 
-```{r, echo=F}
-#summary(data)
-```
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{img/dec_GM.png}
+\caption{Distribución por grado de marginación.}
 
-La distribución por Grado de Marginación nos muestra que los grados altos tienen mas declaratorias. 
-
-![](./img/dec_GM.png)
+\end{figure}
 
 En cuanto al tipo de fenómeno  la mayor parte de las declaratorias se concentran en lluvias y sequías.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{img/tipo.png}
+\caption{Distribución por tipo de fenómeno.}
 
-![](./img/tipo.png)
+\end{figure}
 
-```{r, echo=F, error=F, message=F, fig.cap="Municipios con desastres."}
+```{r, echo=F, error=F, message=F, fig.cap="Municipios con desastres.", fig.pos="H"}
 ggplot(data=data, aes(x=a_o, y=Dependiente)) +
     geom_bar(colour="blue", stat="identity")+
   labs( title="No. Municipios con Desastres" )+
@@ -79,41 +100,48 @@ test <- read.csv('./data/desastres_test.csv', colClasses=c('factor', rep('numeri
 
 #Modelos de clasificación
 
+A continuación se presentan los resultados de los dos clasificadores utilizados para los datos: regresión logística regularizada y máquina de soporte vectorial.
+
 ##Regresión Logística Regularizada
+
+Se utilizó el método de *elastic net*, que es una regresión logística con más parámetros de regularización. Estos parámetros se escogen a través de validación cruzada.
 
 ```{r, eval=FALSE}
 mod.1 <- cv.glmnet(x = as.matrix(train[,-1]), y = train$Dependiente, alpha=0.5, family='binomial')
 save(mod.1, file='./data/mod.1.RData')
 ```
 
-```{r}
+```{r, warning=F, error=F, message=F}
 load('./data/mod.1.RData')
 predicted.glm <- predict(mod.1, as.matrix(test[,-1]), type="response")
 predicted.class <- as.factor(predicted.glm>0.5)
 levels(predicted.class) <- c(0,1)
 cm <- confusionMatrix(predicted.class, test$Dependiente)
 kable(cm$table, caption = 'Matriz de confusión de regresión logística')
-kable(as.data.frame(cm$byClass))
+kable(as.data.frame(cm$byClass), caption="Evaluación del modelo.")
 ```
+
+La tasa de clasificación de incorrectos fue de 0.38, la matriz de confusión se puede ver en el cuadro 4.
 
 ##Máquina de Soporte Vectorial en Paralelo
 
-Los resultados de clasificación con la máquina de soporte vectorial fueron mejores que con la
-
-```{r}
+```{r, fig.cap="Iteraciones y el número de condición.", fig.pos="H"}
 source('./src/Script_Desastres.R')
 
 cm2 <- confusionMatrix(as.numeric(y_prueba), b_prueba)
 kable(cm2$table, caption = 'Matriz de confusión de SVM')
-
+```
+```{r}
 kable(as.data.frame(cm2$byClass))
-
+```
+```{r}
 monitoreo <- resPI[[7]]
 monitoreo$i <- as.integer(monitoreo$i)
 monitoreo$cond <- as.numeric(monitoreo$cond)
 ggplot(monitoreo) + geom_point(aes(x=i, y=cond)) + xlab('Iteración') + ylab('Número de condición')
 ```
 
+Los resultados de clasificación con la máquina de soporte vectorial fueron mejores que con la regresión logística regularizada. La tasa de clasificación fue menor.
 
 # Problemas 
 
@@ -136,7 +164,7 @@ Compilación de archivos:
 ## Paralelización de SVM
 
 - Nos pasó lo mismo que con `mpi`: la versión y localización de `R` en `master` y en cada uno de los `nodos` debe ser exactamente la misma para todas las computadoras en el cluster.
-- La instalación de `rmpi` es muy problemática. Debes de realizar:
+- La instalación de `rmpi` es muy problemática. Debes de realizar^[Gracias al equipo de Liliana, Gabriel y David.]:
 
 ```
 sudo apt-get install libcr-dev mpich2 mpich2-doc
@@ -146,7 +174,15 @@ install.packages('snow')
 ```
 
 - Primero, intentamos con `Rmpi`. Sin embargo, fue muy difícil debuggear e intentar paralelizar el proceso. Lo que nos pasaba es que podíamos prender el cluster en el master pero freezeaba. Cuando leimos diferentes foros de ayuda, resultó que este es uno de los errores más comunes pero puede tener muchas causas. Eventualmente, al poner la bandera de `manual=T` en el comando para iniciar el cluster, si se podía pero teníamos que ir a cada nodo y ejecutar el `script` de `R` generado en cada uno. Esto no escala.
-- Lo que nos funcionó mejor fue utilizar `snow` directo y mejor controlar el cluster desde ahí. Un ejemplo funcional para prenderlo de manera interactiva fue:
+- Después, logramos correrlo en mpi. Sin embargo, no sabíamos porqué estaba repitiendose el proceso tantas veces como procesadores teníamos.
+
+![](img/svm_paralelo_mal_p1.png)
+
+![](img/svm_paralelo_mal_p2.png)
+
+- Probamos muchísimas cosas y nada funcionaba. Entonces, decidimos mejor tirar a la basura y cambiar de estrategia.
+
+- Lo que nos funcionó mejor fue utilizar `snow` directo y mejor controlar el cluster desde ahí. Un ejemplo funcional para prenderlo de manera interactiva fue (con una sesión en R en `carpetaNodo` en el master):
 
 ```{r, eval=F, echo=TRUE}
 library(snow)
@@ -161,6 +197,12 @@ clusterEvalQ(cl, library(boot))
 # detenemos el cluster
 stopCluster(cl)
 ```
+
+- Para poder conectar bien snow, el único cambio que hay que realizar es completar la conexión de dos vías entre master y esclavos, es decir, que todos vean a todos con el mismo alias. Por ejemplo, en la master (pc01) y en el esclavo (pc05):
+
+![](img/snow_connectionpc01.png)
+
+![](img/snow_connectionpc05.png)
 
 - Esta forma nos permitió dejar de utilizar `mpirun` y poder manipular el cluster desde `R`. Por esto, al final el llamado a svm en paralelo es vía `Rscript`, desde el master y en `carpetaNodo`:
 
