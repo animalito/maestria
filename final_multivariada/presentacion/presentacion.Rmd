@@ -5,7 +5,7 @@ date: "27/05/2015"
 output: beamer_presentation
 ---
 
-# Aplicación 1: 
+# Aplicación 1: Modelo de reconocimiento de vocales
 
 ## Problema 
 
@@ -13,7 +13,7 @@ output: beamer_presentation
 
 ## Resultados
 
-# Aplicación 2:
+# Aplicación 2: Modelos jerárquicos y postestratificación
 
 ## Problema 
 
