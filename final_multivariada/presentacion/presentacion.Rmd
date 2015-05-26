@@ -1,0 +1,23 @@
+---
+title: "MRP y HMM"
+author: "Andrea Fernández, Liliana Millán"
+date: "27/05/2015"
+output: beamer_presentation
+---
+
+# Aplicación 1: 
+
+## Problema 
+
+## Especificación del modelo
+
+## Resultados
+
+# Aplicación 2:
+
+## Problema 
+
+## Especificación del modelo
+
+## Resultados
+
