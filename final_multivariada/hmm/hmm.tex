@@ -112,14 +112,23 @@
 
 \section{Introducción}\label{introduccion}
 
+Los modelos de HMM son modelos estadísticos que se utilizan en procesos
+que se suponen Markovianos donde los estados no son visibles
+directamente ---son latentes--- pero las variables influidas por estos
+estados si lo son. El objetivo consiste en identificar estos estados
+ocultos para conocer los estados, las transiciones entre los estados y
+las probabilidades de cada estado sobre las variables a las que
+influyen.
+
 Los HMM han sido ampliamente utilizados en problemas de Procesamiento de
-Lenguaje Natural (NLP) sobre todo para el etiquetado de partes del habla
-(POS) Stamp (2012)
+Lenguaje Natural (NLP) sobre todo para el reconocimiento del habla (Part
+Of Speech, POS), etiquetado gramatical, reconocimiento de escritura
+manual, etc. Stamp (2012)
 
 \section{Objetivo}\label{objetivo}
 
-Identificación de vocales y consonantes a través de un modelo de HMM
-estimando sus parámetros.
+Identificación de vocales y consonantes de un texto en español a través
+de un modelo de HMM estimando sus parámetros.
 
 \section{Especificación del modelo}\label{especificacion-del-modelo}
 
@@ -192,9 +201,9 @@ modelo \(\lambda'=(T',M',\pi')\)
 
 \(\pi'_{s}=\gamma_{1}(s)\)
 
-\(T'_{q,s}=\frac{E[\# de transiciones del estado q al s]}{E[\# de transiciones del estado q]}=\frac{\sum_{k=1}^{t-1}\xi_{k(q,s)}}{\sum_{k=1}^{t-1}\gamma_{k}(q)}\)
+\(T'_{q,s}=\frac{E[\#\phantom{a}de\phantom{a}transiciones\phantom{a}del\phantom{a}estado\phantom{a}q \phantom{a}al\phantom{a}s]}{E[\#\phantom{a}de\phantom{a}transiciones\phantom{a}del\phantom{a}estado\phantom{a}q]}=\frac{\sum_{k=1}^{t-1}\xi_{k(q,s)}}{\sum_{k=1}^{t-1}\gamma_{k}(q)}\)
 
-\(M'_{s,m}=\frac{E[\# de veces en el estado s cuando la observacion fue m]}{E[\# de veces en el estado s]}=\frac{\sum_{k=1}{t}\gamma_{k}(s)1(z_{k}=m)}{\sum_{k=1}^{t}\gamma_{k}(s)}\)
+\(M'_{s,m}=\frac{E[\#\phantom{a}de\phantom{a}veces\phantom{a}en\phantom{a}el\phantom{a}estado\phantom{a}s\phantom{a}cuando\phantom{a}la\phantom{a}observacion\phantom{a}fue\phantom{a}m]}{E[\# de veces en el estado s]}=\frac{\sum_{k=1}{t}\gamma_{k}(s)1(z_{k}=m)}{\sum_{k=1}^{t}\gamma_{k}(s)}\)
 
 \subsection{~Suposiciones iniciales del
 modelo}\label{suposiciones-iniciales-del-modelo}
@@ -281,7 +290,7 @@ noticias
   Algoritmo de Baum-Welch para estimación de parámetros de una HMM
 \end{itemize}
 
-\section{Resultados}\label{resultados}
+\section{Resultados Español}\label{resultados-espanol}
 
 Inicial sin conocimiento:
 
@@ -329,15 +338,103 @@ C & 0.993 & 0.006\tabularnewline
 \bottomrule
 \end{longtable}
 
+A continuación se identifican que las probabilides en el estado \emph{v}
+de los símbolos \emph{a, e, i, o, u, ú} son mayores que las
+probabilidades de estos símbolos al estado \emph{c}. De igual forma, las
+probabilidades en el estado \emph{c} para los símbolos que \textbf{no}
+son \emph{a, e, i, o, u, ú} son mayores que las probabilidades de estos
+símbolos al estado \emph{v}.
+
 \begin{figure}[htbp]
 \centering
 \includegraphics{salida_vocales.png}
 \caption{resultados}
 \end{figure}
 
+\section{Resultados Griego}\label{resultados-griego}
+
+Inicial sin conocimiento:
+
+\begin{longtable}[c]{@{}ccc@{}}
+\toprule
+& V & C\tabularnewline
+\midrule
+\endhead
+& 0.53765 & 0.4234\tabularnewline
+\bottomrule
+\end{longtable}
+
+Inicial después de Baum-Welch
+
+\begin{longtable}[c]{@{}ccc@{}}
+\toprule
+& V & C\tabularnewline
+\midrule
+\endhead
+& 0.6117 & 0.3882\tabularnewline
+\bottomrule
+\end{longtable}
+
+Transiciones sin conocimiento
+
+\begin{longtable}[c]{@{}ccc@{}}
+\toprule
+& V & C\tabularnewline
+\midrule
+\endhead
+V & 0.3558 & 0.6441\tabularnewline
+C & 0.5161 & 0.4838\tabularnewline
+\bottomrule
+\end{longtable}
+
+Transiciones después de Baum-Welch
+
+\begin{longtable}[c]{@{}ccc@{}}
+\toprule
+& V & C\tabularnewline
+\midrule
+\endhead
+V & 0.0093 & 0.9906\tabularnewline
+C & 0.6178 & 0.3821\tabularnewline
+\bottomrule
+\end{longtable}
+
+En griego las vocales corresponden a los símbolos:
+
+\begin{longtable}[c]{@{}cc@{}}
+\toprule
+Griego & ~Vocal\tabularnewline
+\midrule
+\endhead
+A,\(\alpha\) & a\tabularnewline
+E,\(\epsilon\) & e\tabularnewline
+I,\(\iota\) & i\tabularnewline
+O,\(\omicron\) & o\tabularnewline
+Y,\(\upsilon\) & u\tabularnewline
+\bottomrule
+\end{longtable}
+
+A continuación se identifican que las probabilides en el estado \emph{v}
+de los símbolos
+\(\alpha\),\(\epsilon\),\(\iota\),\(\omicron\),\(\upsilon\),\(\epsilon\)
+acentuado, son mayores que las probabilidades de estos símbolos al
+estado \emph{c}. De igual forma, las probabilidades en el estado
+\emph{c} para los símbolos que \textbf{no} son
+\(\alpha\),\(\epsilon\),\(\iota\),\(\omicron\),\(\upsilon\),\(\epsilon\)
+acentuado son mayores que las probabilidades de estos símbolos al estado
+\emph{v}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{salida_vocales_griego.png}
+\caption{resultados}
+\end{figure}
+
 \pagebreak
 
 \section{Código}\label{codigo}
+
+\subsection{~Español}\label{espanol}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -380,6 +477,63 @@ C & 0.993 & 0.006\tabularnewline
   
 \NormalTok{random_nums <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\KeywordTok{runif}\NormalTok{(}\DecValTok{33}\NormalTok{,}\FloatTok{0.030}\NormalTok{,}\FloatTok{0.034}\NormalTok{), }\KeywordTok{runif}\NormalTok{(}\DecValTok{33}\NormalTok{,}\FloatTok{0.030}\NormalTok{,}\FloatTok{0.034}\NormalTok{))}
 \NormalTok{random_nums <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{/}\DecValTok{33}\NormalTok{,}\DecValTok{33}\NormalTok{), }\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{/}\DecValTok{33}\NormalTok{,}\DecValTok{33}\NormalTok{))}
+\NormalTok{emissionProbs=}\KeywordTok{as.matrix}\NormalTok{(random_nums)}
+\NormalTok{inithmm <-}\StringTok{ }\KeywordTok{initHMM}\NormalTok{(states, symbols, }\DataTypeTok{startProbs=}\NormalTok{startProbs, }\DataTypeTok{transProbs=}\NormalTok{transProbs, }
+                   \DataTypeTok{emissionProbs=}\NormalTok{emissionProbs)}
+\NormalTok{bw <-}\StringTok{ }\KeywordTok{baumWelch}\NormalTok{(inithmm, obsv$letter)}
+\NormalTok{bw}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{~Griego}\label{griego}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(HMM)}
+
+\KeywordTok{setwd}\NormalTok{(}\StringTok{"/Users/Lili/Documents/itam/estadistica_multivariada_y_datos_categoricos/examenes/final"}\NormalTok{)}
+
+
+\NormalTok{periodico <-}\StringTok{ }\KeywordTok{scan}\NormalTok{(}\DataTypeTok{file=}\StringTok{'griego_test.txt'}\NormalTok{, }\DataTypeTok{sep=}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, }\DataTypeTok{what =} \KeywordTok{character}\NormalTok{())}
+
+
+
+\NormalTok{for(i in }\DecValTok{1}\NormalTok{:}\KeywordTok{length}\NormalTok{(periodico)) \{}
+  \NormalTok{periodico[i] <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"[[:punct:]]"}\NormalTok{,}\StringTok{""}\NormalTok{,}\KeywordTok{unlist}\NormalTok{(periodico[i]))}
+  \NormalTok{periodico[i] <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"[[:digit:]]"}\NormalTok{,}\StringTok{""}\NormalTok{,}\KeywordTok{unlist}\NormalTok{(periodico[i]))}
+  \NormalTok{periodico[i] <-}\StringTok{ }\KeywordTok{tolower}\NormalTok{(periodico[i])}
+  \NormalTok{periodico[i] <-}\StringTok{ }\KeywordTok{gsub}\NormalTok{(}\StringTok{"[[:space:]]"}\NormalTok{,}\StringTok{" "}\NormalTok{,}\KeywordTok{unlist}\NormalTok{(periodico[i]))}
+\NormalTok{\}}
+
+
+
+\NormalTok{for (i in }\DecValTok{1}\NormalTok{) \{}
+  \NormalTok{texto <-}\StringTok{ }\NormalTok{periodico[i]}
+  \NormalTok{if(i ==}\StringTok{ }\DecValTok{1}\NormalTok{)\{}
+    \NormalTok{obsv <-}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(}\KeywordTok{unlist}\NormalTok{(}\KeywordTok{strsplit}\NormalTok{(texto, }\DataTypeTok{split=}\StringTok{""}\NormalTok{)), }\DataTypeTok{stringsAsFactors=}\OtherTok{FALSE}\NormalTok{)}
+  \NormalTok{\} else \{}
+    \NormalTok{obsv <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(obsv, }\KeywordTok{as.data.frame}\NormalTok{(}\KeywordTok{unlist}\NormalTok{(}\KeywordTok{strsplit}\NormalTok{(texto, }\DataTypeTok{split=}\StringTok{""}\NormalTok{)), }\DataTypeTok{stringsAsFactors=}\OtherTok{FALSE}\NormalTok{))}
+  \NormalTok{\}}
+\NormalTok{\}}
+\KeywordTok{names}\NormalTok{(obsv) <-}\StringTok{ "letter"}
+
+\CommentTok{#obsv <- obsv[-which(obsv$letter=="¾"),]}
+\CommentTok{#obsv <- obsv[-which(obsv == "å")]}
+
+\NormalTok{states =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"v"}\NormalTok{,}\StringTok{"c"}\NormalTok{)}
+\NormalTok{symbols =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"έ"}\NormalTok{,}\StringTok{"ν"}\NormalTok{,}\StringTok{"α"}\NormalTok{,}\StringTok{"ς"}\NormalTok{,}\StringTok{" "}\NormalTok{,}\StringTok{"χ"}\NormalTok{,}\StringTok{"ρ"}\NormalTok{,}\StringTok{"ο"}\NormalTok{,}\StringTok{"π"}\NormalTok{,}\StringTok{"ό"}\NormalTok{,}\StringTok{"τ"}\NormalTok{,}\StringTok{"η"}\NormalTok{,}\StringTok{"κ"}\NormalTok{,}\StringTok{"β"}\NormalTok{,}\StringTok{"ά"}\NormalTok{,}\StringTok{"λ"}\NormalTok{,}\StringTok{"ε"}\NormalTok{,}\StringTok{"γ"}\NormalTok{,}\StringTok{"ω"}\NormalTok{,}\StringTok{"ή"}\NormalTok{,}\StringTok{"σ"}\NormalTok{,}\StringTok{"ώ"}\NormalTok{,}\StringTok{"ύ"}\NormalTok{,}\StringTok{"φ"}\NormalTok{,}\StringTok{"υ"}
+            \NormalTok{,}\StringTok{"ξ"}\NormalTok{,}\StringTok{"θ"}\NormalTok{,}\StringTok{"ζ"}\NormalTok{,}\StringTok{"ι"}\NormalTok{,}\StringTok{"ψ"}\NormalTok{,}\StringTok{"ί"}\NormalTok{,}\StringTok{"δ"}\NormalTok{,}\StringTok{"μ"}\NormalTok{)}
+\CommentTok{#probabilidades iniciales de lso estados}
+\NormalTok{random_num <-}\StringTok{ }\KeywordTok{runif}\NormalTok{(}\DecValTok{1}\NormalTok{,}\FloatTok{0.5}\NormalTok{,}\FloatTok{0.7}\NormalTok{)}
+\NormalTok{startProbs =}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{c}\NormalTok{(random_num, }\DecValTok{1}\NormalTok{-random_num), }\DecValTok{2}\NormalTok{)}
+
+\NormalTok{random_num <-}\StringTok{ }\KeywordTok{runif}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.5}\NormalTok{,}\FloatTok{0.7}\NormalTok{)}
+\NormalTok{random_num_2 <-}\StringTok{ }\KeywordTok{runif}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.5}\NormalTok{,}\FloatTok{0.7}\NormalTok{)}
+\NormalTok{transProbs <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{-random_num,random_num_2,  }
+                       \NormalTok{random_num,}\DecValTok{1}\NormalTok{-random_num_2), }\DecValTok{2}\NormalTok{)}
+  
+\CommentTok{#random_nums <- data.frame(runif(31,0.030,0.034), runif(33,0.030,0.034))}
+\NormalTok{random_nums <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{/}\KeywordTok{length}\NormalTok{(symbols),}\KeywordTok{length}\NormalTok{(symbols)), }\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{/}\KeywordTok{length}\NormalTok{(symbols),}\KeywordTok{length}\NormalTok{(symbols)))}
 \NormalTok{emissionProbs=}\KeywordTok{as.matrix}\NormalTok{(random_nums)}
 \NormalTok{inithmm <-}\StringTok{ }\KeywordTok{initHMM}\NormalTok{(states, symbols, }\DataTypeTok{startProbs=}\NormalTok{startProbs, }\DataTypeTok{transProbs=}\NormalTok{transProbs, }
                    \DataTypeTok{emissionProbs=}\NormalTok{emissionProbs)}
