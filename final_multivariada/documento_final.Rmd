@@ -1,0 +1,49 @@
+---
+title: "Proyecto Final: Multivariada"
+author: "Andrea Fernández, Liliana Millán"
+date: "27/05/2015"
+output:
+  pdf_document:
+    fig_caption: yes
+    includes:
+      in_header: mypackages.sty
+    keep_tex: yes
+    latex_engine: xelatex
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+---
+
+```{r, echo=F, warning=F, error=F, message=F}
+library(knitr)
+hmm <- NULL
+# hmm <- c(hmm, knit_child('hmm.Rmd', quiet = TRUE))
+```
+
+`r paste(hmm, collapse='\n')`
+
+\pagebreak
+
+```{r, echo=F, warning=F, error=F, message=F}
+rm(list = ls(all = TRUE)) #clear workspace
+
+# Detach packages
+detachAllPackages <- function() {
+
+  basic.packages <- c("package:stats","package:graphics","package:grDevices","package:utils","package:datasets","package:methods","package:base")
+
+  package.list <- search()[ifelse(unlist(gregexpr("package:",search()))==1,TRUE,FALSE)]
+
+  package.list <- setdiff(package.list,basic.packages)
+
+  if (length(package.list)>0)  for (package in package.list) detach(package, character.only=TRUE)
+
+}
+
+detachAllPackages()
+
+mrp <- NULL
+mrp <- c(mrp, knit_child('mrp/metodologia.Rmd', quiet = TRUE))
+```
+
+`r paste(mrp, collapse='\n')`
