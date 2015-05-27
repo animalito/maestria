@@ -17,7 +17,7 @@ output:
 ```{r, echo=F, warning=F, error=F, message=F}
 library(knitr)
 hmm <- NULL
-# hmm <- c(hmm, knit_child('hmm.Rmd', quiet = TRUE))
+hmm <- c(hmm, knit_child('hmm/hmm.Rmd', quiet = TRUE))
 ```
 
 `r paste(hmm, collapse='\n')`

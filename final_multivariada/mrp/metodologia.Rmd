@@ -32,7 +32,7 @@ bib <- read.bibtex("bibliografia_encuestas.bib")
 
 \pagebreak
 
-# Introducción 
+## Introducción 
 
 Este documento detalla el método de regresión multinivel y postestratificación (MRP por sus siglas en inglés) para poder corregir sesgo de selección en los datos recolectados a través de una encuesta con diseño muestral no probabilístico por cuotas, como las realizadas en los diagnósticos participativos de Morelos de 2013 y 2014. El objetivo es construir estimadores precisos sobre la población objetivo.
 
@@ -50,7 +50,7 @@ Existen varios factores que pueden afectar o no la calidad de los datos recolect
 
 La estructura de este documento es la siguiente: en la sección dos se especifican los tipos de muestreo y se profundiza sobre las ventajas y desventajas que ofrecen las encuestas de diseño no probabilístico. Con este tipo de datos, el problema más importante es el sesgo de selección que puede tener una muestra. En la sección tres se enlistan varios métodos que ayudan a corregir este error y en la sección cuatro se profundiza en particular sobre la regresión multinivel y postestratificación para este caso en particular. En la sección cinco se muestra un ejemplo práctico del uso de este método para las encuestas de Morelos de 2013 y 2014.
 
-# Muestreo
+## Muestreo
 
 Una buena muestra es intuitivamente, aquella que es representativa de la población de la que fue extraida, es decir, que los resultados de los datos recolectados de ésta son consistentes con los resultados que hubiésemos obtenido si se hubiera censado a la población `r citep(bib["fricker08"], after=", p. 197")`.
 
@@ -77,7 +77,7 @@ Algunas diferencias que es importante considerar entre muestreos probabilístico
 
 En ninguno de los esquemas de muestreo pueden utilizarse estimadores directamente de la muestra para hablar de la población objetivo. En el caso de un muestreo probabilístico, se realizan inferencias basadas en diseño que requieren del cálculo de los factores de expansión con los que se pondera a cada unidad de análisis en la muestra^[La ventaja de un diseño es que para cada tipo existe una forma cerrada para realizar el cálculo del estimador puntual, el intervalo de confianza, el coeficiente de variación y demás medidas del error.]. Para muestreos no probabilísticos la única manera de realizar inferencias sobre la población es generando un modelo suficientemente robusto para controlar los sesgos de selección. La siguiente sección explicita los métodos más comunes.
 
-# Ajustes posteriores a los datos recolectados
+## Ajustes posteriores a los datos recolectados
 
 Los ajustes posteriores a la realización de la encuesta son un elemento central para tener confianza en las estimaciones realizadas. Hay muchos procedimientos robustos para situaciones en los que el muestro se desvía de la probabilidad de selección o cuando hay problemas de cobertura o de no respuesta. Ponderar los datos es útil para ajustarlos a controles sociodemográficos. 
 
@@ -88,13 +88,13 @@ Los problemas para realizar inferencias a partir de muestras no probabilísticos
 1. __Sample matching__: es un método para crear una muestra cuando se tiene un número grande de respuestas a una encuesta pero, posiblemente éstas no sean representativas. Cada muestra (individuos, hogares) puede ser "apareada" (en inglés, *matched*) a una unidad en un marco de muestreo de acuerdo a ciertas variables auxiliares^[Por ejemplo, en una encuesta a individuos en el que se cuenta con un marco muestral, se seleccionan aleatoriamente a elementos de éste según género, raza, edad e ingreso. Ahora bien, si uno de los individuos seleccionado aleatoriamente en el marco muestral cae en la categoría de *hombre, blanco, de 30 a 49 años y del último decil del ingreso*, entonces se busca en la muestra al elemento más cercano a estas características. Esto se hace para cada uno de los individuos seleccionados aleatoriamente del marco muestral.]. La idea fundamental es que primero se selecciona una muestra objetivo del marco de muestreo utilizando algún tipo de muestreo probabilístico. Sin embargo, en vez de entrevistar a aquellos dentro de la muestra objetivo, se busca al más cercano del conjunto de encuestados disponibles para cada unidad dentro de la muestra objetivo. Colectivamente, las unidades "apareadas" son conocidas como la muestra de empate. El empate no necesita ser exacto y suele realizarse utilizando una función de distancia que mida la similitud entre pares de encuestados. Si la cantidad de encuestas disponibles es suficientemente grande, se garantiza que la muestra de empate tiene aproximadamente la misma distribución conjunta para las variables de empate que la muestra objetivo. Ejemplos del uso de esta técnica pueden encontrarse en  `r citet(bib["rivers07"], after=", p. 11")` y en `r citet(bib["hill07"], after=", p. 14")`. 
 2. __Máxima entropía__: el principio de máxima entropía se basa en utilizar la información disponible de la manera más eficiente. La entropía se utiliza para medir la incertidumbre que se tiene de la ocurrencia de una colección de eventos. Se elige entonces la distribución que maximiza la entropía sujeta a la muestra (por ejemplo, los momentos de la muestra) y, al mismo tiempo, la información no contenida en la muestra acerca de la variable aleatoria `r citep(bib["bernardini00"], after=", p. 1687")`.
 
-# Regresión multinivel y postestratificación
+## Regresión multinivel y postestratificación
 
 La __regresión multinivel y postestratificación__ (MRP) permite desagregar los resultados de una encuesta sobre una serie de categorías y ayuda a corregir el sesgo de selección utilizando características demográficas y geográficas conocidas para hacer inferencias acerca de las personas en una región geográfica específica. Este método fue desarrollado por `r citet(bib[c("gelman97", "park06", "gelman07")])` y posteriormente retomado por `r citet(bib[c("lax09", "kastellec10")])`. En este reporte se utiliza este método y se explica a mejor detalle a continuación.
 
 El método MRP permite resolver dos tipos de problemas en encuestas: la estimación de áreas pequeñas^[En inglés conocido como el *small area problem*, está presente cuando el número de observaciones válidas en una encuesta para una o más categorías es muy pequeña.] y/o los datos recolectados están afectados por el sesgo de selección. Estos dos problemas derivan en estimadores relativamente imprecisos de las categorías de interés. Estimadores de mayor precisión se pueden obtener utilizando una combinación apropiada de modelos de regresión multinivel y postestratificación (MRP).
 
-## El problema a solucionar
+### El problema a solucionar
 
 En general, el objetivo es determinar si, y hasta qué punto, una distribución para una variable de interés ($Y$) varía a través de las categorías de una variable ($D$)^[Sin pérdida de generalidad, $D$ puede representar una única variable categórica o una combinación de dos o más categóricas. Llamamos $J$ al número de categorías en $D$ y $d$ a una categoría cualesquiera en $D$.]. La distribución condicional de $Y$ en cada categoría $d$ de $D$ puede escribirse como:
 
@@ -116,7 +116,7 @@ Se supone en adelante que:
 - Los datos de interés son recolectados sin error de medición.
 - La única fuente de error de estimación es la varianza de la muestra^[En inglés, *sampling variance* e incluye la suma del error de cobertura, el error por no respuesta y el error de muestreo. Existe porque el valor de un estadístico varía entre las personas en la población objetivo y las encuestas miden únicamente a un subconjunto de ésta `r citep(bib["groves04"], after=", p. 8-9")`.] y la única posible fuente de estimación sistemática del error es el sesgo de selección (*selection bias*).
 
-## Estimación MRP
+### Estimación MRP
 
 El estimador estándar de máxima verosimilitud de cada elemento $\theta_d$ de $\theta$ es
 
@@ -154,11 +154,11 @@ donde $w_{g|d}=\frac{N_{g,d}}{N_d}$. El numerador es el número de miembros de l
 
 \pagebreak
 
-# Ejemplo 
+## Ejemplo 
 
 Para ejemplificar los pasos, ventajas y limitaciones señalados en el apartado anterior, a continuación se realiza un ejemplo completo de estimación puntual para las encuestas levantadas en Morelos en 2013 y 2014.
 
-## Paso 1
+### Paso 1
 
 La identificación de variables que pueden ser responsables del sesgo es lo más importante del análisis. Sin embargo, es el elemento más limitado pues los datos censales recolectados por INEGI no están disponibles a nivel individual. La información ya se encuentra agregada a nivel manzana y, por ende, se depende de las categorías que el Instituto generó para definir G. A nivel manzana es posible especificar únicamente 5 modelos, es decir, definir cinco cuadrículas $G$:
 
@@ -354,13 +354,13 @@ mor_14 <- mutate(mor_14,
 
 En las últimas líneas de código, se categoriza la variable $D$ elegida: *En el último año, ¿has sido víctima de algún delito?* Se recodifica como 1 para "Sí" y 0 para "No"^[La implementación del método en `R` solo acepta variables dicotómicas para $J$.]
 
-## Paso 2
+### Paso 2
 
 Es una desventaja el no poder generar una mayor cantidad de cuadrículas para los datos censales. Lo ideal sería que, para cada variable $D$ se pudieran elegir las variables más apropiadas para eliminar los sesgos en las estimaciones. `r citet(bib["lax13"])` ofrecen múltiples recomendaciones para una adecuada especificación del modelo. Debido a que se emplean modelos jerárquicos, es posible utilizar datos estatales o municipales para robustecer el modelo generado. Mas aún, es posible especificar el modelo de manera bayesiana lo que permite extender la potencia de inferencia sobretodo cuando los datos son muy escasos, este no es el caso de análisis^[Para mayor detalle de la especificación de modelos multinivel ver `r citet(bib["gelman07"])`.].
 
 Como se mencionó anteriormente, aquí se utiliza el modelo 4 con cuadrícula por género, edad y colonia.
 
-## Paso 3
+### Paso 3
 
 En `R` hay una implementación de MRP, ejemplo del cuál se utiliza a continuación. Ésta admite mayor complejidad en la especificación del modelo jerárquico `r citep(bib[c("mrp","mrpdata")])`.
 
@@ -385,7 +385,7 @@ mrp.simple14 <- mrp(victimizacion ~ idcolonia + edad + genero,
                     pop.weights="value")
 ```
 
-## Paso 4
+### Paso 4
 
 Para obtener los resultados de victimización después de la postestratificación, es posible realizar de forma muy sencilla los llamados:
 
@@ -433,7 +433,7 @@ kable(comparacion, digits=4, caption="Estimaciones para 2013-2014 por género y 
 
 \pagebreak
 
-# Bibliografía
+## Bibliografía
 
 ```{r, echo=F, message=F, error=F, warning=F, results='asis'}
 bibliography()
