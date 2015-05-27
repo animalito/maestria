@@ -9,9 +9,64 @@ output: beamer_presentation
 
 ## Problema 
 
+Supongamos que somos alienígenas de Las Pléyades y que no tenemos ni idea de cómo se 'lee' un lenguaje de la tierra, no sabemos de los idiomas pero como somos seres superiores sabemos de Hidden Markov Models! 
+
+* Objetivo: 
+
+Queremos establecer ciertas propiedades de este lenguaje que no conocemos, veremos que al identificar estas propiedades, de manera *natural* identificaremos las vocales de las consonantes.  
+
+
 ## Especificación del modelo
 
+* Utilizamos HMM con el algoritmo Baum-Welch para estimar los parámetros:
+
+1. las probabilidades inciales de los estados
+2. las probabilidades de transición entre estados 
+3. las probabilidades de cada símbolo de pertenecer a uno de los estados 
+
+* Únicamente con la evidencia que tienen los datos (nuestras observaciones)
+
+## Baum-Welch
+
+* Este algoritmo es una variante del EM visto en clase. Iniciamos con un modelo sin 'conocimiento' 
+
+$\pi$ = probabilidades de inciar en cada estado
+
+A= matriz de transición de estados
+
+B= matriz de emisiones
+
+$\lambda=(A,B,\pi)$
+
+* En cada iteración los valores de $\pi$, A y B se van actualizando hasta convergencia\*. 
+* El algoritmo puede ocupar el forward procedure —probabilidad de ver esta secuencia parcial y terminar en el estado i en el tiempo t— o bien el backward procedure —probabilidad de terminar en la esta secuencia parcial dado que empezamos en el estado i en el tiempo t—
+
+\* Explicación en el trabajo escrito
+
+## Datos 
+
+* Tomamos el corpus de 
+
+## Suposiciones iniciales del modelo
+
+* Nuestra base será suponer que existen 2 estados: **Consonante** y **Vocal**  
+
+* No conocemos con qué probabilidad de inicio estamos en Constante o en Vocal
+
+* No conocemos las probabilidades de transición entre estados 
+
+* No conocemos las probabilidades de que cada símbolo del lenguaje pertenezca a uno de los estados
+
+
+## Paquetes utlizadas
+
+* Paquete HMM de R
+
+* Algoritmo de Baum-Welch para estimación de parámetros de una HMM
+
 ## Resultados
+
+
 
 # Aplicación 2: Modelos jerárquicos y postestratificación
 
