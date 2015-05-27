@@ -112,9 +112,18 @@
 
 \section{Introducción}\label{introduccion}
 
+Los modelos de HMM son modelos estadísticos que se utilizan en procesos
+que se suponen Markovianos donde los estados no son visibles
+directamente ---son latentes--- pero las variables influidas por estos
+estados si lo son. El objetivo consiste en identificar estos estados
+ocultos para conocer los estados, las transiciones entre los estados y
+las probabilidades de cada estado sobre las variables a las que
+influyen.
+
 Los HMM han sido ampliamente utilizados en problemas de Procesamiento de
-Lenguaje Natural (NLP) sobre todo para el etiquetado de partes del habla
-(POS) Stamp (2012)
+Lenguaje Natural (NLP) sobre todo para el reconocimiento del habla (Part
+Of Speech, POS), etiquetado gramatical, reconocimiento de escritura
+manual, etc. Stamp (2012)
 
 \section{Objetivo}\label{objetivo}
 
@@ -192,9 +201,9 @@ modelo \(\lambda'=(T',M',\pi')\)
 
 \(\pi'_{s}=\gamma_{1}(s)\)
 
-\(T'_{q,s}=\frac{E[\# de transiciones del estado q al s]}{E[\# de transiciones del estado q]}=\frac{\sum_{k=1}^{t-1}\xi_{k(q,s)}}{\sum_{k=1}^{t-1}\gamma_{k}(q)}\)
+\(T'_{q,s}=\frac{E[\#\phantom{a}de\phantom{a}transiciones\phantom{a}del\phantom{a}estado\phantom{a}q \phantom{a}al\phantom{a}s]}{E[\#\phantom{a}de\phantom{a}transiciones\phantom{a}del\phantom{a}estado\phantom{a}q]}=\frac{\sum_{k=1}^{t-1}\xi_{k(q,s)}}{\sum_{k=1}^{t-1}\gamma_{k}(q)}\)
 
-\(M'_{s,m}=\frac{E[\# de veces en el estado s cuando la observacion fue m]}{E[\# de veces en el estado s]}=\frac{\sum_{k=1}{t}\gamma_{k}(s)1(z_{k}=m)}{\sum_{k=1}^{t}\gamma_{k}(s)}\)
+\(M'_{s,m}=\frac{E[\#\phantom{a}de\phantom{a}veces\phantom{a}en\phantom{a}el\phantom{a}estado\phantom{a}s\phantom{a}cuando\phantom{a}la\phantom{a}observacion\phantom{a}fue\phantom{a}m]}{E[\# de veces en el estado s]}=\frac{\sum_{k=1}{t}\gamma_{k}(s)1(z_{k}=m)}{\sum_{k=1}^{t}\gamma_{k}(s)}\)
 
 \subsection{~Suposiciones iniciales del
 modelo}\label{suposiciones-iniciales-del-modelo}
