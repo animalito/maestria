@@ -1,0 +1,213 @@
+---
+title: "HMM para reconocimiento de vocales "
+output:
+  pdf_document:
+    fig_caption: yes
+    includes:
+      in_header: mypackages.sty
+    keep_tex: yes
+    latex_engine: xelatex
+    number_sections: yes
+    toc: yes
+    toc_depth: 2
+  html_document:
+    css: estilos.css
+    fig_caption: yes
+    number_sections: yes
+date: "18/05/2015"
+---
+
+```{r, echo=F, message=F, error=F, warning=F}
+# bibliografia
+library(knitr)
+library(knitcitations)
+library(bibtex)
+library("RefManageR")
+
+cleanbib()
+cite_options(hyperlink=T)
+bib <- read.bibtex("bibliografia_hmm.bib")
+```
+
+\pagebreak
+
+# Introducción 
+
+Los HMM han sido ampliamente utilizados en problemas de Procesamiento de Lenguaje Natural (NLP) sobre todo para el etiquetado de partes del habla (POS) `r citet(bib["stamp12"])`
+
+# Objetivo
+
+Identificación de vocales y consonantes a través de un modelo de HMM estimando sus parámetros.
+
+
+# Especificación del modelo
+
+* Utilizamos HMM con el algoritmo Baum-Welch para estimar los parámetros:
+
+1. las probabilidades inciales de los estados
+2. las probabilidades de transición entre estados 
+3. las probabilidades de cada símbolo de pertenecer a uno de los estados 
+
+
+![imagen](./modelo_vocales.png)
+
+
+## Algoritmo Baum-Welch
+
+* Este algoritmo es una variante del EM visto en clase `r citet(bib[c("frazzoli10", "bilmes98")])` . Iniciamos con un modelo sin 'conocimiento' 
+
+$\pi$ = probabilidades de iniciar en cada estado
+
+T= matriz de transición de estados
+
+M= matriz de emisiones
+
+$\lambda=(T,M,\pi)$
+
+* En cada iteración los valores de $\pi$, A y B se van actualizando hasta convergencia implementando el algoritmo forward-backward. 
+
+
+Definimos $\gamma_{k}(s)=Pr[X_{k}= s|Z,\lambda]$, la probabilidad de que el sistema se encuentre en el estado $s$ en el $k$-ésimo tiempo, dada la secuencia de observaciones $Z$ en el modelo $\lambda$ (forward-process).
+
+$\gamma_{k}(s)=\frac{\alpha_{k}(s)\beta_{k}(s)}{Pr[Z|\lambda]}=\alpha_{k}(s)\beta_{k}(s){\sum_{s\epsilon\chi}\alpha_{t}(s)}$
+
+Definimos $\xi_{k}(q,s)=Pr[X_{k}=q,X_{k+1}=s|Z,\lambda]$, la probabilidad de estar en el estado $q$ al tiempo $k$ y en el estado $s$ en el tiempo $k+1$ dada la secuencia de observaciones en el modelo actual de HMM (backward-process).
+
+$\xi_{k}(q,s)=\eta_{k}\alpha_{k}(q)T_{q,s}M_{s,z_{k+1}}\beta_{k+1}(s)$, donde $\eta_{k}$ es un factor de normalización tal que $\sum_{q,s}\xi_{k}(q,s)=1$
+
+Calculando $\gamma_{k}(s)$ y $\xi_{k}(q,s)$ podemos actualizar el modelo $\lambda'=(T',M',\pi')$
+
+$\pi'_{s}=\gamma_{1}(s)$
+
+$T'_{q,s}=\frac{E[\# de transiciones del estado q al s]}{E[\# de transiciones del estado q]}=\frac{\sum_{k=1}^{t-1}\xi_{k(q,s)}}{\sum_{k=1}^{t-1}\gamma_{k}(q)}$
+
+$M'_{s,m}=\frac{E[\# de veces en el estado s cuando la observacion fue m]}{E[\# de veces en el estado s]}=\frac{\sum_{k=1}{t}\gamma_{k}(s)1(z_{k}=m)}{\sum_{k=1}^{t}\gamma_{k}(s)}$
+
+## Suposiciones iniciales del modelo
+
+* Nuestra base será suponer que existen 2 estados: **Consonante** y **Vocal**  
+* No conocemos con qué probabilidad de inicio estamos en Constante o en Vocal
+* No conocemos las probabilidades de transición entre estados 
+* No conocemos las probabilidades de que cada símbolo del lenguaje pertenezca a uno de los estados
+
+
+# Datos 
+
+Intentamos ocupar los últimos 100 contenidos publicados en Quién.com y CNNExpansión.com sin embargo sus corpus requieren de mucho de preprocesamiento para eliminar encoding y caracteres extraños.
+
+Decidimos tomar un corpus en español de un ejercicio realizado en Métodos Analíticos correspondiente a un periodico español con 309,918 noticias  
+
+## Limpieza de Datos 
+
+* Eliminamos signos de puntuación
+* Eliminamos dígitos
+* Eliminamos tabulaciones
+* Cambiamos todo el corpus a minúsculas
+* Dividimos cada palabra en sus letras respetando los espacios
+
+
+# Metodología
+
+1. Limpieza de datos
+2. Separar cada palabra en sus respectivas letras respetando espacios
+3. Establecemos nuestro conocimiento a priori sobre las probabilidades iniciales de estados inicializando $\pi$. Dado que no conocemos mucho del proceso las establecemos muy cercanas a 0.5 (suman a 1)
+4. Establecemos nuestro conocimiento a priori sobre las probabilidades de transición entre estados inicializando A. Dado que no conocemos mucho del proceso las establecemos cercanas a 0.5 pero agregando que creemos que es más probable la transición de vocal a consonante que de vocal a vocal, al igual que de consonante a vocal de que de consontante a consonante. 
+5. Establecemos nuestro conocimiento a priori sobre las probabilidades de cada símbolo a cada uno de los estados propuestos inicializando B. Dado que no conocemos mucho del proceso las establecemos dividiendo 1 entre el número de símbolos posibles en el set de datos. 
+6. Inicialización de la HMM con los parámetros establecidos en el paso 4,5 y 6.
+7. Correr el algoritmo de Baum-Welch
+
+# Paquetes utlizadas
+
+* Paquete HMM de R `r citet(bib["hmm"])`
+
+* Algoritmo de Baum-Welch para estimación de parámetros de una HMM
+
+# Resultados
+
+Inicial sin conocimiento:
+
+||V|C|
+|:---:|:---:|:---:|
+||0.5337|0.4662|
+
+
+Inicial después de Baum-Welch
+
+||V|C|
+|:---:|:---:|:---:|
+||0.5337|0.4662|
+
+
+Transiciones sin conocimiento
+
+||V|C|
+|:---:|:---:|:---:|
+|V| 0.3099|0.6900|
+|C|0.5200|0.4799|
+
+Transiciones después de Baum-Welch
+
+||V|C|
+|:---:|:---:|:---:|
+|V| 0.3045|0.6954|
+|C|0.993|0.006|
+
+![resultados](./salida_vocales.png)
+
+\pagegreak
+
+# Código
+
+```{r eval=FALSE}
+library(HMM)
+
+periodico <- scan(file='./datos/Es_Newspapers.txt', sep="\n", what = character())
+
+#limpieza de datos
+for(i in 1:length(periodico)) {
+  periodico[i] <- gsub("[[:punct:]]","",unlist(periodico[i]))
+  periodico[i] <- gsub("[[:digit:]]","",unlist(periodico[i]))
+  periodico[i] <- tolower(periodico[i])
+  periodico[i] <- gsub("[[:space:]]"," ",unlist(periodico[i]))
+}
+
+
+#separando a letras
+for (i in 1) {
+  texto <- periodico[i]
+  if(i == 1){
+    obsv <- as.data.frame(unlist(strsplit(texto, split="")), stringsAsFactors=FALSE)
+  } else {
+    obsv <- rbind(obsv, as.data.frame(unlist(strsplit(texto, split="")), stringsAsFactors=FALSE))
+  }
+}
+names(obsv) <- "letter"
+
+
+states = c("v","c")
+symbols = c("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r",
+            "s","t","u","v","w","x","y","z"," ","á","é","í","ó","ú","ñ")
+#probabilidades iniciales de lso estados
+random_num <- runif(1,0.5,0.7)
+startProbs = matrix(c(random_num, 1-random_num), 2)
+
+random_num <- runif(1, 0.5,0.7)
+random_num_2 <- runif(1, 0.5,0.7)
+transProbs <- matrix(c(1-random_num, random_num_2, 
+                       random_num, 1-random_num_2), 2)
+  
+random_nums <- data.frame(runif(33,0.030,0.034), runif(33,0.030,0.034))
+random_nums <- data.frame(rep(1/33,33), rep(1/33,33))
+emissionProbs=as.matrix(random_nums)
+inithmm <- initHMM(states, symbols, startProbs=startProbs, transProbs=transProbs, 
+                   emissionProbs=emissionProbs)
+bw <- baumWelch(inithmm, obsv$letter)
+bw
+```
+
+
+\pagebreak
+
+# Bibliografía
+
+

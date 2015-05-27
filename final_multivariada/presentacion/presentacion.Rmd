@@ -45,7 +45,7 @@ $\lambda=(A,B,\pi)$
 
 ## Datos 
 
-* Tomamos el corpus de noticias de un periódico español
+* Tomamos el corpus de noticias de periódicos españoles
 * 309,918 noticias
 
 ## Limpieza de datos 
