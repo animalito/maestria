@@ -3,8 +3,6 @@ title: "HMM para reconocimiento de vocales "
 output:
   pdf_document:
     fig_caption: yes
-    includes:
-      in_header: mypackages.sty
     keep_tex: yes
     latex_engine: xelatex
     number_sections: yes
@@ -49,7 +47,7 @@ Identificación de vocales y consonantes a través de un modelo de HMM estimando
 3. las probabilidades de cada símbolo de pertenecer a uno de los estados 
 
 
-![imagen](./modelo_vocales.png)
+![imagen](modelo_vocales.png)
 
 
 ## Algoritmo Baum-Welch
@@ -152,9 +150,9 @@ Transiciones después de Baum-Welch
 |V| 0.3045|0.6954|
 |C|0.993|0.006|
 
-![resultados](./salida_vocales.png)
+![resultados](salida_vocales.png)
 
-\pagegreak
+\pagebreak
 
 # Código
 
