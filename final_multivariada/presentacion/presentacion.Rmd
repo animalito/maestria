@@ -78,7 +78,7 @@ $\lambda=(A,B,\pi)$
 
 * Algoritmo de Baum-Welch para estimación de parámetros de una HMM
 
-## Resultados
+## Resultados Español
 
 Inicial sin conocimiento:
 
@@ -94,7 +94,7 @@ Inicial después de Baum-Welch
 ||0.5337|0.4662|
 
 
-## Resultados
+## Resultados Español
 
 Transiciones sin conocimiento
 
@@ -110,9 +110,64 @@ Transiciones después de Baum-Welch
 |V| 0.3045|0.6954|
 |C|0.993|0.006|
 
-## Resultados
+## Resultados Español
 
 ![resultados](../hmm/salida_vocales)
+
+## Resultado Griego
+
+Corpus: 
+
+
+
+## Resultados Griego
+
+Inicial sin conocimiento:
+
+||V|C|
+|:---:|:---:|:---:|
+||0.53765|0.4234|
+
+
+Inicial después de Baum-Welch
+
+||V|C|
+|:---:|:---:|:---:|
+||0.6117|0.3882|
+
+## Resultados Griego
+
+Transiciones sin conocimiento
+
+||V|C|
+|:---:|:---:|:---:|
+|V|0.3558|0.6441|
+|C|0.5161|0.4838|
+
+Transiciones después de Baum-Welch
+
+||V|C|
+|:---:|:---:|:---:|
+|V|0.0093|0.9906|
+|C|0.6178|0.3821|
+
+## Resultados Griego
+
+Vocales en griego
+
+|Griego | Vocal|
+|:---:|:---:|
+| A,$\alpha$|a|
+|E,$\epsilon$|e|
+|I,$\iota$|i|
+|O,$\omicron$|o|
+|Y,$\upsilon$|u|
+
+## Resultados Griego
+
+![resultados](../hmm/salida_vocales_griego.png)
+
+
 
 # Aplicación 2: Modelos jerárquicos y postestratificación
 
