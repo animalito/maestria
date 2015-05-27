@@ -47,3 +47,5 @@ mrp <- c(mrp, knit_child('mrp/metodologia.Rmd', quiet = TRUE))
 ```
 
 `r paste(mrp, collapse='\n')`
+
+

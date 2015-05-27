@@ -108,25 +108,67 @@
 </article></slide><slide class=''><hgroup><h2>Especificación del modelo</h2></hgroup><article  id="especificacion-del-modelo">
 
 <ul>
-<li>Utilizamos HMM para estimar los parámetros de las probabilidades inciales de los estados, las probabilidades de transición entre estados y las probabilidades de cada símbolo de pertenecer a uno de los estados.</li>
+<li>Utilizamos HMM con el algoritmo Baum-Welch para estimar los parámetros:</li>
+</ul>
+
+<ol>
+<li>las probabilidades inciales de los estados</li>
+<li>las probabilidades de transición entre estados</li>
+<li>las probabilidades de cada símbolo de pertenecer a uno de los estados</li>
+</ol>
+
+<ul>
+<li>Únicamente con la evidencia que tienen los datos (nuestras observaciones)</li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>Baum-Welch</h2></hgroup><article  id="baum-welch">
+
+<ul>
+<li>Este algoritmo es una variante del EM visto en clase. Iniciamos con un modelo sin &#39;conocimiento&#39;</li>
+</ul>
+
+<p>\(\pi\) = probabilidades de inciar en cada estado</p>
+
+<p>A= matriz de transición de estados</p>
+
+<p>B= matriz de emisiones</p>
+
+<p>\(\lambda=(A,B,\pi)\)</p>
+
+<ul>
+<li>En cada iteración los valores de \(\pi\), A y B se van actualizando hasta convergencia</li>
+<li>El algoritmo ocupa el forward procedure —probabilidad de ver esta secuencia parcial y terminar en el estado i en el tiempo t— y el backward procedure —probabilidad de terminar en la esta secuencia parcial dado que empezamos en el estado i en el tiempo t—</li>
 </ul>
 
 </article></slide><slide class=''><hgroup><h2> Datos</h2></hgroup><article  id="datos">
 
 <ul>
-<li>Tomamos el corpus de</li>
+<li>Tomamos el corpus de noticias de un periódico español</li>
+<li>309,918 noticias</li>
+</ul>
+
+</article></slide><slide class='segue dark nobackground'><hgroup class = 'auto-fadein'><h2>Limpieza de datos</h2></hgroup><article  id="limpieza-de-datos">
+
+<ul>
+<li>Eliminación de signos de puntuación</li>
+<li>Eliminación de dígitos</li>
+<li>Eliminación de tabuladores</li>
+<li>Todas las letras a minúsculas</li>
+<li>Cada palabra es separada en sus letras respetando los espacios</li>
 </ul>
 
 </article></slide><slide class=''><hgroup><h2> Suposiciones iniciales del modelo</h2></hgroup><article  id="suposiciones-iniciales-del-modelo">
 
 <ul>
-<li><p>Nos basaremos en la idea de que existen 2 estados: <strong>Consonante</strong> y <strong>Vocal</strong></p></li>
+<li><p>Nuestra base será suponer que existen 2 estados: <strong>Consonante</strong> y <strong>Vocal</strong></p></li>
 <li><p>No conocemos con qué probabilidad de inicio estamos en Constante o en Vocal</p></li>
 <li><p>No conocemos las probabilidades de transición entre estados</p></li>
 <li><p>No conocemos las probabilidades de que cada símbolo del lenguaje pertenezca a uno de los estados</p></li>
 </ul>
 
-</article></slide><slide class=''><hgroup><h2> liberías utlizadas</h2></hgroup><article  id="liberias-utlizadas">
+</article></slide><slide class=''><hgroup><h2>Modelo</h2></hgroup><article  id="modelo">
+
+</article></slide><slide class=''><hgroup><h2>Paquetes utlizadas</h2></hgroup><article  id="paquetes-utlizadas">
 
 <ul>
 <li><p>Paquete HMM de R</p></li>
@@ -135,13 +177,79 @@
 
 </article></slide><slide class=''><hgroup><h2>Resultados</h2></hgroup><article  id="resultados">
 
-</article></slide><slide class='segue dark nobackground'><hgroup class = 'auto-fadein'><h2>Aplicación 2: Modelos jerárquicos y postestratificación</h2></hgroup><article  id="aplicacion-2-modelos-jerarquicos-y-postestratificacion">
+<p>Inicial sin conocimiento:</p>
 
-</article></slide><slide class=''><hgroup><h2>Problema</h2></hgroup><article  id="problema-1">
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="center"></th>
+<th align="center">V</th>
+<th align="center">C</th>
+</tr>
+<tr class="odd">
+<td align="center"></td>
+<td align="center">0.5337</td>
+<td align="center">0.4662</td>
+</tr>
+</table>
 
-</article></slide><slide class=''><hgroup><h2>Especificación del modelo</h2></hgroup><article  id="especificacion-del-modelo-1">
+<p>Inicial después de Baum-Welch</p>
 
-</article></slide><slide class=''><hgroup><h2>Resultados</h2></hgroup><article  id="resultados-1"></article></slide>
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="center"></th>
+<th align="center">V</th>
+<th align="center">C</th>
+</tr>
+<tr class="odd">
+<td align="center"></td>
+<td align="center">0.5337</td>
+<td align="center">0.4662</td>
+</tr>
+</table>
+
+</article></slide><slide class=''><hgroup><h2> Resultados</h2></hgroup><article  id="resultados-1">
+
+<p>Transiciones sin conocimiento</p>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="center"></th>
+<th align="center">V</th>
+<th align="center">C</th>
+</tr>
+<tr class="odd">
+<td align="center">V</td>
+<td align="center">0.3099</td>
+<td align="center">0.6900</td>
+</tr>
+<tr class="even">
+<td align="center">C</td>
+<td align="center">0.5200</td>
+<td align="center">0.4799</td>
+</tr>
+</table>
+
+<p>Transiciones después de Baum-Welch</p>
+
+<table class = 'rmdtable'>
+<tr class="header">
+<th align="center"></th>
+<th align="center">V</th>
+<th align="center">C</th>
+</tr>
+<tr class="odd">
+<td align="center">V</td>
+<td align="center">0.3045</td>
+<td align="center">0.6954</td>
+</tr>
+<tr class="even">
+<td align="center">C</td>
+<td align="center">0.993</td>
+<td align="center">0.006</td>
+</tr>
+</table>
+
+</article></slide><slide class=''><hgroup><h2> Resultados</h2></hgroup><article  id="resultados-2"></article></slide>
 
 
   <slide class="backdrop"></slide>

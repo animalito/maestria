@@ -7,6 +7,7 @@ output: beamer_presentation
 
 # Aplicación 1: Modelo de reconocimiento de vocales
 
+
 ## Problema 
 
 Supongamos que somos alienígenas de Las Pléyades y que no tenemos ni idea de cómo se 'lee' un lenguaje de la tierra, no sabemos de los idiomas pero como somos seres superiores sabemos de Hidden Markov Models! 
@@ -38,16 +39,26 @@ B= matriz de emisiones
 
 $\lambda=(A,B,\pi)$
 
-* En cada iteración los valores de $\pi$, A y B se van actualizando hasta convergencia\*. 
-* El algoritmo puede ocupar el forward procedure —probabilidad de ver esta secuencia parcial y terminar en el estado i en el tiempo t— o bien el backward procedure —probabilidad de terminar en la esta secuencia parcial dado que empezamos en el estado i en el tiempo t—
+* En cada iteración los valores de $\pi$, A y B se van actualizando hasta convergencia
+* El algoritmo ocupa el forward procedure —probabilidad de ver esta secuencia parcial y terminar en el estado i en el tiempo t— y el backward procedure —probabilidad de terminar en la esta secuencia parcial dado que empezamos en el estado i en el tiempo t—
 
-\* Explicación en el trabajo escrito
 
-## Datos 
+## Datos 
 
-* Tomamos el corpus de 
+* Tomamos el corpus de noticias de periódicos españoles
+* 309,918 noticias
 
-## Suposiciones iniciales del modelo
+## Limpieza de datos 
+
+* Eliminación de signos de puntuación 
+* Eliminación de dígitos
+* Eliminación de tabuladores
+* Todas las letras a minúsculas
+* Cada palabra es separada en sus letras respetando los espacios
+
+
+
+## Suposiciones iniciales del modelo
 
 * Nuestra base será suponer que existen 2 estados: **Consonante** y **Vocal**  
 
@@ -57,6 +68,9 @@ $\lambda=(A,B,\pi)$
 
 * No conocemos las probabilidades de que cada símbolo del lenguaje pertenezca a uno de los estados
 
+## Modelo
+
+![modelo](../hmm/modelo_vocales.png)
 
 ## Paquetes utlizadas
 
@@ -66,7 +80,39 @@ $\lambda=(A,B,\pi)$
 
 ## Resultados
 
+Inicial sin conocimiento:
 
+||V|C|
+|:---:|:---:|:---:|
+||0.5337|0.4662|
+
+
+Inicial después de Baum-Welch
+
+||V|C|
+|:---:|:---:|:---:|
+||0.5337|0.4662|
+
+
+## Resultados
+
+Transiciones sin conocimiento
+
+||V|C|
+|:---:|:---:|:---:|
+|V| 0.3099|0.6900|
+|C|0.5200|0.4799|
+
+Transiciones después de Baum-Welch
+
+||V|C|
+|:---:|:---:|:---:|
+|V| 0.3045|0.6954|
+|C|0.993|0.006|
+
+## Resultados
+
+![resultados](../hmm/salida_vocales)
 
 # Aplicación 2: Modelos jerárquicos y postestratificación
 
@@ -187,3 +233,5 @@ kable(comparacion)
 
 - Se necesitan datos poblacionales para toda la clasificación $DxG$ lo cuál limita la definición de $G$.
 - Para obtener buenos estimadores de $\gamma$, el modelo de regresión multinivel debe ser especificado con mucho cuidado. Sin embargo, esta limitación aplica para cualquier modelo.
+
+
