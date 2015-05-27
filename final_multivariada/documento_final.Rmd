@@ -6,7 +6,7 @@ output:
   pdf_document:
     fig_caption: yes
     includes:
-      in_header: mypackages.sty
+      in_header: mrp/mypackages.sty
     keep_tex: yes
     latex_engine: xelatex
     number_sections: yes
@@ -41,7 +41,7 @@ detachAllPackages <- function() {
 }
 
 detachAllPackages()
-
+library(knitr)
 mrp <- NULL
 mrp <- c(mrp, knit_child('mrp/metodologia.Rmd', quiet = TRUE))
 ```
