@@ -30,7 +30,6 @@ cite_options(hyperlink=T)
 bib <- read.bibtex("bibliografia_encuestas.bib")
 ```
 
-\pagebreak
 
 ## Introducción 
 

@@ -110,7 +110,7 @@
 }
 \pagebreak
 
-\section{Introducción}\label{introduccion}
+\subsection{Introducción}\label{introduccion}
 
 Los modelos de HMM son modelos estadísticos que se utilizan en procesos
 que se suponen Markovianos donde los estados no son visibles
@@ -125,12 +125,12 @@ Lenguaje Natural (NLP) sobre todo para el reconocimiento del habla (Part
 Of Speech, POS), etiquetado gramatical, reconocimiento de escritura
 manual, etc. Stamp (2012)
 
-\section{Objetivo}\label{objetivo}
+\subsection{Objetivo}\label{objetivo}
 
 Identificación de vocales y consonantes de un texto en español a través
 de un modelo de HMM estimando sus parámetros.
 
-\section{Especificación del modelo}\label{especificacion-del-modelo}
+\subsection{Especificación del modelo}\label{especificacion-del-modelo}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -156,7 +156,7 @@ de un modelo de HMM estimando sus parámetros.
 \caption{imagen}
 \end{figure}
 
-\subsection{Algoritmo Baum-Welch}\label{algoritmo-baum-welch}
+\subsubsection{Algoritmo Baum-Welch}\label{algoritmo-baum-welch}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -165,47 +165,46 @@ de un modelo de HMM estimando sus parámetros.
   Bilmes (1998) . Iniciamos con un modelo sin `conocimiento'
 \end{itemize}
 
-\(\pi\) = probabilidades de iniciar en cada estado
+$\pi$ = probabilidades de iniciar en cada estado
 
 T= matriz de transición de estados
 
 M= matriz de emisiones
 
-\(\lambda=(T,M,\pi)\)
+$\lambda=(T,M,\pi)$
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  En cada iteración los valores de \(\pi\), A y B se van actualizando
+  En cada iteración los valores de $\pi$, A y B se van actualizando
   hasta convergencia implementando el algoritmo forward-backward.
 \end{itemize}
 
-Definimos \(\gamma_{k}(s)=Pr[X_{k}= s|Z,\lambda]\), la probabilidad de
-que el sistema se encuentre en el estado \(s\) en el \(k\)-ésimo tiempo,
-dada la secuencia de observaciones \(Z\) en el modelo \(\lambda\)
-(forward-process).
+Definimos $\gamma_{k}(s)=Pr[X_{k}= s|Z,\lambda]$, la probabilidad de que
+el sistema se encuentre en el estado $s$ en el $k$-ésimo tiempo, dada la
+secuencia de observaciones $Z$ en el modelo $\lambda$ (forward-process).
 
-\(\gamma_{k}(s)=\frac{\alpha_{k}(s)\beta_{k}(s)}{Pr[Z|\lambda]}=\alpha_{k}(s)\beta_{k}(s){\sum_{s\epsilon\chi}\alpha_{t}(s)}\)
+$\gamma_{k}(s)=\frac{\alpha_{k}(s)\beta_{k}(s)}{Pr[Z|\lambda]}=\alpha_{k}(s)\beta_{k}(s){\sum_{s\epsilon\chi}\alpha_{t}(s)}$
 
-Definimos \(\xi_{k}(q,s)=Pr[X_{k}=q,X_{k+1}=s|Z,\lambda]\), la
-probabilidad de estar en el estado \(q\) al tiempo \(k\) y en el estado
-\(s\) en el tiempo \(k+1\) dada la secuencia de observaciones en el
-modelo actual de HMM (backward-process).
+Definimos $\xi_{k}(q,s)=Pr[X_{k}=q,X_{k+1}=s|Z,\lambda]$, la
+probabilidad de estar en el estado $q$ al tiempo $k$ y en el estado $s$
+en el tiempo $k+1$ dada la secuencia de observaciones en el modelo
+actual de HMM (backward-process).
 
-\(\xi_{k}(q,s)=\eta_{k}\alpha_{k}(q)T_{q,s}M_{s,z_{k+1}}\beta_{k+1}(s)\),
-donde \(\eta_{k}\) es un factor de normalización tal que
-\(\sum_{q,s}\xi_{k}(q,s)=1\)
+$\xi_{k}(q,s)=\eta_{k}\alpha_{k}(q)T_{q,s}M_{s,z_{k+1}}\beta_{k+1}(s)$,
+donde $\eta_{k}$ es un factor de normalización tal que
+$\sum_{q,s}\xi_{k}(q,s)=1$
 
-Calculando \(\gamma_{k}(s)\) y \(\xi_{k}(q,s)\) podemos actualizar el
-modelo \(\lambda'=(T',M',\pi')\)
+Calculando $\gamma_{k}(s)$ y $\xi_{k}(q,s)$ podemos actualizar el modelo
+$\lambda'=(T',M',\pi')$
 
-\(\pi'_{s}=\gamma_{1}(s)\)
+$\pi'_{s}=\gamma_{1}(s)$
 
-\(T'_{q,s}=\frac{E[\#\phantom{a}de\phantom{a}transiciones\phantom{a}del\phantom{a}estado\phantom{a}q \phantom{a}al\phantom{a}s]}{E[\#\phantom{a}de\phantom{a}transiciones\phantom{a}del\phantom{a}estado\phantom{a}q]}=\frac{\sum_{k=1}^{t-1}\xi_{k(q,s)}}{\sum_{k=1}^{t-1}\gamma_{k}(q)}\)
+$T'_{q,s}=\frac{E[\#\phantom{a}de\phantom{a}transiciones\phantom{a}del\phantom{a}estado\phantom{a}q \phantom{a}al\phantom{a}s]}{E[\#\phantom{a}de\phantom{a}transiciones\phantom{a}del\phantom{a}estado\phantom{a}q]}=\frac{\sum_{k=1}^{t-1}\xi_{k(q,s)}}{\sum_{k=1}^{t-1}\gamma_{k}(q)}$
 
-\(M'_{s,m}=\frac{E[\#\phantom{a}de\phantom{a}veces\phantom{a}en\phantom{a}el\phantom{a}estado\phantom{a}s\phantom{a}cuando\phantom{a}la\phantom{a}observacion\phantom{a}fue\phantom{a}m]}{E[\# de veces en el estado s]}=\frac{\sum_{k=1}{t}\gamma_{k}(s)1(z_{k}=m)}{\sum_{k=1}^{t}\gamma_{k}(s)}\)
+$M'_{s,m}=\frac{E[\#\phantom{a}de\phantom{a}veces\phantom{a}en\phantom{a}el\phantom{a}estado\phantom{a}s\phantom{a}cuando\phantom{a}la\phantom{a}observacion\phantom{a}fue\phantom{a}m]}{E[\# de veces en el estado s]}=\frac{\sum_{k=1}{t}\gamma_{k}(s)1(z_{k}=m)}{\sum_{k=1}^{t}\gamma_{k}(s)}$
 
-\subsection{~Suposiciones iniciales del
+\subsubsection{Suposiciones iniciales del
 modelo}\label{suposiciones-iniciales-del-modelo}
 
 \begin{itemize}
@@ -223,7 +222,7 @@ modelo}\label{suposiciones-iniciales-del-modelo}
   pertenezca a uno de los estados
 \end{itemize}
 
-\section{~Datos}\label{datos}
+\subsection{Datos}\label{datos}
 
 Intentamos ocupar los últimos 100 contenidos publicados en Quién.com y
 CNNExpansión.com sin embargo sus corpus requieren de mucho de
@@ -233,7 +232,7 @@ Decidimos tomar un corpus en español de un ejercicio realizado en
 Métodos Analíticos correspondiente a un periodico español con 309,918
 noticias
 
-\subsection{~Limpieza de Datos}\label{limpieza-de-datos}
+\subsubsection{Limpieza de Datos}\label{limpieza-de-datos}
 
 \begin{itemize}
 \itemsep1pt\parskip0pt\parsep0pt
@@ -249,7 +248,7 @@ noticias
   Dividimos cada palabra en sus letras respetando los espacios
 \end{itemize}
 
-\section{~Metodología}\label{metodologia}
+\subsection{Metodología}\label{metodologia}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -260,8 +259,8 @@ noticias
   Separar cada palabra en sus respectivas letras respetando espacios
 \item
   Establecemos nuestro conocimiento a priori sobre las probabilidades
-  iniciales de estados inicializando \(\pi\). Dado que no conocemos
-  mucho del proceso las establecemos muy cercanas a 0.5 (suman a 1)
+  iniciales de estados inicializando $\pi$. Dado que no conocemos mucho
+  del proceso las establecemos muy cercanas a 0.5 (suman a 1)
 \item
   Establecemos nuestro conocimiento a priori sobre las probabilidades de
   transición entre estados inicializando A. Dado que no conocemos mucho
@@ -281,7 +280,7 @@ noticias
   Correr el algoritmo de Baum-Welch
 \end{enumerate}
 
-\section{Paquetes utlizadas}\label{paquetes-utlizadas}
+\subsection{Paquetes utlizadas}\label{paquetes-utlizadas}
 
 \begin{itemize}
 \item
@@ -290,51 +289,57 @@ noticias
   Algoritmo de Baum-Welch para estimación de parámetros de una HMM
 \end{itemize}
 
-\section{Resultados Español}\label{resultados-espanol}
+\subsection{Resultados Español}\label{resultados-espanol}
 
 Inicial sin conocimiento:
 
 \begin{longtable}[c]{@{}ccc@{}}
-\toprule
-& V & C\tabularnewline
-\midrule
-\endhead
-& 0.5337 & 0.4662\tabularnewline
+\toprule\addlinespace
+& V & C
+\\\addlinespace
+\midrule\endhead
+& 0.5337 & 0.4662
+\\\addlinespace
 \bottomrule
 \end{longtable}
 
 Inicial después de Baum-Welch
 
 \begin{longtable}[c]{@{}ccc@{}}
-\toprule
-& V & C\tabularnewline
-\midrule
-\endhead
-& 0.5337 & 0.4662\tabularnewline
+\toprule\addlinespace
+& V & C
+\\\addlinespace
+\midrule\endhead
+& 0.5337 & 0.4662
+\\\addlinespace
 \bottomrule
 \end{longtable}
 
 Transiciones sin conocimiento
 
 \begin{longtable}[c]{@{}ccc@{}}
-\toprule
-& V & C\tabularnewline
-\midrule
-\endhead
-V & 0.3099 & 0.6900\tabularnewline
-C & 0.5200 & 0.4799\tabularnewline
+\toprule\addlinespace
+& V & C
+\\\addlinespace
+\midrule\endhead
+V & 0.3099 & 0.6900
+\\\addlinespace
+C & 0.5200 & 0.4799
+\\\addlinespace
 \bottomrule
 \end{longtable}
 
 Transiciones después de Baum-Welch
 
 \begin{longtable}[c]{@{}ccc@{}}
-\toprule
-& V & C\tabularnewline
-\midrule
-\endhead
-V & 0.3045 & 0.6954\tabularnewline
-C & 0.993 & 0.006\tabularnewline
+\toprule\addlinespace
+& V & C
+\\\addlinespace
+\midrule\endhead
+V & 0.3045 & 0.6954
+\\\addlinespace
+C & 0.993 & 0.006
+\\\addlinespace
 \bottomrule
 \end{longtable}
 
@@ -351,78 +356,88 @@ símbolos al estado \emph{v}.
 \caption{resultados}
 \end{figure}
 
-\section{Resultados Griego}\label{resultados-griego}
+\subsection{Resultados Griego}\label{resultados-griego}
 
 Inicial sin conocimiento:
 
 \begin{longtable}[c]{@{}ccc@{}}
-\toprule
-& V & C\tabularnewline
-\midrule
-\endhead
-& 0.53765 & 0.4234\tabularnewline
+\toprule\addlinespace
+& V & C
+\\\addlinespace
+\midrule\endhead
+& 0.53765 & 0.4234
+\\\addlinespace
 \bottomrule
 \end{longtable}
 
 Inicial después de Baum-Welch
 
 \begin{longtable}[c]{@{}ccc@{}}
-\toprule
-& V & C\tabularnewline
-\midrule
-\endhead
-& 0.6117 & 0.3882\tabularnewline
+\toprule\addlinespace
+& V & C
+\\\addlinespace
+\midrule\endhead
+& 0.6117 & 0.3882
+\\\addlinespace
 \bottomrule
 \end{longtable}
 
 Transiciones sin conocimiento
 
 \begin{longtable}[c]{@{}ccc@{}}
-\toprule
-& V & C\tabularnewline
-\midrule
-\endhead
-V & 0.3558 & 0.6441\tabularnewline
-C & 0.5161 & 0.4838\tabularnewline
+\toprule\addlinespace
+& V & C
+\\\addlinespace
+\midrule\endhead
+V & 0.3558 & 0.6441
+\\\addlinespace
+C & 0.5161 & 0.4838
+\\\addlinespace
 \bottomrule
 \end{longtable}
 
 Transiciones después de Baum-Welch
 
 \begin{longtable}[c]{@{}ccc@{}}
-\toprule
-& V & C\tabularnewline
-\midrule
-\endhead
-V & 0.0093 & 0.9906\tabularnewline
-C & 0.6178 & 0.3821\tabularnewline
+\toprule\addlinespace
+& V & C
+\\\addlinespace
+\midrule\endhead
+V & 0.0093 & 0.9906
+\\\addlinespace
+C & 0.6178 & 0.3821
+\\\addlinespace
 \bottomrule
 \end{longtable}
 
 En griego las vocales corresponden a los símbolos:
 
 \begin{longtable}[c]{@{}cc@{}}
-\toprule
-Griego & ~Vocal\tabularnewline
-\midrule
-\endhead
-A,\(\alpha\) & a\tabularnewline
-E,\(\epsilon\) & e\tabularnewline
-I,\(\iota\) & i\tabularnewline
-O,\(\omicron\) & o\tabularnewline
-Y,\(\upsilon\) & u\tabularnewline
+\toprule\addlinespace
+Griego & ~Vocal
+\\\addlinespace
+\midrule\endhead
+A,$\alpha$ & a
+\\\addlinespace
+E,$\epsilon$ & e
+\\\addlinespace
+I,$\iota$ & i
+\\\addlinespace
+O,$\omicron$ & o
+\\\addlinespace
+Y,$\upsilon$ & u
+\\\addlinespace
 \bottomrule
 \end{longtable}
 
 A continuación se identifican que las probabilides en el estado \emph{v}
 de los símbolos
-\(\alpha\),\(\epsilon\),\(\iota\),\(\omicron\),\(\upsilon\),\(\epsilon\)
-acentuado, son mayores que las probabilidades de estos símbolos al
-estado \emph{c}. De igual forma, las probabilidades en el estado
-\emph{c} para los símbolos que \textbf{no} son
-\(\alpha\),\(\epsilon\),\(\iota\),\(\omicron\),\(\upsilon\),\(\epsilon\)
-acentuado son mayores que las probabilidades de estos símbolos al estado
-\emph{v}.
+$\alpha$,$\epsilon$,$\iota$,$\omicron$,$\upsilon$,$\epsilon$ acentuado,
+son mayores que las probabilidades de estos símbolos al estado \emph{c}.
+De igual forma, las probabilidades en el estado \emph{c} para los
+símbolos que \textbf{no} son
+$\alpha$,$\epsilon$,$\iota$,$\omicron$,$\upsilon$,$\epsilon$ acentuado
+son mayores que las probabilidades de estos símbolos al estado \emph{v}.
 
 \begin{figure}[htbp]
 \centering
@@ -432,9 +447,9 @@ acentuado son mayores que las probabilidades de estos símbolos al estado
 
 \pagebreak
 
-\section{Código}\label{codigo}
+\subsection{Código}\label{codigo}
 
-\subsection{~Español}\label{espanol}
+\subsubsection{Español}\label{espanol}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -485,7 +500,7 @@ acentuado son mayores que las probabilidades de estos símbolos al estado
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{~Griego}\label{griego}
+\subsubsection{Griego}\label{griego}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -544,6 +559,6 @@ acentuado son mayores que las probabilidades de estos símbolos al estado
 
 \pagebreak
 
-\section{Bibliografía}\label{bibliografia}
+\subsection{Bibliografía}\label{bibliografia}
 
 \end{document}

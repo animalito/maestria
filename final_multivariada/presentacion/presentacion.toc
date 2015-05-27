@@ -1,0 +1,3 @@
+\beamer@endinputifotherversion {3.24pt}
+\beamer@sectionintoc {1}{Aplicación 1: Modelo de reconocimiento de vocales}{2}{0}{1}
+\beamer@sectionintoc {2}{Aplicación 2: Modelos jerárquicos y postestratificación}{19}{0}{2}

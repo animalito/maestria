@@ -2,7 +2,9 @@
 title: "MRP y HMM"
 author: "Andrea Fernández, Liliana Millán"
 date: "27/05/2015"
-output: beamer_presentation
+output: 
+  beamer_presentation:
+    keep_tex: true
 ---
 
 # Aplicación 1: Modelo de reconocimiento de vocales
@@ -94,7 +96,7 @@ Inicial después de Baum-Welch
 ||0.5337|0.4662|
 
 
-## Resultados Español
+## Resultados Español
 
 Transiciones sin conocimiento
 
@@ -112,7 +114,7 @@ Transiciones después de Baum-Welch
 
 ## Resultados Español
 
-![resultados](../hmm/salida_vocales)
+![resultados](../hmm/salida_vocales.png)
 
 ## Resultado Griego
 
@@ -151,16 +153,16 @@ Transiciones después de Baum-Welch
 |V|0.0093|0.9906|
 |C|0.6178|0.3821|
 
-## Resultados Griego
+## Resultados Griego
 
 Vocales en griego
 
-|Griego | Vocal|
+|Griego | Vocal|
 |:---:|:---:|
 | A,$\alpha$|a|
 |E,$\epsilon$|e|
 |I,$\iota$|i|
-|O,$\omicron$|o|
+|O,$o$|o|
 |Y,$\upsilon$|u|
 
 ## Resultados Griego

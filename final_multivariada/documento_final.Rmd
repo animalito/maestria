@@ -14,6 +14,10 @@ output:
     toc_depth: 2
 ---
 
+\pagebreak
+
+# Modelo de Markov de estados ocultos
+
 ```{r, echo=F, warning=F, error=F, message=F}
 library(knitr)
 hmm <- NULL
@@ -23,6 +27,8 @@ hmm <- c(hmm, knit_child('hmm/hmm.Rmd', quiet = TRUE))
 `r paste(hmm, collapse='\n')`
 
 \pagebreak
+
+# Regresión multinivel y postestratificación
 
 ```{r, echo=F, warning=F, error=F, message=F}
 rm(list = ls(all = TRUE)) #clear workspace
