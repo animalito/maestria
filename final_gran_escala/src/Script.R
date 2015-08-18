@@ -1,11 +1,12 @@
 source('puntosInteriores.R')
 library(Matrix)
 library(parallel)
+library(snow)
 options(digits=16)
 
 #lectura de datos de entrenamiento
 
-Train=read.csv('../data/Train.csv',stringsAsFactors=F,header=F)
+Train=read.csv('./Train.csv',stringsAsFactors=F,header=F)
 
 #Asignación de variables de acuerdo a la nomenclatura de Puntos Interiores (2a versión)
 
@@ -77,7 +78,7 @@ print(mean(b!=y_ent))
 
 #Clasificaci?n en el conjunto de prueba
 
-Test=read.csv('../data/Test.csv',stringsAsFactors=F,header=F)
+Test=read.csv('./Test.csv',stringsAsFactors=F,header=F)
 dim_prueba=dim(Test)
 mprueba=dim_prueba[1]
 nprueba=dim_prueba[2]

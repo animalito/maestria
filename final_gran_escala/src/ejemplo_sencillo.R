@@ -1,0 +1,5 @@
+library(snow)
+cl <- makeSOCKcluster(c("slave05","localhost"))
+clusterApply(cl, 1:2, get("+"), 3)
+clusterEvalQ(cl, library(boot))
+stopCluster(cl)
